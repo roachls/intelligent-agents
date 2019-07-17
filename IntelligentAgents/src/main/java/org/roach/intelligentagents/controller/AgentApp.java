@@ -10,6 +10,7 @@ package org.roach.intelligentagents.controller;
 
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
+import org.roach.intelligentagents.model.Location;
 import org.roach.intelligentagents.model.SimulationGrid;
 import org.roach.intelligentagents.model.strategy.AgentStrategy;
 import org.roach.intelligentagents.view.GUI;
@@ -34,6 +35,7 @@ public final class AgentApp {
     		.parse(args);
     	
         AgentApp aa = new AgentApp(options);
+        Location.setGridSize(options.roomsize);
         Agent.initAgents(options.strategy, aa.getNumAgents(), aa.simgrid, options);
         GUI gui = new GUI(aa, options);
         if (aa.isBatchMode()) gui.getAnimator().startSim();

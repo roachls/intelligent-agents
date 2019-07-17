@@ -1,13 +1,10 @@
 package org.roach.intelligentagents.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.Dimension;
 
-import org.junit.Test;
-import org.roach.intelligentagents.model.Location;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Larry S. Roach
@@ -18,7 +15,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testLocationCreation() {
 		Location l1 = new Location(0, 0);
@@ -28,7 +24,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testEquals() {
 		Location l1 = new Location(1, 1);
@@ -44,7 +39,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testToDimension() {
 		Location l1 = new Location(2, 3);
@@ -59,7 +53,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testGetManDist() {
 		Location l1 = new Location(2, 3);
@@ -71,7 +64,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testIsInCircle() {
 		Location l1 = new Location(0, 0);
@@ -85,7 +77,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testGetXDistance() {
 		Location l1 = new Location(0, 0);
@@ -97,7 +88,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testGetYDistance() {
 		Location l1 = new Location(0, 0);
@@ -109,7 +99,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testMoveWest() {
 		Location l1 = new Location(0, 0);
@@ -120,7 +109,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testMoveEast() {
 		Location l1 = new Location(0, 0);
@@ -131,7 +119,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testMoveNorth() {
 		Location l1 = new Location(0, 0);
@@ -142,7 +129,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testMoveSouth() {
 		Location l1 = new Location(0, 0);
@@ -153,7 +139,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testGetX() {
 		Location l1 = new Location(4, 5);
@@ -163,7 +148,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testGetY() {
 		Location l1 = new Location(4, 5);
@@ -173,7 +157,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testClone() {
 		Location l1 = new Location(4, 5);
@@ -184,7 +167,6 @@ public class LocationTest {
 	/**
 	 * 
 	 */
-	@SuppressWarnings("static-method")
 	@Test
 	public void testToString() {
 		Location l1 = new Location(4, 5);
