@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+@author L. Stephen Roach
+@version %I%, %G%
+
+<html>
+  <head>
+    <title>Package: org.roach.IntelligentAgents</title>
+  </head>
+  <body>
+  <p>This project creates a simulation of a group of semi-intelligent agents
+ working in teams to complete a group of tasks.</p>
+  <p>The simulation takes place in a square room, n x n units in size. An
+  agent takes up a single cell at any given time. Multiple agents may
+  take reside in the same cell. The number of agents and the type
+  of agent are specified by the user on the command-line.</p>
+  <p>In the same room, a user-specified number of <code>Task</code>s are
+  scattered.  No two tasks may occupy the same cell. In order for a task
+  to be complete, it must be "executed" (touched) by at least five different
+  agents.  Each time an agent executes a task, there is a 90% chance that
+  the task will become "more" complete.  With a 10% chance it will actually
+  become "less" complete.  The completeness of a task is indicated by the
+  color: black is completely incomplete, green is complete, with the task
+  becoming "more green" in between.</p>
+  <p>There are a number of different types of agent.  In general, agents
+  "wander" randomly around the room until they encounter a task.  Once they
+  do, they automatically execute the task.  After that, what they do depends
+  on the type of agent.  See the documentation for each different type of
+  agent for more details.</p>
+  <p>If this program is run from the command-line, the following properties
+  may be used.  All arguments are optional, but if used, they must be given as
+  system properties in the form <code>-Dproperty-name=value</code> as described
+  below.</p>
+  <table>
+      <thead><tr><td>Property name</td><td>Value</td></tr></thead>
+      <tr><td>type</td><td>Type of agent to use. May be irresponsible,
+          responsible, mailbox, military, or prioritizing.</td></tr>
+      <tr><td>agents</td><td>Number of agents to use. Default is 15.</td></tr>
+      <tr><td>tasks</td><td>Number of tasks to use. Default is 100.</td></tr>
+      <tr><td>roomsize</td><td>Size of the room in cells. Default is 50.</td></tr>
+      <tr><td>stopat</td><td>The percentage of tasks that must be complete for
+      the simulation to stop. Default is 100.</td></tr>
+      <tr><td>showgraphics</td><td>true/false - render animation or not. Default is true.</td></tr>
+      <tr><td>showhelper</td><td>true/false - render "helper" graphics (not 
+              applicable to all agent types). Default is true.</td></tr>
+      <tr><td>cellsize</td><td>Size of a cell in pixels. Default is 6.</td></tr>
+      <tr><td>batch</td><td>true/false - Setting the program in batch mode sets
+              showgraphics and showhelper to false and prints statistics to the
+              console at the end of the simulation.</td></tr>
+  </table>
+
+  <h1>Building your own agent</h1>
+  To build your own agent, create a new Java class using the following template:
+  <pre>
+      import org.roach.intelligentagents.*;
+      public class MyAgent extends CommunicatingAgent {
+        ...
+      }
+  </pre>
+  At a minimum, the class must override the following methods:
+  <pre>
+  abstract protected TaskToDo getCurrentTaskToDo();
+  abstract protected void receiveMessage(Location receivedLoc);
+  </pre>
+  </body>
+</html>

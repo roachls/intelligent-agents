@@ -1,0 +1,172 @@
+package org.roach.intelligentagents.model.strategy;
+
+import java.awt.Color;
+import java.util.List;
+
+import org.roach.intelligentagents.AgentAppOpts;
+import org.roach.intelligentagents.model.Agent;
+import org.roach.intelligentagents.model.Location;
+import org.roach.intelligentagents.model.State;
+import org.roach.intelligentagents.model.Task;
+import org.roach.intelligentagents.model.TaskToDo;
+
+/**
+ * @author Larry S. Roach
+ *
+ */
+public abstract class CommunicatingAgentStrategy extends AgentStrategy {
+
+	/**
+	 * @param options
+	 * @see org.roach.intelligentagents.model.strategy.AgentStrategy#setOptions(org.roach.intelligentagents.AgentAppOpts)
+	 */
+	@Override
+	public void setOptions(AgentAppOpts options) {
+    	agent.setProperty(CommunicatingAgentStrategy.COMM_DIST, options.commDist);
+    	agent.setProperty(CommunicatingAgentStrategy.COMM_TIME, options.commTime);
+	}
+
+	/**
+	 * The location of the task, if any, that the agent is broadcasting in COMMS
+	 * mode, or going to in GOTO mode.
+	 */
+	protected Location commTaskLoc;
+
+	/** The time remaining to leave communications on. */
+	protected int commTime;
+	/**
+	 * 
+	 */
+	public State RANDOMCOMMS;
+
+	/** Flag to indicate whether a broadcast has been received. */
+	protected boolean broadcastReceived;
+
+	/** Location to go to in Goto state. */
+	protected static final String LOC_TO_GOTO = "locToGoto";
+	/**
+	 * property representing default communications time
+	 */
+	public static final String COMM_TIME = "COMM_TIME";
+	/**
+	 * property representing communications distance for all agents
+	 */
+	public static final String COMM_DIST = "COMM_DIST";
+
+	/**
+	 * @param agent
+	 */
+	public CommunicatingAgentStrategy(Agent agent) {
+		super(agent);
+
+		RANDOM.setAlgorithm(a -> {
+			a.getLoc().randomMove();
+			if (a.foundNewTask()) {
+				a.executeTask();
+				initComms();
+				setState(RANDOMCOMMS);
+			} else if (isBroadcastReceived()) {
+				setBroadcastReceived(false); // reset broadcast flag
+			}
+		});
+
+		/** The Goto state. */
+		GOTO = new State(Color.red, a -> {
+			if (a.getStrategy().getTaskToDo() == null) {
+				setState(RANDOM);
+			} else {
+				if (isBroadcastReceived()) {
+					setBroadcastReceived(false);
+				}
+				a.moveTowards(getTaskToDo().getLocation());
+				if (a.getStrategy().reachedTask()) {
+					if (!a.hasDoneAlready(Task.getTask(a.getLoc())))
+						a.executeTask(); // execute it and switch back to Random
+					setState(RANDOM);
+				}
+			}
+		}, this.agent);
+
+		// /** The random-comms state */
+		RANDOMCOMMS = new State(Color.blue, a -> {
+			sendMessageIfPossible(() -> state = RANDOM);
+			a.getLoc().randomMove();
+			if (a.foundNewTask()) {
+				a.executeTask();
+				initComms();
+				a.getStrategy().setState(RANDOMCOMMS);
+			} else if (isBroadcastReceived()) {
+				setBroadcastReceived(false);
+				a.getStrategy().setState(GOTO);
+			}
+		}, this.agent);
+	}
+
+	@Override
+	public abstract TaskToDo getTaskToDo();
+
+	@Override
+	public abstract List<Agent> getCommunicants();
+
+	/**
+	 * When an agent is is Random-Comms state, this method is used to "broadcast"
+	 * the location of the last-executed task to other agents in range.
+	 * @param actionIfNotPossible 
+	 */
+	public void sendMessageIfPossible(Runnable actionIfNotPossible) {
+		if (commTime > 0) {
+			agent.getmPcs().firePropertyChange("send_message", null, commTaskLoc);
+			commTime--;
+		} else {
+			actionIfNotPossible.run();
+		}
+	}
+	
+    /**
+     * @param receivedLoc
+     */
+    public void receiveMessage(Location receivedLoc) {
+        Task t = Task.getTask(receivedLoc);
+        if (t != null && t.isComplete()) {
+            agent.getExecutedTasks().add(t);
+        }
+
+        if (!agent.getExecutedTasks().contains(t)) {
+            agent.setProperty(LOC_TO_GOTO, receivedLoc);
+            setBroadcastReceived(true);
+        }
+    }
+
+	/**
+	 * Initialize communications
+	 */
+	public void initComms() {
+		Task task = Task.getTask(agent.getLoc());
+		if (!task.isComplete()) { // if task isn'task compete
+			// Important - since loc will be changed later, commTaskLoc must
+			// be a clone of loc, not a reference to it
+			commTaskLoc = agent.getLoc().clone();
+			commTime = (Integer) agent.getProperty(COMM_TIME); // Initialize count-down timer to exit comms mode
+		}
+	}
+
+	/**
+	 * Sets the broadcastReceived flag.
+	 * 
+	 * @param broadcastReceived
+	 *            value to set the flag to
+	 */
+	public void setBroadcastReceived(boolean broadcastReceived) {
+		this.broadcastReceived = broadcastReceived;
+	}
+
+	/**
+	 * Checks if a broadcast has been received from another agent.
+	 * 
+	 * @return true if a broadcast has been received, false otherwise
+	 */
+	public boolean isBroadcastReceived() {
+		return broadcastReceived;
+	}
+
+}
