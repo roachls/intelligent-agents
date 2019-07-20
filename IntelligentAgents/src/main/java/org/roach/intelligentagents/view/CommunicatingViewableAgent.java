@@ -41,7 +41,7 @@ public class CommunicatingViewableAgent extends ViewableAgent {
 			 * Draw a big red circle indicating the broadcast range of the agent.
 			 */
 			g.setColor(Color.red);
-			int commDist = ((Integer)agent.getProperty(CommunicatingAgentStrategy.COMM_DIST)).intValue();
+			int commDist = (Integer) agent.getProperty(CommunicatingAgentStrategy.COMM_DIST);
 			g.drawOval(toGraphicLoc(agent.getLoc().getX() - commDist), toGraphicLoc(agent.getLoc().getY() - commDist),
 					toGraphicSize(commDist * 2), toGraphicSize(commDist * 2));
 		} else if (strategy.getState().equals(strategy.GOTO)) {

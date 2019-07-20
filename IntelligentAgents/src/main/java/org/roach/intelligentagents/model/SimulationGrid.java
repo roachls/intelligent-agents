@@ -44,7 +44,7 @@ public class SimulationGrid implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		String message = evt.getPropertyName();
 		Agent sender = (Agent)evt.getSource();
-		if (message.equals("new_agent")) {
+		if (message.equals("new_agent") || message.equals("update_grid")) {
 	        addAgentToCell(sender);
 	        addAgentToXref(sender);
 		} else if (message.equals("send_message")) {
@@ -56,9 +56,6 @@ public class SimulationGrid implements PropertyChangeListener {
 		} else if (message.equals("prepare_to_act")) {
 			removeAgentFromCell(sender);
 			removeAgentFromXref(sender);
-		} else if (message.equals("update_grid")) {
-	        addAgentToCell(sender);
-	        addAgentToXref(sender);
 		} else {
 			System.err.println("Unsupported message type: " + evt.getPropertyName());
 		}
@@ -119,7 +116,7 @@ public class SimulationGrid implements PropertyChangeListener {
             final int distance) {
         int commDistSq = distance * distance;
         // Initialize the list to return
-        Set<Agent> list = new HashSet<Agent>();
+        Set<Agent> list = new HashSet<>();
         // Calculate the rows to check
         Integer startCheckX = (loc.getX() > distance)
                 ? (loc.getX() - distance) : 0;
@@ -133,12 +130,9 @@ public class SimulationGrid implements PropertyChangeListener {
                 for (Integer Y : xRef.get(X)) {
                     // For each Y-coordinate on the row
                     Location checkLoc = new Location(X, Y);
-                    if (!loc.equals(checkLoc)) {
-                        // Make sure loc != checkLoc (i.e., agent doesn't
-                        // communicate with itself)
-                        if (loc.isInCircle(checkLoc, commDistSq)) // If the location is within broadcast range, add
-                        // all agents in that location to the list
-                            list.addAll(grid[checkLoc.getX()][checkLoc.getY()]);
+                    // if agents are in different locations, and in range
+                    if (!loc.equals(checkLoc) && loc.isInCircle(checkLoc, commDistSq)) {
+                    	list.addAll(grid[checkLoc.getX()][checkLoc.getY()]);
                     }
                 }
             }

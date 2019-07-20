@@ -2,6 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>IntelligentAgents</groupId>
   <artifactId>IntelligentAgents</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
   <properties>
   	<maven.compiler.source>10</maven.compiler.source>
   	<maven.compiler.target>10</maven.compiler.target>
@@ -11,9 +12,8 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-        	<source>11</source>
-        	<target>11</target>
-        	<release>11</release>
+        	<source>8</source>
+        	<target>8</target>
         </configuration>
       </plugin>
     </plugins>
@@ -37,9 +37,4 @@
   		<scope>test</scope>
   	</dependency>
   </dependencies>
-  <parent>
-  	<groupId>org.roach</groupId>
-  	<artifactId>aggregator</artifactId>
-  	<version>0.0.1-SNAPSHOT</version>
-  </parent>
 </project>

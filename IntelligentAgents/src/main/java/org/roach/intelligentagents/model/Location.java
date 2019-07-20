@@ -41,8 +41,8 @@ public final class Location implements Cloneable {
      * @param inputY y-coordinate
      */
     public Location(final Integer inputX, final Integer inputY) {
-        x = (int) inputX;
-        y = (int) inputY;
+        x = inputX;
+        y = inputY;
     }
     /**
      * Converts a Location to a java.awt.Dimension.
@@ -53,52 +53,53 @@ public final class Location implements Cloneable {
     }
     /**
      * Get the manhattan distance from the location to the rhs location.
-     * @param rhs The Location to be compared
+     * @param that The Location to be compared
      * @return Manhattan distance (x-distance plus y-distance)
      */
-    public int getManDist(final Location rhs) {
+    public int getManDist(final Location that) {
         // Return |x - rhs.x| + |y - rhs.y|
-        return Math.abs(x - rhs.x) + Math.abs(y - rhs.y);
+        return Math.abs(this.x - that.x) + Math.abs(this.y - that.y);
     }
     /**
      * Calculates whether this Location and rhs are within a given distance of
      * each other.
-     * @param rhs The Location to be compared
+     * @param that The Location to be compared
      * @param radius The radius of the circle to check
      * @return True if the distance from this to rhs is less than or equal to
      * radius, false otherwise
      */
-    public boolean isInCircle(final Location rhs, final int radius) {
+    public boolean isInCircle(final Location that, final int radius) {
         // We can avoid floating-point math by using the circular formula
         //     (rhs.x - x)^2 + (rhs.y - y)^2 = radius^2,
         // and so any for any point within the circle it will be true that
         //     (rhs.y - y)^2 <= radius^2 - (rhs.x - x)^2
-        return ((rhs.y - y) * (rhs.y - y) <= radius * radius
-                - (rhs.x - x) * (rhs.x - x));
+        float dx = (float) this.x - that.x;
+        float dy = (float) this.y - that.y;
+        return dx * dx + dy * dy <= radius * radius;
     }
     /**
      * Gets the x-component of the manhattan distance from this to rhs.
-     * @param rhs The Location to be compared
+     * @param that The Location to be compared
      * @return An int representing the distance
      */
-    public int getXDistance(final Location rhs) {
+    public int getXDistance(final Location that) {
         // Note: we don't take the absolute value because this distance will
         // be used by an agent to determine which direction to go.  A negative
         // distance indicates that this Location is north of rhs; positive
         // indicates that this is south of rhs.
-        return x - rhs.x;
+        return x - that.x;
     }
     /**
      * Gets the y-component of the manhattan distance from this to rhs.
-     * @param rhs The Location to be compared
+     * @param that The Location to be compared
      * @return An int representing the distance
      */
-    public int getYDistance(final Location rhs) {
+    public int getYDistance(final Location that) {
         // Note: we don't take the absolute value because this distance will
         // be used by an agent to determine which direction to go.  A negative
         // distance indicates that this Location is east of rhs; positive
         // indicates that this is west of rhs.
-        return y - rhs.y;
+        return y - that.y;
     }
     /**
      * Moves the Location one square west.
@@ -124,39 +125,39 @@ public final class Location implements Cloneable {
     public void moveSouth() {
         y++;
     }
-    
+
     /**
-     * 
+     *
      */
     public void moveNorthWest() {
     	moveNorth();
     	moveWest();
     }
-    
+
     /**
-     * 
+     *
      */
     public void moveSouthWest() {
     	moveSouth();
     	moveWest();
     }
-    
+
     /**
-     * 
+     *
      */
     public void moveNorthEast() {
     	moveNorth();
     	moveEast();
     }
-    
+
     /**
-     * 
+     *
      */
     public void moveSouthEast() {
     	moveSouth();
     	moveEast();
     }
-    
+
     /**
      * Determines if this Location is equal to the Location o.
      * @param o The Location object to be compared
@@ -167,7 +168,7 @@ public final class Location implements Cloneable {
         if (!(o instanceof Location)) {
             return false;
         }
-        if ((Location) o == this) {
+        if (o == this) {
             return true;
         }
         return x == ((Location) o).x && y == ((Location) o).y;
@@ -290,43 +291,30 @@ public final class Location implements Cloneable {
 	public static Location getRandomLocation() {
 		// Randomly pick a position on the grid for the agent to start at
 		Random rand = new Random();
-		int x = (rand.nextInt(100) < 50) ? 0 : gridSize - 1;
-		int y = (rand.nextInt(100) < 50) ? 0 : gridSize - 1;
+		int x = rand.nextBoolean() ? 0 : (gridSize - 1);
+		int y = rand.nextBoolean() ? 0 : (gridSize - 1);
 		return new Location(x, y);
 	}
 	
 	/**
 	 * When the agent is in Goto state, this method moves it towards the task being
 	 * sought.
-	 * @param other Location to move towards
+	 * @param target Location to move towards
 	 */
-	void moveTowards(Location other) {
-		// Calculate how far the agent is from the task along the X and Y axes
-		int diffx = getXDistance(other);
-		int diffy = getYDistance(other);
-		
-		// Move one step along whichever axis the agent is further from the task
-		if (diffx > 0) {
-			if (diffy > 0)
-				moveNorthWest();
-			else if (diffy < 0)
-				moveSouthWest();
-			else
-				moveWest();
-		} else if (diffx < 0) {
-			if (diffy > 0)
-				moveNorthEast();
-			else if (diffy < 0)
-				moveSouthEast();
-			else
-				moveEast();
-		} else {
-			// diffx == 0
-			if (diffy > 0)
-				moveNorth();
-			else if (diffy < 0)
-				moveSouth();
-		}
+	void moveTowards(Location target) {
+
+	    // Together, these two conditions form the eight movement directions
+	    if(this.x < target.x) {
+	        moveEast();
+        } else if (this.x > target.x) {
+	        moveWest();
+        }
+
+        if(this.y < target.y) {
+	        moveSouth();
+        } else if (this.y > target.y) {
+	        moveNorth();
+        }
 	}
 
 }

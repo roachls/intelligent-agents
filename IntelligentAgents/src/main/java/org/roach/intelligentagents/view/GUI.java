@@ -114,7 +114,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 
 		// Make the text-box with the size of the field and number of agents
 		JTextField jtfAgents = new JTextField("Size: " + agentapp.getRoomSize() + " Agents: " + agentapp.getNumAgents()
-				+ " Tasks: " + agentapp.getNumTasks() + " Type: " + agentapp.getStrategyType());
+				+ " Tasks: " + agentapp.getNumTasks() + " Type: " + agentapp.getStrategyType().getSimpleName());
 		jtfAgents.setEditable(false);
 		stats.add(jtfAgents);
 

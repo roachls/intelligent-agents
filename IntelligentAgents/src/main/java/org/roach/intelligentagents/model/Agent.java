@@ -23,7 +23,7 @@ import org.roach.intelligentagents.model.strategy.AgentStrategy;
 /**
  * An Agent is the SuperClass for all agents. It contains methods and properties
  * used by all agents, such as state representation, randomMove, doAction, etc.
- * 
+ *
  * @author L. Stephen Roach
  * @version %I%, %G%
  */
@@ -37,7 +37,7 @@ public class Agent implements ISimItem {
 
 	/**
 	 * Get the list of all agents
-	 * 
+	 *
 	 * @return Agents
 	 */
 	public static List<Agent> getAgents() {
@@ -46,23 +46,23 @@ public class Agent implements ISimItem {
 
 	/**
 	 * Initialize/reset/create all agents and grids
-	 * 
+	 *
 	 * @param strategyType
 	 * @param numAgents
 	 *            Number of agents to create
 	 * @param simGrid
-	 * @param options 
+	 * @param options
 	 */
 	public static void initAgents(final Class<? extends AgentStrategy> strategyType, final int numAgents, PropertyChangeListener simGrid, AgentAppOpts options) {
-		agents = new ArrayList<Agent>();
+		agents = new ArrayList<>();
 
 		for (int i = 0; i < numAgents; i++) {
-			Agent a = null;
-			AgentStrategy strategy = null;
+			Agent a;
+			AgentStrategy strategy;
 			try {
 				a = new Agent();
-				Constructor<? extends AgentStrategy> strategyConst = (Constructor<? extends AgentStrategy>)strategyType.getConstructor(Agent.class);
-				strategy = (AgentStrategy) strategyConst.newInstance(a);
+				Constructor<? extends AgentStrategy> strategyConst = strategyType.getConstructor(Agent.class);
+				strategy = strategyConst.newInstance(a);
 				strategy.setOptions(options);
 				a.setStrategy(strategy);
 				a.addPropertyChangeListener(simGrid);
@@ -116,7 +116,7 @@ public class Agent implements ISimItem {
 	}
 
 	/**
-	 * Setter for 
+	 * Setter for
 	 * @param strategy the strategy to set
 	 */
 	public void setStrategy(AgentStrategy strategy) {
@@ -132,7 +132,7 @@ public class Agent implements ISimItem {
 
 	/**
 	 * Determine if this Agent is equal to the Agent o.
-	 * 
+	 *
 	 * @param o
 	 *            The Agent to be compared
 	 * @return True if the Agent IDs are the same
@@ -157,7 +157,7 @@ public class Agent implements ISimItem {
 	 * Checks whether the agent has found a new task. A new task is a task that a)
 	 * exists, b) is not complete, and c) has not been executed before by this
 	 * agent.
-	 * 
+	 *
 	 * @return True if new task found
 	 */
 	public boolean foundNewTask() {
@@ -165,7 +165,7 @@ public class Agent implements ISimItem {
 	}
 
 	/**
-	 * Getter for 
+	 * Getter for
 	 * @return the executedTasks
 	 */
 	public Set<Task> getExecutedTasks() {
@@ -173,7 +173,7 @@ public class Agent implements ISimItem {
 	}
 
 	/**
-	 * Getter for 
+	 * Getter for
 	 * @return the id
 	 */
 	public int getId() {
@@ -182,7 +182,7 @@ public class Agent implements ISimItem {
 
 	/**
 	 * Get the location of the agent within the sim-space.
-	 * 
+	 *
 	 * @return loc
 	 */
 	public Location getLoc() {
@@ -191,7 +191,7 @@ public class Agent implements ISimItem {
 
 	/**
 	 * Getter for
-	 * 
+	 *
 	 * @return the mPcs
 	 */
 	public PropertyChangeSupport getmPcs() {
@@ -200,7 +200,7 @@ public class Agent implements ISimItem {
 
 	/**
 	 * Getter for
-	 * 
+	 *
 	 * @return the strategy
 	 */
 	public AgentStrategy getStrategy() {
@@ -209,7 +209,7 @@ public class Agent implements ISimItem {
 
 	/**
 	 * Checks if the agent has already executed a task.
-	 * 
+	 *
 	 * @param t
 	 *            The task to check
 	 * @return True if already-executed list contains the task, False otherwise
@@ -220,7 +220,7 @@ public class Agent implements ISimItem {
 
 	/**
 	 * Gets the hash code of this agent.
-	 * 
+	 *
 	 * @return hash code
 	 */
 	@Override
@@ -237,14 +237,14 @@ public class Agent implements ISimItem {
 
 	/**
 	 * Gets the String representation of this agent.
-	 * 
+	 *
 	 * @return String representation including type of agent, location, and index
 	 */
 	@Override
 	public String toString() {
 		return this.getClass().toString() + ", location: " + loc;
 	}
-	
+
 	/**
 	 * @param key
 	 * @param value
@@ -252,7 +252,7 @@ public class Agent implements ISimItem {
 	public void setProperty(String key, Object value) {
 		properties.put(key, value);
 	}
-	
+
 	/**
 	 * @param key
 	 * @return the value of the given property
@@ -268,5 +268,5 @@ public class Agent implements ISimItem {
 	public void moveTowards(Location location) {
 		loc.moveTowards(location);
 	}
-	
+
 }

@@ -43,11 +43,7 @@ public class State {
     }
 
 	/** Initial state */
-	public final static State NOT_SET = new State(Color.black, new StateAlgorithm() {
-		@Override
-		public void go(Agent agent) {
-		}
-	}, null);
+	public final static State NOT_SET = new State(Color.black, incoming -> {}, null);
 
     /**
      * Get the color for this state.
