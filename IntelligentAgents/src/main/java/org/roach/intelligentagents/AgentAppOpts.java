@@ -2,7 +2,6 @@ package org.roach.intelligentagents;
 
 import org.roach.intelligentagents.model.strategy.AgentStrategy;
 
-import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
 
@@ -96,17 +95,4 @@ public class AgentAppOpts {
 	 */
 	@Parameter(names= {"--numLevels"})
 	public int numLevels = 3;
-}
-
-class ClassConverter implements IStringConverter<Class<?>> {
-	@Override
-	public Class<?> convert(String value) {
-		try {
-			return Class.forName(value);
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
 }

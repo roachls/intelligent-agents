@@ -27,7 +27,7 @@ import org.roach.intelligentagents.model.strategy.AgentStrategy;
  * @author L. Stephen Roach
  * @version %I%, %G%
  */
-public class Agent implements ISimItem {
+public class Agent {
 	/** The list of all agents */
 	private static List<Agent> agents;
 	/** The "communications range" in grid-squares for each agent. */
@@ -74,18 +74,9 @@ public class Agent implements ISimItem {
 			} catch (IllegalAccessException ex) {
 				System.err.println("Illegal access exception.");
 				System.exit(3);
-			} catch (NoSuchMethodException e) {
+			} catch (NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
 				e.printStackTrace();
 				System.exit(4);
-			} catch (SecurityException e) {
-				e.printStackTrace();
-				System.exit(5);
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-				System.exit(6);
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-				System.exit(7);
 			}
 		}
 	}

@@ -18,7 +18,7 @@ import java.util.Random;
  * The Task class represents an executable task within the grid-space.
  * @author L. Stephen Roach
  */
-public final class Task implements ISimItem {
+public final class Task {
 // <editor-fold defaultstate="collapsed" desc="Static variables">
     /**
      * A task has this percentage probability of being bumped "up" in
