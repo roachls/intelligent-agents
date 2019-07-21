@@ -24,7 +24,10 @@ import org.roach.intelligentagents.model.TaskToDo;
  * @author L. Stephen Roach
  */
 public class MilitaryStrategy extends CommunicatingAgentStrategy {
-
+	private int numSubordinates = 2;
+	private int numLevels = 3;
+	private List<Agent> subordinates = new ArrayList<>();
+	
 	/**
 	 * @param options
 	 * @see org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy#setOptions(org.roach.intelligentagents.AgentAppOpts)
@@ -32,24 +35,15 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
 	@Override
 	public void setOptions(AgentAppOpts options) {
 		super.setOptions(options);
-    	agent.setProperty(MilitaryStrategy.NUM_SUBORDINATES, options.numSubordinates);
-    	agent.setProperty(MilitaryStrategy.NUM_LEVELS, options.numLevels);
+		this.numSubordinates = options.numSubordinates;
+		this.numLevels = options.numLevels;
         // For all agents with ID not 0 or 1, they should have two subordinates.
         // I.e., agent 0 has subordinate agent 1. Agent 1 has subordinates 2 and
         // 3. Agent 2 has subordinates 4 and 5, etc.
         if (agent.getId() > 0) {
-            ((MilitaryStrategy)Agent.getAgents().get(agent.getId()/(Integer)agent.getProperty(NUM_SUBORDINATES)).getStrategy()).addSubordinate(agent);
+            ((MilitaryStrategy)Agent.getAgents().get(agent.getId()/numSubordinates).getStrategy()).addSubordinate(agent);
         }
 	}
-
-	/** The list of this agent's subordinates */
-	private static final String SUBORDINATES = "subordinates";
-    /** Number of subordinates an Agent can have */
-	public static final String NUM_SUBORDINATES = "NUM_SUBORDINATES";
-	/**
-	 * Number of levels deep to notify subordinates
-	 */
-	public static final String NUM_LEVELS = "NUM_LEVELS";
 
     /**
      * Constructor. Adds this agent as a subordinate to the "boss" agent.
@@ -57,8 +51,7 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
      */
     public MilitaryStrategy(Agent agent) {
     	super(agent);
-    	agent.setProperty(SUBORDINATES, new ArrayList<Agent>());
-        
+    	
         /*
          * The actions this agent should do in the RANDOM state.
          * <ol>
@@ -68,7 +61,6 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
          * </ol>
          */
         RANDOM.setAlgorithm(a -> {
-        	int numLevels = (Integer)a.getProperty(NUM_LEVELS);
             if (isBroadcastReceived()) {
                 setBroadcastReceived(false);
                 state = GOTO;
@@ -82,11 +74,9 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
         });
         
         GOTO.setAlgorithm(a -> {
-        	int numLevels = (Integer)a.getProperty(NUM_LEVELS);
             getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
             if (isBroadcastReceived()) {
                 setBroadcastReceived(false);
-                Location locToGoto = (Location)a.getProperty(LOC_TO_GOTO);
                 notifySubordinates(locToGoto, numLevels);
             } else if (reachedTask()) {
                 a.executeTask();
@@ -103,9 +93,8 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
      * Adds a subordinate for this agent.
      * @param sub The AGent to add as subordinate
      */
-    @SuppressWarnings("unchecked")
 	public void addSubordinate(Agent sub) {
-        ((ArrayList<Agent>)agent.getProperty(SUBORDINATES)).add(sub);
+    	subordinates.add(sub);
     }
 
     /** Broadcasts any received message to subordinates (if any). This is a
@@ -119,10 +108,8 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
         if (level < 0) {
             return;
         }
-        @SuppressWarnings("unchecked")
-		ArrayList<Agent> subordinates = (ArrayList<Agent>)agent.getProperty(SUBORDINATES);
         for (Agent m : subordinates) {
-            if (m.getLoc().isInCircle(l, (Integer)agent.getProperty(COMM_DIST))) {
+            if (m.getLoc().isInCircle(l, commDist)) {
                 ((MilitaryStrategy)m.getStrategy()).receiveMessage(l);
                 ((MilitaryStrategy)m.getStrategy()).notifySubordinates(l, level - 1);
             }
@@ -145,7 +132,7 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
      */
     @Override
     public boolean reachedTask() {
-        return agent.getLoc().equals(agent.getProperty(LOC_TO_GOTO));
+        return agent.getLoc().equals(locToGoto);
     }
 
     /**
@@ -154,15 +141,14 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
      */
     @Override
     public Optional<TaskToDo> getTaskToDo() {
-        return Optional.of(new TaskToDo((Location)agent.getProperty(LOC_TO_GOTO)));
+        return Optional.of(new TaskToDo(locToGoto));
     }
     
 	/**
 	 * @return subordinates
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<Agent> getCommunicants() {
-		return (List<Agent>)agent.getProperty(SUBORDINATES);
+		return subordinates;
 	}
 }

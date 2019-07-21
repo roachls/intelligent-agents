@@ -11,10 +11,8 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.roach.intelligentagents.AgentAppOpts;
@@ -30,8 +28,6 @@ import org.roach.intelligentagents.model.strategy.AgentStrategy;
 public class Agent implements ISimItem {
 	/** The list of all agents */
 	private static List<Agent> agents;
-	/** The "communications range" in grid-squares for each agent. */
-	private Map<String, Object> properties = new HashMap<>();
 
 	private static int id_root = 0;
 
@@ -245,22 +241,6 @@ public class Agent implements ISimItem {
 		return this.getClass().toString() + ", location: " + loc;
 	}
 	
-	/**
-	 * @param key
-	 * @param value
-	 */
-	public void setProperty(String key, Object value) {
-		properties.put(key, value);
-	}
-	
-	/**
-	 * @param key
-	 * @return the value of the given property
-	 */
-	public Object getProperty(String key) {
-		return properties.get(key);
-	}
-
 	/**
 	 * Moves the agent towards the given location
 	 * @param location

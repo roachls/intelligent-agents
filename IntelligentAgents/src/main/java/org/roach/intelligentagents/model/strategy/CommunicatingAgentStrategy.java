@@ -20,12 +20,18 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	/**
 	 * property representing communications distance for all agents
 	 */
-	public static final String COMM_DIST = "COMM_DIST";
-
+	protected int commDist = 12;
+	/** The time remaining to leave communications on. */
+	protected int commTime = 3;
 	/**
-	 * property representing default communications time
+	 * Getter for 
+	 * @return the commDist
 	 */
-	public static final String COMM_TIME = "COMM_TIME";
+	public int getCommDist() {
+		return commDist;
+	}
+
+	protected Location locToGoto;
 
 	/**
 	 * @param options
@@ -33,8 +39,8 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	 */
 	@Override
 	public void setOptions(AgentAppOpts options) {
-    	agent.setProperty(CommunicatingAgentStrategy.COMM_DIST, options.commDist);
-    	agent.setProperty(CommunicatingAgentStrategy.COMM_TIME, options.commTime);
+		this.commDist = options.commDist;
+		this.commTime = options.commTime;
 	}
 
 	/**
@@ -43,8 +49,6 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	 */
 	protected Location commTaskLoc;
 
-	/** The time remaining to leave communications on. */
-	protected int commTime;
 	/**
 	 * 
 	 */
@@ -74,19 +78,18 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 
 		/** The Goto state. */
 		GOTO = new State(Color.red, a -> {
-			if (a.getStrategy().getTaskToDo() == null) {
-				setState(RANDOM);
-			} else {
+			a.getStrategy().getTaskToDo().ifPresentOrElse((t) -> {
 				if (isBroadcastReceived()) {
 					setBroadcastReceived(false);
 				}
-				getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
+				getTaskToDo().ifPresent((task) -> a.moveTowards(task.getLocation()));
 				if (a.getStrategy().reachedTask()) {
 					if (!a.hasDoneAlready(Task.getTask(a.getLoc())))
 						a.executeTask(); // execute it and switch back to Random
 					setState(RANDOM);
 				}
-			}
+			}, () -> setState(RANDOM)); 
+			
 		}, this.agent);
 
 		// /** The random-comms state */
@@ -128,13 +131,14 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
      * @param receivedLoc
      */
     public void receiveMessage(Location receivedLoc) {
+    	if (receivedLoc == null) return;
         Task t = Task.getTask(receivedLoc);
         if (t != null && t.isComplete()) {
             agent.getExecutedTasks().add(t);
         }
 
         if (!agent.getExecutedTasks().contains(t)) {
-            agent.setProperty(LOC_TO_GOTO, receivedLoc);
+        	this.locToGoto = receivedLoc;
             setBroadcastReceived(true);
         }
     }
@@ -148,7 +152,6 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 			// Important - since loc will be changed later, commTaskLoc must
 			// be a clone of loc, not a reference to it
 			commTaskLoc = agent.getLoc().clone();
-			commTime = (Integer) agent.getProperty(COMM_TIME); // Initialize count-down timer to exit comms mode
 		}
 	}
 

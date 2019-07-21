@@ -48,7 +48,7 @@ public class SimulationGrid implements PropertyChangeListener {
 	        addAgentToCell(sender);
 	        addAgentToXref(sender);
 		} else if (message.equals("send_message")) {
-		    Set<Agent> list = getNearbyAgents(sender.getLoc(), (Integer)sender.getProperty(CommunicatingAgentStrategy.COMM_DIST));
+		    Set<Agent> list = getNearbyAgents(sender.getLoc(), ((CommunicatingAgentStrategy)sender.getStrategy()).getCommDist());
 		    for (Agent receiver : list) { // For each agent in the list
 		        // Send the agent the message
 		        ((CommunicatingAgentStrategy)((Agent) receiver).getStrategy()).receiveMessage((Location)evt.getNewValue());

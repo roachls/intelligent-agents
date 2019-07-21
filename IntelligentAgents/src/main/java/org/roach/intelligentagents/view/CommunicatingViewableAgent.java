@@ -17,21 +17,20 @@ public class CommunicatingViewableAgent extends ViewableAgent {
 	 */
 	private static final long serialVersionUID = 1L;
 	private CommunicatingAgentStrategy strategy = null;
-	
+
 	/**
 	 * @param a
 	 */
 	public CommunicatingViewableAgent(Agent a) {
 		super(a);
 		if (a.getStrategy() instanceof CommunicatingAgentStrategy)
-			this.strategy = (CommunicatingAgentStrategy)a.getStrategy();
+			this.strategy = (CommunicatingAgentStrategy) a.getStrategy();
 	}
 
 	/**
 	 * Draws optional "helper graphics" to the screen.
 	 * 
-	 * @param g
-	 *            The graphics context in which to draw
+	 * @param g The graphics context in which to draw
 	 */
 	@Override
 	public void drawHelperGraphics(Graphics g) {
@@ -40,9 +39,12 @@ public class CommunicatingViewableAgent extends ViewableAgent {
 			 * Draw a big red circle indicating the broadcast range of the agent.
 			 */
 			g.setColor(Color.red);
-			int commDist = ((Integer)agent.getProperty(CommunicatingAgentStrategy.COMM_DIST)).intValue();
-			g.drawOval(toGraphicLoc(agent.getLoc().getX() - commDist), toGraphicLoc(agent.getLoc().getY() - commDist),
-					toGraphicSize(commDist * 2), toGraphicSize(commDist * 2));
+			if (agent.getStrategy() instanceof CommunicatingAgentStrategy) {
+				int commDist = ((CommunicatingAgentStrategy) agent.getStrategy()).getCommDist();
+				g.drawOval(toGraphicLoc(agent.getLoc().getX() - commDist),
+						toGraphicLoc(agent.getLoc().getY() - commDist), toGraphicSize(commDist * 2),
+						toGraphicSize(commDist * 2));
+			}
 		} else if (strategy.getState().equals(strategy.GOTO)) {
 			/* Draw a red line from the agent to the destination task */
 			strategy.getTaskToDo().ifPresent((t) -> {

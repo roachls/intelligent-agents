@@ -25,20 +25,15 @@ import org.roach.intelligentagents.model.TaskToDo;
  * @author L. Stephen Roach
  */
 public class PrioritizingStrategy extends CommunicatingAgentStrategy {
-    /**
-     * The priority queue of tasks an agent has received. An agent will remain in
-     * GOTO state until this queue is empty.
-     */
-	protected static final String TASK_QUEUE = "taskQueue";
-	protected static final String TASK_TO_DO = "taskToDo";
+	protected final PriorityQueue<TaskToDo> taskQueue = new PriorityQueue<TaskToDo>();
+	protected TaskToDo taskToDo;
 	
 	/**
 	 * @param agent
 	 */
 	public PrioritizingStrategy(Agent agent) {
 		super(agent);
-		agent.setProperty(TASK_TO_DO, Optional.empty());
-		agent.setProperty(TASK_QUEUE, new PriorityQueue<TaskToDo>());
+		taskToDo = null;
 		state = RANDOM;
 	}
 
@@ -48,19 +43,18 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
      * sets the count-down timer.
      * @param receivedLoc Location of the task
      */
-    @SuppressWarnings("unchecked")
 	@Override
 	public void receiveMessage(Location receivedLoc) {
+		if (receivedLoc == null) return;
         Task t = Task.getTask(receivedLoc);
         if (!agent.hasDoneAlready(t)) {
-			PriorityQueue<TaskToDo> taskQueue = (PriorityQueue<TaskToDo>)agent.getProperty(TASK_QUEUE);
             setBroadcastReceived(true);
             // Add the state to the priority queue (not necessarily on top)
             taskQueue.add(new TaskToDo(receivedLoc));
             boolean hasDoneAlready = true;
             while (!taskQueue.isEmpty() && hasDoneAlready) {
-                agent.setProperty(TASK_TO_DO, Optional.of(taskQueue.peek()));
-                if (agent.hasDoneAlready(Task.getTask(((Optional<TaskToDo>)agent.getProperty(TASK_TO_DO)).get().getLocation()))) {
+            	this.taskToDo = taskQueue.peek();
+                if (agent.hasDoneAlready(Task.getTask((taskToDo).getLocation()))) {
                     taskQueue.poll();
                 } else {
                     hasDoneAlready = false;
@@ -73,18 +67,16 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
      * Gets the Task at the top of the task queue.
      * @return A TaskToDo, if any, null otherwise.
      */
-    @SuppressWarnings("unchecked")
 	@Override
     public Optional<TaskToDo> getTaskToDo() {
-        return (Optional<TaskToDo>)agent.getProperty(TASK_TO_DO);
+        return taskToDo == null ? Optional.empty() : Optional.of(taskToDo);
     }
     
     /**
      * Executes the task at the current location.
      */
-    @SuppressWarnings("unchecked")
 	public void executeTask() {
-        ((PriorityQueue<TaskToDo>)agent.getProperty(TASK_QUEUE)).poll(); // remove top TaskToDo from queue
+        taskQueue.poll(); // remove top TaskToDo from queue
     }
 
 	@Override

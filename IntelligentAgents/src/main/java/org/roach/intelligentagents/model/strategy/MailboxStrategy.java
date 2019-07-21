@@ -17,9 +17,8 @@ import org.roach.intelligentagents.model.TaskToDo;
 public class MailboxStrategy extends CommunicatingAgentStrategy {
 	/** The shared mailbox associated with all Mailbox agents. */
 	static Mailbox mailbox = new Mailbox();
-	/** The current task that the agent is working on if in GOTO state. */
-	private static final String TASK_TO_DO = "taskToDo";
-
+	private Optional<TaskToDo> taskToDo;
+	
 	/**
 	 * @param agent
 	 * 
@@ -35,7 +34,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 					search();
 				} else {
 					if (near(msg.location())) {
-						a.setProperty(TASK_TO_DO, Optional.of(new TaskToDo(msg.location().clone())));
+						taskToDo = Optional.of(new TaskToDo(msg.location().clone()));
 						state = GOTO;
 					} else {
 						mailbox.postMessage(l);
@@ -56,7 +55,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 				if (!t.isComplete()) {
 					mailbox.postMessage(a.getLoc().clone());
 				}
-				a.setProperty(TASK_TO_DO, Optional.empty());
+				taskToDo = Optional.empty();
 				state = RANDOM;
 			} else if (a.foundNewTask()) {
 				a.executeTask();
@@ -68,10 +67,9 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 		state = RANDOM;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Optional<TaskToDo> getTaskToDo() {
-		return (Optional<TaskToDo>) agent.getProperty(TASK_TO_DO);
+		return taskToDo;
 	}
 
 	/**
@@ -99,7 +97,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 	 */
 	private boolean near(Location other) {
 		int dist = agent.getLoc().getManDist(other);
-		return (dist <= (Integer) agent.getProperty(COMM_DIST));
+		return (dist <= commDist);
 	}
 
 	/**
