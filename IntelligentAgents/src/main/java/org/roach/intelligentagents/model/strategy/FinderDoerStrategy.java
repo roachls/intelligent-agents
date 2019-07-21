@@ -1,6 +1,7 @@
 package org.roach.intelligentagents.model.strategy;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Task;
@@ -25,6 +26,9 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 	public FinderDoerStrategy(Agent agent) {
 		super(agent);
 		agent.setProperty(IS_FINDER, Boolean.valueOf(Math.random() > 0.7));
+		agent.setProperty(TIME_SINCE_LAST_BROADCAST, Integer.valueOf(0));
+		agent.setProperty(TIME_SINCE_LAST_FOUND, Integer.valueOf(0));
+		
 		RANDOM.setAlgorithm(a -> {
 			a.getLoc().randomMove();
 			if ((Boolean) a.getProperty(IS_FINDER)) {
@@ -76,7 +80,7 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 				if (isBroadcastReceived()) {
 					setBroadcastReceived(false);
 				}
-				a.moveTowards(getTaskToDo().getLocation());
+				getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
 				if (reachedTask()) {
 					if (!agent.hasDoneAlready(Task.getTask(agent.getLoc()))) {
 						agent.executeTask(); // execute it and switch back to Random
@@ -90,8 +94,8 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 	}
 
 	@Override
-	public TaskToDo getTaskToDo() {
-		return null;
+	public Optional<TaskToDo> getTaskToDo() {
+		return Optional.empty();
 	}
 
 	@Override

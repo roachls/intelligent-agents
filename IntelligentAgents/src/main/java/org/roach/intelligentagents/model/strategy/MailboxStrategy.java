@@ -3,6 +3,7 @@ package org.roach.intelligentagents.model.strategy;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
@@ -34,7 +35,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 					search();
 				} else {
 					if (near(msg.location())) {
-						a.setProperty(TASK_TO_DO, new TaskToDo(msg.location().clone()));
+						a.setProperty(TASK_TO_DO, Optional.of(new TaskToDo(msg.location().clone())));
 						state = GOTO;
 					} else {
 						mailbox.postMessage(l);
@@ -48,14 +49,14 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 		});
 
 		GOTO.setAlgorithm(a -> {
-			a.moveTowards(getTaskToDo().getLocation());
+			getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
 			if (reachedTask()) {
 				a.executeTask();
 				Task t = Task.getTask(a.getLoc());
 				if (!t.isComplete()) {
 					mailbox.postMessage(a.getLoc().clone());
 				}
-				a.setProperty(TASK_TO_DO, null);
+				a.setProperty(TASK_TO_DO, Optional.empty());
 				state = RANDOM;
 			} else if (a.foundNewTask()) {
 				a.executeTask();
@@ -67,9 +68,10 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 		state = RANDOM;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public TaskToDo getTaskToDo() {
-		return (TaskToDo) agent.getProperty(TASK_TO_DO);
+	public Optional<TaskToDo> getTaskToDo() {
+		return (Optional<TaskToDo>) agent.getProperty(TASK_TO_DO);
 	}
 
 	/**

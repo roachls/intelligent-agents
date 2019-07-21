@@ -2,6 +2,7 @@ package org.roach.intelligentagents.model.strategy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
@@ -72,7 +73,7 @@ public class NeighborhoodStrategy extends CommunicatingAgentStrategy {
 		 * </ol>
 		 */
 		GOTO.setAlgorithm(a -> {
-			a.moveTowards(getTaskToDo().getLocation());
+			getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
 			if (isBroadcastReceived()) {
 				setBroadcastReceived(false);
 				notifyNeighbors((Location)a.getProperty(LOC_TO_GOTO));
@@ -94,8 +95,8 @@ public class NeighborhoodStrategy extends CommunicatingAgentStrategy {
 	 * @return the current task to do
 	 */
 	@Override
-	public TaskToDo getTaskToDo() {
-		return new TaskToDo((Location)agent.getProperty(LOC_TO_GOTO));
+	public Optional<TaskToDo> getTaskToDo() {
+		return Optional.of(new TaskToDo((Location)agent.getProperty(LOC_TO_GOTO)));
 	}
 
 	@Override

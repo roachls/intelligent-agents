@@ -6,6 +6,7 @@
 
 package org.roach.intelligentagents.model.strategy;
 import java.util.List;
+import java.util.Optional;
 import java.util.PriorityQueue;
 
 import org.roach.intelligentagents.model.Agent;
@@ -36,6 +37,7 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
 	 */
 	public PrioritizingStrategy(Agent agent) {
 		super(agent);
+		agent.setProperty(TASK_TO_DO, Optional.empty());
 		agent.setProperty(TASK_QUEUE, new PriorityQueue<TaskToDo>());
 		state = RANDOM;
 	}
@@ -46,19 +48,19 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
      * sets the count-down timer.
      * @param receivedLoc Location of the task
      */
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
 	public void receiveMessage(Location receivedLoc) {
         Task t = Task.getTask(receivedLoc);
         if (!agent.hasDoneAlready(t)) {
-        	@SuppressWarnings("unchecked")
 			PriorityQueue<TaskToDo> taskQueue = (PriorityQueue<TaskToDo>)agent.getProperty(TASK_QUEUE);
             setBroadcastReceived(true);
             // Add the state to the priority queue (not necessarily on top)
             taskQueue.add(new TaskToDo(receivedLoc));
             boolean hasDoneAlready = true;
             while (!taskQueue.isEmpty() && hasDoneAlready) {
-                agent.setProperty(TASK_TO_DO, taskQueue.peek());
-                if (agent.hasDoneAlready(Task.getTask(((TaskToDo)agent.getProperty(TASK_TO_DO)).getLocation()))) {
+                agent.setProperty(TASK_TO_DO, Optional.of(taskQueue.peek()));
+                if (agent.hasDoneAlready(Task.getTask(((Optional<TaskToDo>)agent.getProperty(TASK_TO_DO)).get().getLocation()))) {
                     taskQueue.poll();
                 } else {
                     hasDoneAlready = false;
@@ -71,9 +73,10 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
      * Gets the Task at the top of the task queue.
      * @return A TaskToDo, if any, null otherwise.
      */
-    @Override
-    public TaskToDo getTaskToDo() {
-        return (TaskToDo)agent.getProperty(TASK_TO_DO);
+    @SuppressWarnings("unchecked")
+	@Override
+    public Optional<TaskToDo> getTaskToDo() {
+        return (Optional<TaskToDo>)agent.getProperty(TASK_TO_DO);
     }
     
     /**

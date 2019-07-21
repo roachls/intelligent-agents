@@ -2,6 +2,7 @@ package org.roach.intelligentagents.model.strategy;
 
 import java.awt.Color;
 import java.util.List;
+import java.util.Optional;
 
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
@@ -84,9 +85,9 @@ public abstract class AgentStrategy {
 	/**
 	 * Gets the current task that the agent is going to, if any.
 	 * 
-	 * @return A TaskToDo object or null
+	 * @return An Optional TaskToDo
 	 */
-	public abstract TaskToDo getTaskToDo();
+	public abstract Optional<TaskToDo> getTaskToDo();
 
 	/**
 	 * When in Goto state, checks if the agent has reached its goal.
@@ -94,7 +95,11 @@ public abstract class AgentStrategy {
 	 * @return True if task has been reached, false if not
 	 */
 	public boolean reachedTask() {
-		return agent.getLoc().equals(getTaskToDo().getLocation());
+		Optional<TaskToDo> t = getTaskToDo();
+		if (t.isPresent()) {
+			return agent.getLoc().equals(t.get().getLocation());
+		}
+		return false;
 	}
 
 	/**

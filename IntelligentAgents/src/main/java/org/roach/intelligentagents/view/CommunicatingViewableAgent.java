@@ -5,7 +5,6 @@ import java.awt.Graphics;
 
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
-import org.roach.intelligentagents.model.TaskToDo;
 import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
 
 /**
@@ -46,15 +45,14 @@ public class CommunicatingViewableAgent extends ViewableAgent {
 					toGraphicSize(commDist * 2), toGraphicSize(commDist * 2));
 		} else if (strategy.getState().equals(strategy.GOTO)) {
 			/* Draw a red line from the agent to the destination task */
-			TaskToDo t = strategy.getTaskToDo();
-			if (t != null) {
+			strategy.getTaskToDo().ifPresent((t) -> {
 				Location l = t.getLocation();
 				g.setColor(Color.red);
 				int midPoint = squareSize / 2;
 				g.drawLine(toGraphicLoc(agent.getLoc().getX()) + midPoint,
 						toGraphicLoc(agent.getLoc().getY()) + midPoint, toGraphicLoc(l.getX()) + midPoint,
 						toGraphicLoc(l.getY()) + midPoint);
-			}
+			});
 		}
 		int midPoint = squareSize / 2;
 		if (agent.getStrategy().getCommunicants() != null) {

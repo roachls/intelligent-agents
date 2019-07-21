@@ -7,6 +7,7 @@ package org.roach.intelligentagents.model.strategy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
@@ -33,6 +34,12 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
 		super.setOptions(options);
     	agent.setProperty(MilitaryStrategy.NUM_SUBORDINATES, options.numSubordinates);
     	agent.setProperty(MilitaryStrategy.NUM_LEVELS, options.numLevels);
+        // For all agents with ID not 0 or 1, they should have two subordinates.
+        // I.e., agent 0 has subordinate agent 1. Agent 1 has subordinates 2 and
+        // 3. Agent 2 has subordinates 4 and 5, etc.
+        if (agent.getId() > 0) {
+            ((MilitaryStrategy)Agent.getAgents().get(agent.getId()/(Integer)agent.getProperty(NUM_SUBORDINATES)).getStrategy()).addSubordinate(agent);
+        }
 	}
 
 	/** The list of this agent's subordinates */
@@ -51,12 +58,6 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
     public MilitaryStrategy(Agent agent) {
     	super(agent);
     	agent.setProperty(SUBORDINATES, new ArrayList<Agent>());
-        // For all agents with ID not 0 or 1, they should have two subordinates.
-        // I.e., agent 0 has subordinate agent 1. Agent 1 has subordinates 2 and
-        // 3. Agent 2 has subordinates 4 and 5, etc.
-        if (agent.getId() > 0) {
-            ((MilitaryStrategy)Agent.getAgents().get(agent.getId()/(Integer)agent.getProperty(NUM_SUBORDINATES)).getStrategy()).addSubordinate(agent);
-        }
         
         /*
          * The actions this agent should do in the RANDOM state.
@@ -82,7 +83,7 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
         
         GOTO.setAlgorithm(a -> {
         	int numLevels = (Integer)a.getProperty(NUM_LEVELS);
-            a.moveTowards(getTaskToDo().getLocation());
+            getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
             if (isBroadcastReceived()) {
                 setBroadcastReceived(false);
                 Location locToGoto = (Location)a.getProperty(LOC_TO_GOTO);
@@ -149,11 +150,11 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
 
     /**
      * Get the current task to go to
-     * @return A task, or null if none
+     * @return An optional taskToDo, or empty if none
      */
     @Override
-    public TaskToDo getTaskToDo() {
-        return new TaskToDo((Location)agent.getProperty(LOC_TO_GOTO));
+    public Optional<TaskToDo> getTaskToDo() {
+        return Optional.of(new TaskToDo((Location)agent.getProperty(LOC_TO_GOTO)));
     }
     
 	/**

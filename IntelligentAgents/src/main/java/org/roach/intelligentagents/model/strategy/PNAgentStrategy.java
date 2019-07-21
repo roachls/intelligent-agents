@@ -44,6 +44,7 @@ public class PNAgentStrategy extends PrioritizingStrategy {
      */
     public PNAgentStrategy(Agent agent) {
     	super(agent);
+    	agent.setProperty(NEIGHBORS, new ArrayList<Agent>());
    		state = RANDOM;
     }
 
@@ -61,7 +62,7 @@ public class PNAgentStrategy extends PrioritizingStrategy {
     @Override
     public void receiveMessage(Location receivedLoc) {
         @SuppressWarnings("unchecked")
-		PriorityQueue<TaskToDo> taskQueue = (PriorityQueue<TaskToDo>)agent.getProperty(TASK_TO_DO);
+		PriorityQueue<TaskToDo> taskQueue = (PriorityQueue<TaskToDo>)agent.getProperty(TASK_QUEUE);
         Task t = Task.getTask(receivedLoc);
         TaskToDo taskToDo = new TaskToDo(receivedLoc);
         if (isBroadcastReceived() || agent.hasDoneAlready(t) || taskQueue.contains(taskToDo))

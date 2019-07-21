@@ -2,6 +2,7 @@ package org.roach.intelligentagents.model.strategy;
 
 import java.awt.Color;
 import java.util.List;
+import java.util.Optional;
 
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
@@ -15,6 +16,16 @@ import org.roach.intelligentagents.model.TaskToDo;
  *
  */
 public abstract class CommunicatingAgentStrategy extends AgentStrategy {
+
+	/**
+	 * property representing communications distance for all agents
+	 */
+	public static final String COMM_DIST = "COMM_DIST";
+
+	/**
+	 * property representing default communications time
+	 */
+	public static final String COMM_TIME = "COMM_TIME";
 
 	/**
 	 * @param options
@@ -45,15 +56,6 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	/** Location to go to in Goto state. */
 	protected static final String LOC_TO_GOTO = "locToGoto";
 	/**
-	 * property representing default communications time
-	 */
-	public static final String COMM_TIME = "COMM_TIME";
-	/**
-	 * property representing communications distance for all agents
-	 */
-	public static final String COMM_DIST = "COMM_DIST";
-
-	/**
 	 * @param agent
 	 */
 	public CommunicatingAgentStrategy(Agent agent) {
@@ -78,7 +80,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 				if (isBroadcastReceived()) {
 					setBroadcastReceived(false);
 				}
-				a.moveTowards(getTaskToDo().getLocation());
+				getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
 				if (a.getStrategy().reachedTask()) {
 					if (!a.hasDoneAlready(Task.getTask(a.getLoc())))
 						a.executeTask(); // execute it and switch back to Random
@@ -103,7 +105,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	}
 
 	@Override
-	public abstract TaskToDo getTaskToDo();
+	public abstract Optional<TaskToDo> getTaskToDo();
 
 	@Override
 	public abstract List<Agent> getCommunicants();
