@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
 
 /**
@@ -44,19 +45,19 @@ public class SimulationGrid implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		String message = evt.getPropertyName();
 		Agent sender = (Agent)evt.getSource();
-		if (message.equals("new_agent")) {
+		if (message.equals(PropertyConstants.NEW_AGENT)) {
 	        addAgentToCell(sender);
 	        addAgentToXref(sender);
-		} else if (message.equals("send_message")) {
+		} else if (message.equals(PropertyConstants.SEND_MESSAGE)) {
 		    Set<Agent> list = getNearbyAgents(sender.getLoc(), ((CommunicatingAgentStrategy)sender.getStrategy()).getCommDist());
 		    for (Agent receiver : list) { // For each agent in the list
 		        // Send the agent the message
 		        ((CommunicatingAgentStrategy)((Agent) receiver).getStrategy()).receiveMessage((Location)evt.getNewValue());
 		    }
-		} else if (message.equals("prepare_to_act")) {
+		} else if (message.equals(PropertyConstants.PREPARE_TO_ACT)) {
 			removeAgentFromCell(sender);
 			removeAgentFromXref(sender);
-		} else if (message.equals("update_grid")) {
+		} else if (message.equals(PropertyConstants.UPDATE_GRID)) {
 	        addAgentToCell(sender);
 	        addAgentToXref(sender);
 		} else {

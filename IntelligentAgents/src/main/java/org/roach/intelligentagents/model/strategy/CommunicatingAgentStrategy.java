@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.roach.intelligentagents.AgentAppOpts;
+import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
 import org.roach.intelligentagents.model.State;
@@ -57,8 +58,6 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	/** Flag to indicate whether a broadcast has been received. */
 	protected boolean broadcastReceived;
 
-	/** Location to go to in Goto state. */
-	protected static final String LOC_TO_GOTO = "locToGoto";
 	/**
 	 * @param agent
 	 */
@@ -120,7 +119,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	 */
 	public void sendMessageIfPossible(Runnable actionIfNotPossible) {
 		if (commTime > 0) {
-			agent.getmPcs().firePropertyChange("send_message", null, commTaskLoc);
+			agent.getmPcs().firePropertyChange(PropertyConstants.SEND_MESSAGE, null, commTaskLoc);
 			commTime--;
 		} else {
 			actionIfNotPossible.run();

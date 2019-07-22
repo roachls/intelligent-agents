@@ -13,6 +13,7 @@ import java.awt.Image;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.model.Agent;
 
 /**
@@ -136,7 +137,7 @@ public final class Animator implements Runnable {
             }
             // Display the new time
             time++;
-            panel.firePropertyChange("time", time, time - 1);
+            panel.firePropertyChange(PropertyConstants.TIME_TICK, time, time - 1);
         }
     }
 

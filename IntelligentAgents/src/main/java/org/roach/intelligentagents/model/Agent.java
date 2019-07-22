@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.roach.intelligentagents.AgentAppOpts;
+import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.model.strategy.AgentStrategy;
 
 /**
@@ -62,7 +63,7 @@ public class Agent implements ISimItem {
 				strategy.setOptions(options);
 				a.setStrategy(strategy);
 				a.addPropertyChangeListener(simGrid);
-				a.mPcs.firePropertyChange("new_agent", null, null);
+				a.mPcs.firePropertyChange(PropertyConstants.NEW_AGENT, null, null);
 				agents.add(a);
 			} catch (InstantiationException ex) {
 				System.err.println("Unable to instantiate class.");
