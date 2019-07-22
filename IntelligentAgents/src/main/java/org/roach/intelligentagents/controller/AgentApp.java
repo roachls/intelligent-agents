@@ -37,7 +37,8 @@ public final class AgentApp {
 			jCommander.parse(args);
 		} catch (ParameterException e) {
 			jCommander.usage();
-			throw e;
+			System.out.println(e.getMessage());
+			System.exit(1);
 		}
 
 		AgentApp aa = new AgentApp(options);
