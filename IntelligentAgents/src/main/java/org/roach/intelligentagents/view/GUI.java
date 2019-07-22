@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
@@ -12,6 +13,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -57,8 +59,10 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 
 	/** Text field in which the current sim-time is displayed. */
 	private JTextField jtfTime;
-	/** The "pause" button. */
-	private JButton pause;
+	/** The rewind button */
+	private JButton rewindBtn;
+	/** The "startPauseBtn" button. */
+	private JButton startPauseBtn;
 	/** Allows the Animator to scroll within the window. */
 	private JScrollPane scrollpane;
 	/** The "render" checkbox. */
@@ -67,8 +71,10 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	private JCheckBox toggleAgents;
 	/** The "show helper graphics" checkbox. */
 	private JCheckBox toggleHelper;
-	/** The "stop" button. */
-	private JButton stop;
+	/** The "stopBtn" button. */
+	private JButton stopBtn;
+	/** The "step" button */
+	private JButton stepBtn;
 	/** The progress bar. */
 	private JProgressBar progressBar;
 	/** The parent application */
@@ -124,27 +130,8 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		stats.add(jtfTime);
 
 		// Add the stats to the bottom of the window
-		bottom.add(stats, "North");
-		c.add(bottom, "South");
-
-		// Add buttons
-		JPanel buttons = new JPanel();
-		pause = new JButton("Start");
-		pause.addActionListener(e -> {
-			if (animator.isStarted()) {
-				if (pause.isEnabled()) {
-					if (animator.isPaused()) {
-						animator.setPaused(false);
-						pause.setText("Pause");
-					} else {
-						animator.setPaused(true);
-						pause.setText("Start");
-					}
-				}
-			} else {
-				animator.startSim();
-			}
-		});
+		bottom.add(stats, BorderLayout.NORTH);
+		c.add(bottom, BorderLayout.SOUTH);
 
 		toggleAgents = new JCheckBox("Show Agents", true);
 		toggleAgents.setMnemonic(KeyEvent.VK_A);
@@ -172,21 +159,70 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 			toggleHelper.setEnabled(e.getStateChange() == ItemEvent.SELECTED);
 		});
 
-		stop = new JButton("Stop");
-		stop.addActionListener(e -> {
+		// Add options
+		JPanel optionsPanel = new JPanel();
+		optionsPanel.setLayout(new GridLayout(0, 1));
+		optionsPanel.add(toggleAgents);
+		optionsPanel.add(toggleHelper);
+		optionsPanel.add(toggleRender);
+		c.add(optionsPanel, BorderLayout.EAST);
+		
+		// Add playback buttons
+		JPanel playbackCtlPanel = new JPanel();
+		
+		rewindBtn = new JButton();
+		rewindBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Rewind24.gif"), "start/pause icon"));
+		rewindBtn.setEnabled(false);
+		rewindBtn.addActionListener(e -> {
+			// TODO
+		});
+		
+		startPauseBtn = new JButton();
+		startPauseBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Play24.gif"), "start/pause icon"));
+		startPauseBtn.addActionListener(e -> {
+			if (animator.isStarted()) {
+				if (startPauseBtn.isEnabled()) {
+					if (animator.isPaused()) {
+						stepBtn.setEnabled(false);
+						animator.unpause();
+						startPauseBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Pause24.gif"), "start/pause icon"));
+					} else {
+						stepBtn.setEnabled(true);
+						animator.pause();
+						startPauseBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Play24.gif"), "start/pause icon"));
+					}
+				}
+			} else {
+				animator.startSim();
+				startPauseBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Pause24.gif"), "start/pause icon"));
+				stopBtn.setEnabled(true);
+			}
+		});
+
+		stopBtn = new JButton();
+		stopBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Stop24.gif"), "stop icon"));
+		stopBtn.setEnabled(false);
+		stopBtn.addActionListener(e -> {
 			animator.stopSim();
 			toggleRender.setEnabled(false);
 			toggleAgents.setEnabled(false);
 			toggleHelper.setEnabled(false);
-			pause.setEnabled(false);
+			startPauseBtn.setEnabled(false);
+			stepBtn.setEnabled(false);
+		});
+		
+		stepBtn = new JButton();
+		stepBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/StepForward24.gif"), "step icon"));
+		stepBtn.setEnabled(false);
+		stepBtn.addActionListener(e -> {
+			animator.step();
 		});
 
-		buttons.add(pause);
-		buttons.add(toggleAgents);
-		buttons.add(toggleHelper);
-		buttons.add(toggleRender);
-		buttons.add(stop);
-		bottom.add(buttons, "Center");
+		playbackCtlPanel.add(rewindBtn);
+		playbackCtlPanel.add(startPauseBtn);
+		playbackCtlPanel.add(stepBtn);
+		playbackCtlPanel.add(stopBtn);
+		bottom.add(playbackCtlPanel, BorderLayout.CENTER);
 
 		progressBar = new JProgressBar(0, agentapp.getNumTasks());
 		progressBar.setStringPainted(true);
@@ -252,7 +288,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 */
 	@Override
 	public void windowDeiconified(final WindowEvent e) {
-		animator.setPaused(false);
+		animator.unpause();
 	}
 
 	/**
@@ -263,7 +299,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 */
 	@Override
 	public void windowIconified(final WindowEvent e) {
-		animator.setPaused(true);
+		animator.pause();
 	}
 
 	/**

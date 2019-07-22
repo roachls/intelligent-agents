@@ -28,16 +28,16 @@ public final class Animator implements Runnable {
     /** The JPanel to display everything on */
     private JPanel panel;
     /** The animation thread. */
-    private Thread animator;
+    private Thread animatorThread;
     /**
      * Determines whether the simulation is running or not. When this is false,
      * the application terminates.
      */
-    private boolean isRunning = true;
+    private volatile boolean isRunning = true;
     /** Determines whether the simulation is paused. */
-    private boolean isPaused = true;
+    private volatile boolean isPaused = true;
     /** Determines whether the simulation is complete. */
-    private boolean simOver = false;
+    private volatile boolean simOver = false;
     /**
      * Determines whether the sim is rendered to the screen. This may speed up
      * progress because it reduces the overhead of the graphics.
@@ -73,19 +73,19 @@ public final class Animator implements Runnable {
      */
     public void startSim() {
         // If the thread doesn't exist, create it and start it
-        if (animator == null || !isRunning) {
-            animator = new Thread(this);
-            animator.start();
+        if (animatorThread == null || !isRunning) {
+            animatorThread = new Thread(this, "AnimationThread");
+            animatorThread.start();
             isPaused = false;
         }
     }
 
     /**
      * Determine if the animation has been started
-     * @return True if the animator thread exists and is running
+     * @return True if the animatorThread thread exists and is running
      */
     public boolean isStarted() {
-        return (animator != null && isRunning);
+        return (animatorThread != null && isRunning);
     }
 
     /**
@@ -101,7 +101,7 @@ public final class Animator implements Runnable {
      */
     public void endProgram() {
         isRunning = false;
-        animator = null;
+        animatorThread = null;
         System.exit(0);
     }
 
@@ -113,11 +113,15 @@ public final class Animator implements Runnable {
         isRunning = true;
         while (isRunning) {
             if (!isPaused) {
-                simUpdate();    // update sim state
-                simRender();    // render to a graphics buffer
-                paintScreen();  // draw buffer to screen
+            	step();
             }
         }
+    }
+    
+    public void step() {
+        simUpdate();    // update sim state
+        simRender();    // render to a graphics buffer
+        paintScreen();  // draw buffer to screen
     }
 
     /**
@@ -125,7 +129,7 @@ public final class Animator implements Runnable {
      * agent).
      */
     private void simUpdate() {
-        if (!isPaused && !simOver) { // If the sim isn't paused or complete
+        if (!simOver) { // If the sim isn't paused or complete
             // Update all agents
             for (Agent a : Agent.getAgents()) {
                 a.getStrategy().doAction();
@@ -206,9 +210,13 @@ public final class Animator implements Runnable {
      * Sets whether the simulation is paused.
      * @param paused Set to true to pause the simulation
      */
-    public void setPaused(boolean paused) {
+    public void pause() {
         // called when the JFrame is activated / deiconified
-        isPaused = paused;
+        isPaused = true;
+    }
+    
+    public void unpause() {
+    	isPaused = false;
     }
 
     /**

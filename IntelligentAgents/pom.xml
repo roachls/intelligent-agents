@@ -36,6 +36,19 @@
   		<version>5.5.0</version>
   		<scope>test</scope>
   	</dependency>
+	<!-- https://mvnrepository.com/artifact/javax.jlfgr/jlfgr -->
+	<dependency>
+	    <groupId>javax.jlfgr</groupId>
+	    <artifactId>jlfgr</artifactId>
+	    <version>1.0</version>
+	</dependency>
   </dependencies>
+  <repositories>
+  	<repository>
+  		<id>freehep</id>
+  		<name>freehep</name>
+  		<url>http://java.freehep.org/maven2/</url>
+  	</repository>
+  </repositories>
   <version>0.0.1-SNAPSHOT</version>
 </project>
