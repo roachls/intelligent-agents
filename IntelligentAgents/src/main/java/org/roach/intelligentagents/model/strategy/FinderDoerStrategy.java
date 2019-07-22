@@ -42,6 +42,9 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 						this.timeSinceLastBroadcast = 0;
 					}
 				}
+				if (isBroadcastReceived()) {
+					setBroadcastReceived(false);
+				}
 			} else { // if Seeker
 				if (isBroadcastReceived()) {
 					this.timeSinceLastBroadcast = 0;
@@ -71,7 +74,7 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 
 		GOTO.setAlgorithm(a -> {
 			assert (!isFinder) : "Illegal state reached: Finder in Goto state";
-			if (getTaskToDo() == null) {
+			if (getTaskToDo().isEmpty()) {
 				state = RANDOM;
 			} else {
 				if (isBroadcastReceived()) {
