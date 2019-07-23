@@ -9,7 +9,6 @@ package org.roach.intelligentagents.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +16,8 @@ import java.util.Set;
 
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.strategy.AgentStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An Agent is the SuperClass for all agents. It contains methods and properties
@@ -26,10 +27,12 @@ import org.roach.intelligentagents.model.strategy.AgentStrategy;
  * @version %I%, %G%
  */
 public class Agent {
+	private static Logger logger = LoggerFactory.getLogger(Agent.class);
+
 	/** The list of all agents */
 	private static List<Agent> agents;
 
-	private static int id_root = 0;
+	private static int idRoot = 0;
 
 	/**
 	 * Get the list of all agents
@@ -64,15 +67,9 @@ public class Agent {
 				a.addPropertyChangeListener(simGrid);
 				a.mPcs.firePropertyChange("new_agent", null, null);
 				agents.add(a);
-			} catch (InstantiationException ex) {
-				System.err.println("Unable to instantiate class.");
+			} catch (Exception ex) {
+				logger.error("Unable to instantiate class.", ex);
 				System.exit(2);
-			} catch (IllegalAccessException ex) {
-				System.err.println("Illegal access exception.");
-				System.exit(3);
-			} catch (NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
-				e.printStackTrace();
-				System.exit(4);
 			}
 		}
 	}
@@ -81,12 +78,12 @@ public class Agent {
 	 * A set of locations of tasks that the agent has already executed; used to
 	 * prevent an agent from executing a task more than once.
 	 */
-	protected Set<Task> executedTasks;
+	private Set<Task> executedTasks;
 	/** A unique identifier for each Agent. */
-	protected int id;
+	private int id;
 
 	/** Location of the agent within the sim-space. */
-	protected Location loc;
+	private Location loc;
 
 	// Setup property-change support
 	private PropertyChangeSupport mPcs = new PropertyChangeSupport(this);
@@ -97,9 +94,9 @@ public class Agent {
 	 * Creates a new instance of Agent.
 	 */
 	public Agent() {
-		id = id_root++;
+		id = idRoot++;
 		loc = Location.getRandomLocation();
-		executedTasks = new HashSet<Task>();
+		executedTasks = new HashSet<>();
 	}
 
 	/**
@@ -113,7 +110,7 @@ public class Agent {
 	/**
 	 * @param listener
 	 */
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
+	private void addPropertyChangeListener(PropertyChangeListener listener) {
 		mPcs.addPropertyChangeListener(listener);
 	}
 
@@ -148,7 +145,7 @@ public class Agent {
 	 * @return True if new task found
 	 */
 	public boolean foundNewTask() {
-		return (Task.isTask(loc) && !Task.isTaskComplete(loc)) && !hasDoneAlready(Task.getTask(loc));
+		return (Task.isTask(loc) && Task.isTaskInProgress(loc)) && !hasDoneAlready(Task.getTask(loc));
 	}
 
 	/**
@@ -213,13 +210,6 @@ public class Agent {
 	@Override
 	public int hashCode() {
 		return id % 7;
-	}
-
-	/**
-	 * @param listener
-	 */
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		mPcs.removePropertyChangeListener(listener);
 	}
 
 	/**

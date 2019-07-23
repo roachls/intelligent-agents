@@ -34,20 +34,8 @@ import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
  * @author Larry S. Roach
  *
  */
-/**
- * @author Larry S. Roach
- *
- */
-public class GUI extends JFrame implements WindowListener, PropertyChangeListener {
-	/** The size of a cell in pixels */
-	private int cellSize;
-	/** The size of the playing field in pixels */
-	private int mainPanelSize;
-	/** Determines whether helper graphics are displayed. */
-	private boolean showHelperGraphics = true;
-	/** Determines whether graphics are rendered. */
-	private boolean showGraphics = true;
-	private JPanel mainPanel;
+public class GUI implements WindowListener, PropertyChangeListener {
+    private JPanel mainPanel;
 	private Animator animator;
 
 	/**
@@ -59,13 +47,9 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 
 	/** Text field in which the current sim-time is displayed. */
 	private JTextField jtfTime;
-	/** The rewind button */
-	private JButton rewindBtn;
-	/** The "startPauseBtn" button. */
+    /** The "startPauseBtn" button. */
 	private JButton startPauseBtn;
-	/** Allows the Animator to scroll within the window. */
-	private JScrollPane scrollpane;
-	/** The "render" checkbox. */
+    /** The "render" checkbox. */
 	private JCheckBox toggleRender;
 	/** The "show agents" checkbox. */
 	private JCheckBox toggleAgents;
@@ -80,30 +64,33 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	/** The parent application */
 	private AgentApp agentapp;
 
-	private static final long serialVersionUID = 1811469542607745360L;
-
 	/**
 	 * Creates the GUI environment for the program.
 	 * 
-	 * @param agentapp
-	 * @param options
+	 * @param agentApp - the app to listen to
+	 * @param options - the options to use while rendering
 	 */
-	public GUI(AgentApp agentapp, AgentAppOpts options) {
-		this.agentapp = agentapp;
-		cellSize = options.cellSize;
-		mainPanelSize = cellSize * agentapp.getRoomSize() + 2;
-		showHelperGraphics = options.showHelper;
-		showGraphics = options.showGraphics;
-		if (agentapp.isBatchMode()) {
+	public GUI(AgentApp agentApp, AgentAppOpts options) {
+		this.agentapp = agentApp;
+        // The size of a cell in pixels
+        int cellSize = options.cellSize;
+        //The size of the playing field in pixels
+        int mainPanelSize = cellSize * agentApp.getRoomSize() + 2;
+        // Determines whether helper graphics are displayed. *
+        boolean showHelperGraphics = options.showHelper;
+        // Determines whether graphics are rendered.
+        boolean showGraphics = options.showGraphics;
+		if (agentApp.isBatchMode()) {
 			showHelperGraphics = false;
 			showGraphics = false;
 		}
 		ViewableTask.setSquareSize(cellSize);
 		ViewableAgent.setSquareSize(cellSize);
 
-		this.setTitle("Intelligent Agent Simulation");
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		Container c = getContentPane(); // default BorderLayout used
+		JFrame masterFrame = new JFrame();
+        masterFrame.setTitle("Intelligent Agent Simulation");
+        masterFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		Container c = masterFrame.getContentPane(); // default BorderLayout used
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.white);
 		mainPanel.setPreferredSize(new Dimension(mainPanelSize, mainPanelSize));
@@ -119,8 +106,8 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		stats.setLayout(new BoxLayout(stats, BoxLayout.X_AXIS));
 
 		// Make the text-box with the size of the field and number of agents
-		JTextField jtfAgents = new JTextField("Size: " + agentapp.getRoomSize() + " Agents: " + agentapp.getNumAgents()
-				+ " Tasks: " + agentapp.getNumTasks() + " Type: " + agentapp.getStrategyType().getSimpleName());
+		JTextField jtfAgents = new JTextField("Size: " + agentApp.getRoomSize() + " Agents: " + agentApp.getNumAgents()
+				+ " Tasks: " + agentApp.getNumTasks() + " Type: " + agentApp.getStrategyType().getSimpleName());
 		jtfAgents.setEditable(false);
 		stats.add(jtfAgents);
 
@@ -166,17 +153,17 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		optionsPanel.add(toggleHelper);
 		optionsPanel.add(toggleRender);
 		c.add(optionsPanel, BorderLayout.EAST);
-		
+
 		// Add playback buttons
 		JPanel playbackCtlPanel = new JPanel();
-		
-		rewindBtn = new JButton();
+
+        /* The rewind button */ /** The rewind button */JButton rewindBtn = new JButton();
 		rewindBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Rewind24.gif"), "start/pause icon"));
 		rewindBtn.setEnabled(false);
 		rewindBtn.addActionListener(e -> {
 			// TODO
 		});
-		
+
 		startPauseBtn = new JButton();
 		startPauseBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Play24.gif"), "start/pause icon"));
 		startPauseBtn.addActionListener(e -> {
@@ -210,7 +197,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 			startPauseBtn.setEnabled(false);
 			stepBtn.setEnabled(false);
 		});
-		
+
 		stepBtn = new JButton();
 		stepBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/StepForward24.gif"), "step icon"));
 		stepBtn.setEnabled(false);
@@ -224,14 +211,15 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		playbackCtlPanel.add(stopBtn);
 		bottom.add(playbackCtlPanel, BorderLayout.CENTER);
 
-		progressBar = new JProgressBar(0, agentapp.getNumTasks());
+		progressBar = new JProgressBar(0, agentApp.getNumTasks());
 		progressBar.setStringPainted(true);
 		bottom.add(progressBar, "South");
 
 		animator.setHelperGraphics(showHelperGraphics);
 		animator.setRender(showGraphics);
 
-		scrollpane = new JScrollPane(mainPanel);
+        /* Allows the Animator to scroll within the window. */ /** Allows the Animator to scroll within the window. */
+        JScrollPane scrollpane = new JScrollPane(mainPanel);
 		scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollpane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		c.add(scrollpane, "Center");
@@ -242,9 +230,9 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 			mainPanel.add(vt);
 		}
 		initAgents();
-		pack(); // Makes the main window just the right size to hold everything
-		setResizable(true);
-		setVisible(!agentapp.isBatchMode()); // Make the window visible
+		masterFrame.pack(); // Makes the main window just the right size to hold everything
+		masterFrame.setResizable(true);
+		masterFrame.setVisible(!agentApp.isBatchMode()); // Make the window visible
 	}
 
 	/**
@@ -268,6 +256,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 */
 	@Override
 	public void windowActivated(final WindowEvent e) {
+        // intentionally blank
 	}
 
 	/**
@@ -278,6 +267,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 */
 	@Override
 	public void windowDeactivated(final WindowEvent e) {
+        // intentionally blank
 	}
 
 	/**
@@ -322,6 +312,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 */
 	@Override
 	public void windowClosed(final WindowEvent e) {
+	    // intentionally blank
 	}
 
 	/**
@@ -333,6 +324,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 */
 	@Override
 	public void windowOpened(final WindowEvent e) {
+        // intentionally blank
 	}
 
 	/**
@@ -344,7 +336,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	@Override
 	public void propertyChange(final PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals("time")) {
-			jtfTime.setText("Cycles: " + (Integer) evt.getNewValue());
+			jtfTime.setText("Cycles: " + evt.getNewValue());
 		} else if (evt.getPropertyName().equals("taskcomplete")) {
 			Integer numTasksComplete = (Integer) evt.getNewValue();
 			progressBar.setValue(numTasksComplete);

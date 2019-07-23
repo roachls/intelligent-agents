@@ -27,10 +27,8 @@ public class ViewableTask extends JComponent implements PropertyChangeListener {
     private static final int COLOR_STEP = MAX_COLOR / Task.getTaskComplete();
     /** The size to draw the graphical square. */
     private static int squareSize = INITIAL_ZOOM_FACTOR;
-    /** The task this object draws */
-    private Task task;
     private Color color = new Color(0, 0, 0);
-    int x, y, width, height;
+    private int x, y, width, height;
     
     /**
      * Sets the onscreen size of the task.
@@ -51,12 +49,12 @@ public class ViewableTask extends JComponent implements PropertyChangeListener {
     }
 
     /**
-     * @param t
+     * @param t - the task to draw
      */
     public ViewableTask(Task t) {
-    	task = t;
-    	x = task.getLocation().getX() * squareSize + 1;
-    	y = task.getLocation().getY() * squareSize + 1;
+        // The task this object draws
+        x = t.getLocation().getX() * squareSize + 1;
+    	y = t.getLocation().getY() * squareSize + 1;
     	width = squareSize - 1;
     	height = squareSize - 1;
     }

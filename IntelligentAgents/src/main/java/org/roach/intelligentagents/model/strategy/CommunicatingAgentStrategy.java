@@ -77,20 +77,17 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 		});
 
 		/** The Goto state. */
-		GOTO = new State(Color.red, a -> {
-			a.getStrategy().getTaskToDo().ifPresentOrElse((t) -> {
-				if (isBroadcastReceived()) {
-					setBroadcastReceived(false);
-				}
-				getTaskToDo().ifPresent((task) -> a.moveTowards(task.getLocation()));
-				if (a.getStrategy().reachedTask()) {
-					if (!a.hasDoneAlready(Task.getTask(a.getLoc())))
-						a.executeTask(); // execute it and switch back to Random
-					setState(RANDOM);
-				}
-			}, () -> setState(RANDOM)); 
-			
-		}, this.agent);
+		GOTO = new State(Color.red, a -> a.getStrategy().getTaskToDo().ifPresentOrElse(t -> {
+			if (isBroadcastReceived()) {
+				setBroadcastReceived(false);
+			}
+			getTaskToDo().ifPresent(task -> a.moveTowards(task.getLocation()));
+			if (a.getStrategy().reachedTask()) {
+				if (!a.hasDoneAlready(Task.getTask(a.getLoc())))
+					a.executeTask(); // execute it and switch back to Random
+				setState(RANDOM);
+			}
+		}, () -> setState(RANDOM)), this.agent);
 
 		// /** The random-comms state */
 		RANDOMCOMMS = new State(Color.blue, a -> {

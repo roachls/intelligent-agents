@@ -201,7 +201,7 @@ public final class Animator implements Runnable {
                     g.dispose(); // Switch buffers
                 }
             } catch (Exception e) {
-                javax.swing.JOptionPane.showMessageDialog(panel, "Graphics context error: " + e.toString(), "Graphics error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(panel, "Graphics context error: " + e.toString(), "Graphics error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

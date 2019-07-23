@@ -37,27 +37,33 @@ public class SimulationGrid implements PropertyChangeListener {
 	public SimulationGrid(int gridSize) {
 		this.gridSize = gridSize;
 		grid = new AgentList[gridSize][gridSize];
-		xRef = new HashMap<Integer, HashSet<Integer>>();
+		xRef = new HashMap<>();
 	}
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		String message = evt.getPropertyName();
 		Agent sender = (Agent)evt.getSource();
-		if (message.equals("new_agent") || message.equals("update_grid")) {
-	        addAgentToCell(sender);
-	        addAgentToXref(sender);
-		} else if (message.equals("send_message")) {
-		    Set<Agent> list = getNearbyAgents(sender.getLoc(), ((CommunicatingAgentStrategy)sender.getStrategy()).getCommDist());
-		    for (Agent receiver : list) { // For each agent in the list
-		        // Send the agent the message
-		        ((CommunicatingAgentStrategy)((Agent) receiver).getStrategy()).receiveMessage((Location)evt.getNewValue());
-		    }
-		} else if (message.equals("prepare_to_act")) {
-			removeAgentFromCell(sender);
-			removeAgentFromXref(sender);
-		} else {
-			System.err.println("Unsupported message type: " + evt.getPropertyName());
+		switch (message) {
+			case "new_agent":
+			case "update_grid":
+				addAgentToCell(sender);
+				addAgentToXref(sender);
+				break;
+			case "send_message":
+				Set<Agent> list = getNearbyAgents(sender.getLoc(), ((CommunicatingAgentStrategy) sender.getStrategy()).getCommDist());
+				for (Agent receiver : list) { // For each agent in the list
+					// Send the agent the message
+					((CommunicatingAgentStrategy) receiver.getStrategy()).receiveMessage((Location) evt.getNewValue());
+				}
+				break;
+			case "prepare_to_act":
+				removeAgentFromCell(sender);
+				removeAgentFromXref(sender);
+				break;
+			default:
+				System.err.println("Unsupported message type: " + evt.getPropertyName());
+				break;
 		}
 	}
 	
@@ -70,7 +76,7 @@ public class SimulationGrid implements PropertyChangeListener {
         Integer X = a.getLoc().getX();
         // If the HashSet entry doesn't exist, create it
         if (!xRef.containsKey(X)) {
-            xRef.put(X, new HashSet<Integer>());
+            xRef.put(X, new HashSet<>());
         }
         // Add the y-coordinate to the set
         xRef.get(X).add(a.getLoc().getY());
@@ -112,8 +118,8 @@ public class SimulationGrid implements PropertyChangeListener {
      * @param loc The location at the center of the search area
      * @param distance The radius to search around the location
      */
-    public Set<Agent> getNearbyAgents(final Location loc,
-            final int distance) {
+	private Set<Agent> getNearbyAgents(final Location loc,
+									   final int distance) {
         int commDistSq = distance * distance;
         // Initialize the list to return
         Set<Agent> list = new HashSet<>();

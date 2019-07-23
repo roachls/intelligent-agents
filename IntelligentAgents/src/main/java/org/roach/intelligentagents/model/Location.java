@@ -16,7 +16,7 @@ import java.util.Random;
  */
 public final class Location implements Cloneable {
 	/** The size of the grid-space in which the agent moves. */
-	protected static int gridSize = 100;
+	private static int gridSize = 100;
 
     /**
      * The x-coordinate of the Location.
@@ -70,9 +70,7 @@ public final class Location implements Cloneable {
      */
     public boolean isInCircle(final Location that, final int radius) {
         // We can avoid floating-point math by using the circular formula
-        //     (rhs.x - x)^2 + (rhs.y - y)^2 = radius^2,
-        // and so any for any point within the circle it will be true that
-        //     (rhs.y - y)^2 <= radius^2 - (rhs.x - x)^2
+        //     (rhs.x - x)^2 + (rhs.y - y)^2 = radius^2
         float dx = (float) this.x - that.x;
         float dy = (float) this.y - that.y;
         return dx * dx + dy * dy <= radius * radius;
@@ -129,7 +127,7 @@ public final class Location implements Cloneable {
     /**
      *
      */
-    public void moveNorthWest() {
+    private void moveNorthWest() {
     	moveNorth();
     	moveWest();
     }
@@ -137,7 +135,7 @@ public final class Location implements Cloneable {
     /**
      *
      */
-    public void moveSouthWest() {
+    private void moveSouthWest() {
     	moveSouth();
     	moveWest();
     }
@@ -145,7 +143,7 @@ public final class Location implements Cloneable {
     /**
      *
      */
-    public void moveNorthEast() {
+    private void moveNorthEast() {
     	moveNorth();
     	moveEast();
     }
@@ -153,7 +151,7 @@ public final class Location implements Cloneable {
     /**
      *
      */
-    public void moveSouthEast() {
+    private void moveSouthEast() {
     	moveSouth();
     	moveEast();
     }
@@ -305,15 +303,15 @@ public final class Location implements Cloneable {
 
 	    // Together, these two conditions form the eight movement directions
 	    if(this.x < target.x) {
-	        moveEast();
+	        this.x++;
         } else if (this.x > target.x) {
-	        moveWest();
+	        this.x--;
         }
 
         if(this.y < target.y) {
-	        moveSouth();
+	        this.y++;
         } else if (this.y > target.y) {
-	        moveNorth();
+	        this.y--;
         }
 	}
 

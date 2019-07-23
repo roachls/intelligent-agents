@@ -59,7 +59,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 				state = RANDOM;
 			} else if (a.foundNewTask()) {
 				a.executeTask();
-				if (!Task.isTaskComplete(a.getLoc())) {
+				if (Task.isTaskInProgress(a.getLoc())) {
 					mailbox.postMessage(a.getLoc().clone());
 				}
 			}
@@ -80,7 +80,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 		agent.getLoc().randomMove();
 		if (agent.foundNewTask()) {
 			agent.executeTask();
-			if (!Task.isTaskComplete(agent.getLoc())) {
+			if (Task.isTaskInProgress(agent.getLoc())) {
 				Location locold = agent.getLoc().clone();
 				mailbox.postMessage(locold);
 			}

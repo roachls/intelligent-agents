@@ -11,6 +11,7 @@
 package org.roach.intelligentagents.model;
 import java.beans.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -45,25 +46,12 @@ public final class Task {
     public void addPropertyChangeListener(PropertyChangeListener listener) {
     	mPcs.addPropertyChangeListener(listener);
     }
-    /**
-     * @param listener
-     */
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-    	mPcs.removePropertyChangeListener(listener);
-    }
-    
+
     /**
      * @return task list
      */
-    public static ArrayList<Task> getTaskList() {
+    public static List<Task> getTaskList() {
         return taskList;
-    }
-    /**
-     * Get the number of tasks in the simulation.
-     * @return Size of Tasks array
-     */
-    public static int getNumTasks() {
-        return taskList.size();
     }
 
     /**
@@ -78,7 +66,7 @@ public final class Task {
 
         }
         if (taskList == null) {
-            taskList = new ArrayList<Task>();
+            taskList = new ArrayList<>();
 
         }
         if (!taskList.isEmpty()) {
@@ -128,8 +116,8 @@ public final class Task {
      * @param loc The location of the task to check
      * @return True if the task is complete, false if not
      */
-    public static boolean isTaskComplete(Location loc) {
-        return getTask(loc).isComplete();
+    public static boolean isTaskInProgress(Location loc) {
+        return !getTask(loc).isComplete();
     }
 
     /**
