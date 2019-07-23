@@ -1,6 +1,7 @@
 package org.roach.intelligentagents.model.strategy;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Task;
@@ -14,9 +15,9 @@ import org.roach.intelligentagents.model.TaskToDo;
  */
 public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 
-	private final static String IS_FINDER = "isFinder";
-	private final static String TIME_SINCE_LAST_BROADCAST = "timeSinceLastBroadcast";
-	private final static String TIME_SINCE_LAST_FOUND = "timeSinceLastFound";
+	protected boolean isFinder;
+	protected int timeSinceLastBroadcast = 0;
+	protected int timeSinceLastFound = 0;
 
 	/**
 	 * @param agent
@@ -24,40 +25,40 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 	 */
 	public FinderDoerStrategy(Agent agent) {
 		super(agent);
-		agent.setProperty(IS_FINDER, Boolean.valueOf(Math.random() > 0.7));
+		this.isFinder = Math.random() > 0.7;
+		
 		RANDOM.setAlgorithm(a -> {
 			a.getLoc().randomMove();
-			if ((Boolean) a.getProperty(IS_FINDER)) {
+			if (isFinder) {
 				if (a.foundNewTask()) {
-					a.setProperty(TIME_SINCE_LAST_FOUND, 0);
+					timeSinceLastFound = 0;
 					agent.executeTask();
 					initComms();
 					state = RANDOMCOMMS;
 				} else {
-					a.setProperty(TIME_SINCE_LAST_FOUND, (Integer) a.getProperty(TIME_SINCE_LAST_FOUND) + 1);
-					if ((Integer) a.getProperty(TIME_SINCE_LAST_FOUND) > 20) {
-						a.setProperty(IS_FINDER, Boolean.FALSE);
-						a.setProperty(TIME_SINCE_LAST_BROADCAST, Integer.valueOf(0));
+					timeSinceLastFound++;
+					if (timeSinceLastFound > 20) {
+						this.isFinder = false;
+						this.timeSinceLastBroadcast = 0;
 					}
 				}
 			} else { // if Seeker
 				if (isBroadcastReceived()) {
-					a.setProperty(TIME_SINCE_LAST_BROADCAST, Integer.valueOf(0));
+					this.timeSinceLastBroadcast = 0;
 					setBroadcastReceived(false); // reset broadcast flag
 					state = GOTO;
 				} else {
-					a.setProperty(TIME_SINCE_LAST_BROADCAST,
-							Integer.valueOf(((Integer) a.getProperty(TIME_SINCE_LAST_BROADCAST)).intValue() + 1));
-					if ((Integer) a.getProperty(TIME_SINCE_LAST_BROADCAST) > 10) {
-						a.setProperty(IS_FINDER, Boolean.TRUE);
-						a.setProperty(TIME_SINCE_LAST_FOUND, 0);
+					timeSinceLastBroadcast++;
+					if (timeSinceLastBroadcast > 10) {
+						isFinder = true;
+						timeSinceLastFound = 0;
 					}
 				}
 			}
 		});
 
 		RANDOMCOMMS.setAlgorithm(a -> {
-			assert ((Boolean) a.getProperty(IS_FINDER)) : "Illegal state reached: Seeker in Comms state.";
+			assert (isFinder) : "Illegal state reached: Seeker in Comms state.";
 			sendMessageIfPossible(() -> state = RANDOM);
 			a.getLoc().randomMove();
 			if (agent.foundNewTask()) {
@@ -69,14 +70,14 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 		});
 
 		GOTO.setAlgorithm(a -> {
-			assert (!(Boolean) a.getProperty(IS_FINDER)) : "Illegal state reached: Finder in Goto state";
+			assert (!isFinder) : "Illegal state reached: Finder in Goto state";
 			if (getTaskToDo() == null) {
 				state = RANDOM;
 			} else {
 				if (isBroadcastReceived()) {
 					setBroadcastReceived(false);
 				}
-				a.moveTowards(getTaskToDo().getLocation());
+				getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
 				if (reachedTask()) {
 					if (!agent.hasDoneAlready(Task.getTask(agent.getLoc()))) {
 						agent.executeTask(); // execute it and switch back to Random
@@ -90,8 +91,8 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 	}
 
 	@Override
-	public TaskToDo getTaskToDo() {
-		return null;
+	public Optional<TaskToDo> getTaskToDo() {
+		return Optional.empty();
 	}
 
 	@Override

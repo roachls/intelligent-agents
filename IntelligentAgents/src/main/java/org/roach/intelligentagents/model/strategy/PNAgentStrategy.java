@@ -1,7 +1,7 @@
 package org.roach.intelligentagents.model.strategy;
 
 import java.util.ArrayList;
-import java.util.PriorityQueue;
+import java.util.List;
 
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
@@ -16,10 +16,8 @@ import org.roach.intelligentagents.model.TaskToDo;
  */
 public class PNAgentStrategy extends PrioritizingStrategy {
 
-    /** The list of this agent's subordinates */
-	private static final String NEIGHBORS = "neighbors";
-    /** The number of agents in each neighborhood */
-	public static final String NUM_NEIGHBORS = "NUM_NEIGHBORS";
+	private int numNeighbors = 3;
+	private List<Agent> neighbors = new ArrayList<>();
 
     /**
 	 * @param options
@@ -28,8 +26,7 @@ public class PNAgentStrategy extends PrioritizingStrategy {
 	@Override
 	public void setOptions(AgentAppOpts options) {
 		super.setOptions(options);
-    	int numNeighbors = options.neighbors;
-    	agent.setProperty(PNAgentStrategy.NUM_NEIGHBORS, numNeighbors);
+    	numNeighbors = options.neighbors;
     	if (agent.getId() == 0) return;
    		if (agent.getId() % numNeighbors == 0) {
    			((PNAgentStrategy)Agent.getAgents().get(agent.getId()-1).getStrategy()).addNeighbor(Agent.getAgents().get(agent.getId() - numNeighbors));
@@ -47,9 +44,8 @@ public class PNAgentStrategy extends PrioritizingStrategy {
    		state = RANDOM;
     }
 
-    @SuppressWarnings("unchecked")
 	private void addNeighbor(Agent n) {
-    	((ArrayList<Agent>)agent.getProperty(NEIGHBORS)).add(n);
+    	neighbors.add(n);
     }
 
     /**
@@ -60,8 +56,6 @@ public class PNAgentStrategy extends PrioritizingStrategy {
      */
     @Override
     public void receiveMessage(Location receivedLoc) {
-        @SuppressWarnings("unchecked")
-		PriorityQueue<TaskToDo> taskQueue = (PriorityQueue<TaskToDo>)agent.getProperty(TASK_TO_DO);
         Task t = Task.getTask(receivedLoc);
         TaskToDo taskToDo = new TaskToDo(receivedLoc);
         if (isBroadcastReceived() || agent.hasDoneAlready(t) || taskQueue.contains(taskToDo))
@@ -83,8 +77,6 @@ public class PNAgentStrategy extends PrioritizingStrategy {
     
     @Override
 	public void sendMessageIfPossible(Runnable actionIfNotPossible) {
-    	@SuppressWarnings("unchecked")
-		ArrayList<Agent> neighbors = (ArrayList<Agent>)agent.getProperty(NEIGHBORS);
         for (Agent n : neighbors) {
             ((PNAgentStrategy)n.getStrategy()).receiveMessage(agent.getLoc());
         }

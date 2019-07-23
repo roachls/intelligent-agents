@@ -1,6 +1,7 @@
 package org.roach.intelligentagents.model.strategy;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
@@ -86,8 +87,8 @@ public class SearchStrategy extends AgentStrategy {
     private Directions dir;
 
 	@Override
-	public TaskToDo getTaskToDo() {
-		return null;
+	public Optional<TaskToDo> getTaskToDo() {
+		return Optional.empty();
 	}
 
 	@Override
