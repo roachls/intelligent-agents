@@ -6,17 +6,21 @@
  */
 
 package org.roach.intelligentagents.model;
+
 import java.awt.Dimension;
 import java.util.Random;
 
 /**
  * The Location class encapsulates an (x, y) coordinate along with tools
  * for measuring distance and moving.
+ *
  * @author L. Stephen Roach
  */
 public final class Location implements Cloneable {
-	/** The size of the grid-space in which the agent moves. */
-	private static int gridSize = 100;
+    /**
+     * The size of the grid-space in which the agent moves.
+     */
+    private static int gridSize = 100;
 
     /**
      * The x-coordinate of the Location.
@@ -26,8 +30,10 @@ public final class Location implements Cloneable {
      * The y-coordinate of the Location.
      */
     private int y;
+
     /**
      * Creates a new instance of Location.
+     *
      * @param inputx x-coordinate
      * @param inputy y-coordinate
      */
@@ -35,8 +41,10 @@ public final class Location implements Cloneable {
         x = inputx;
         y = inputy;
     }
+
     /**
      * Creates a new instance of Location.
+     *
      * @param inputX x-coordinate
      * @param inputY y-coordinate
      */
@@ -44,15 +52,19 @@ public final class Location implements Cloneable {
         x = inputX;
         y = inputY;
     }
+
     /**
      * Converts a Location to a java.awt.Dimension.
+     *
      * @return A Dimension object
      */
     public Dimension toDimension() {
         return new Dimension(x, y);
     }
+
     /**
      * Get the manhattan distance from the location to the rhs location.
+     *
      * @param that The Location to be compared
      * @return Manhattan distance (x-distance plus y-distance)
      */
@@ -60,10 +72,12 @@ public final class Location implements Cloneable {
         // Return |x - rhs.x| + |y - rhs.y|
         return Math.abs(this.x - that.x) + Math.abs(this.y - that.y);
     }
+
     /**
      * Calculates whether this Location and rhs are within a given distance of
      * each other.
-     * @param that The Location to be compared
+     *
+     * @param that   The Location to be compared
      * @param radius The radius of the circle to check
      * @return True if the distance from this to rhs is less than or equal to
      * radius, false otherwise
@@ -75,8 +89,10 @@ public final class Location implements Cloneable {
         float dy = (float) this.y - that.y;
         return dx * dx + dy * dy <= radius * radius;
     }
+
     /**
      * Gets the x-component of the manhattan distance from this to rhs.
+     *
      * @param that The Location to be compared
      * @return An int representing the distance
      */
@@ -87,8 +103,10 @@ public final class Location implements Cloneable {
         // indicates that this is south of rhs.
         return x - that.x;
     }
+
     /**
      * Gets the y-component of the manhattan distance from this to rhs.
+     *
      * @param that The Location to be compared
      * @return An int representing the distance
      */
@@ -99,24 +117,28 @@ public final class Location implements Cloneable {
         // indicates that this is west of rhs.
         return y - that.y;
     }
+
     /**
      * Moves the Location one square west.
      */
     public void moveWest() {
         x--;
     }
+
     /**
      * Moves the Location one square east.
      */
     public void moveEast() {
         x++;
     }
+
     /**
      * Moves the Location one square north.
      */
     public void moveNorth() {
         y--;
     }
+
     /**
      * Moves the Location one square south.
      */
@@ -125,39 +147,8 @@ public final class Location implements Cloneable {
     }
 
     /**
-     *
-     */
-    private void moveNorthWest() {
-    	moveNorth();
-    	moveWest();
-    }
-
-    /**
-     *
-     */
-    private void moveSouthWest() {
-    	moveSouth();
-    	moveWest();
-    }
-
-    /**
-     *
-     */
-    private void moveNorthEast() {
-    	moveNorth();
-    	moveEast();
-    }
-
-    /**
-     *
-     */
-    private void moveSouthEast() {
-    	moveSouth();
-    	moveEast();
-    }
-
-    /**
      * Determines if this Location is equal to the Location o.
+     *
      * @param o The Location object to be compared
      * @return True if both x and y coordinates are the same in each object
      */
@@ -171,22 +162,28 @@ public final class Location implements Cloneable {
         }
         return x == ((Location) o).x && y == ((Location) o).y;
     }
+
     /**
      * Gets the x-coordinate of this Location.
+     *
      * @return x
      */
     public int getX() {
         return x;
     }
+
     /**
      * Gets the y-coordinate of this Location.
+     *
      * @return y
      */
     public int getY() {
         return y;
     }
+
     /**
      * Returns a clone of this location.
+     *
      * @return A new copy of this Location
      */
     @Override
@@ -196,6 +193,7 @@ public final class Location implements Cloneable {
 
     /**
      * Gets a hash code for this Location.
+     *
      * @return hash code
      */
     @Override
@@ -205,114 +203,77 @@ public final class Location implements Cloneable {
         result = 37 * result + y;
         return result;
     }
+
     /**
      * Get the String representation of this Location.
+     *
      * @return a string
      */
     @Override
     public String toString() {
         return "(" + x + "," + y + ")";
     }
-	/**
-	 * When in Random or Random-Comms state, this method chooses a random direction
-	 * and moves the agent.
-	 */
-	public void randomMove() {
-		Random rand = new Random();
-		// Get a random number between 1 and 8
-		int dir = rand.nextInt(8);
-		switch (dir) { // Move the selected direction
-		case 0:
-			// move north
-			if (y > 0) { // Can't move past the north wall!
-				moveNorth();
-			}
-			break;
-		case 1:
-			// move east
-			if (x < gridSize - 1) {
-				// Can't move past the east wall!
-				moveEast();
-			}
-			break;
-		case 2:
-			// move south
-			if (y < gridSize - 1) {
-				// Can't move past the south wall!
-				moveSouth();
-			}
-			break;
-		case 3:
-			// move west
-			if (x > 0) {
-				// Can't move past the west wall!
-				moveWest();
-			}
-			break;
-		case 4:
-			if (x > 0 && y > 0)
-				moveNorthWest();
-			break;
-		case 5:
-			if (x > 0 && y < gridSize - 1)
-				moveSouthWest();
-			break;
-		case 6:
-			if (x < gridSize - 1 && y > 0)
-				moveNorthEast();
-			break;
-		case 7:
-			if (x < gridSize - 1 && y < gridSize - 1)
-				moveSouthEast();
-			break;
-		}
-	}
-	
-	/**
-	 * @return the gridSize
-	 */
-	public static int getGridSize() {
-		return gridSize;
-	}
-	
-	/**
-	 * @param aGridSize
-	 *            Number of squares on a side for the grid
-	 */
-	public static void setGridSize(int aGridSize) {
-		gridSize = aGridSize;
-	}
 
-	/**
-	 * @return a random location
-	 */
-	public static Location getRandomLocation() {
-		// Randomly pick a position on the grid for the agent to start at
-		Random rand = new Random();
-		int x = rand.nextBoolean() ? 0 : (gridSize - 1);
-		int y = rand.nextBoolean() ? 0 : (gridSize - 1);
-		return new Location(x, y);
-	}
-	
-	/**
-	 * When the agent is in Goto state, this method moves it towards the task being
-	 * sought.
-	 * @param target Location to move towards
-	 */
-	void moveTowards(Location target) {
+    /**
+     * When in Random or Random-Comms state, this method chooses a random direction
+     * and moves the agent.
+     */
+    public void randomMove() {
+        int randx;
+        int randy;
+        Random rand = new Random();
+        do {
+            randx = rand.nextInt(3) - 1;
+            randy = rand.nextInt(3) - 1;
+        } while (randx == 0 && randy == 0);
+        this.y = Math.min(gridSize - 1, Math.max(0, y + randy));
+        this.x = Math.min(gridSize - 1, Math.max(0, x + randx));
+    }
 
-	    // Together, these two conditions form the eight movement directions
-	    if(this.x < target.x) {
-	        this.x++;
+    /**
+     * @return the gridSize
+     */
+    public static int getGridSize() {
+        return gridSize;
+    }
+
+    /**
+     * @param aGridSize Number of squares on a side for the grid
+     */
+    public static void setGridSize(int aGridSize) {
+        gridSize = aGridSize;
+    }
+
+    /**
+     * @return a random location
+     */
+    public static Location getRandomLocation() {
+        // Randomly pick a position on the grid for the agent to start at
+        Random rand = new Random();
+        int x = rand.nextBoolean() ? 0 : (gridSize - 1);
+        int y = rand.nextBoolean() ? 0 : (gridSize - 1);
+        return new Location(x, y);
+    }
+
+    /**
+     * When the agent is in Goto state, this method moves it towards the task being
+     * sought.
+     *
+     * @param target Location to move towards
+     */
+    void moveTowards(Location target) {
+        // Together, these two conditions form the eight movement directions
+        if (this.x < target.x) {
+            this.x++;
         } else if (this.x > target.x) {
-	        this.x--;
+            this.x--;
         }
 
-        if(this.y < target.y) {
-	        this.y++;
+        if (this.y < target.y) {
+            this.y++;
         } else if (this.y > target.y) {
-	        this.y--;
+            this.y--;
         }
-	}
+    }
 
 }
