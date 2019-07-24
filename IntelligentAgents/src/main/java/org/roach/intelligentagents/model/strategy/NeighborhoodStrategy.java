@@ -47,7 +47,8 @@ public class NeighborhoodStrategy extends CommunicatingAgentStrategy {
 		RANDOM.setAlgorithm(a -> {
 			if (isBroadcastReceived()) {
 				setBroadcastReceived(false);
-				state = GOTO;
+				if (!a.getExecutedTasks().contains(Task.getTask(locToGoto)))
+					state = GOTO;
 			} else {
 				a.getLoc().randomMove();
 				if (a.foundNewTask()) {
@@ -78,6 +79,8 @@ public class NeighborhoodStrategy extends CommunicatingAgentStrategy {
 				state = RANDOM;
 			}
 		});
+		
+		this.state = RANDOM;
 	}
 
 	private void addNeighbor(Agent n) {
@@ -92,19 +95,19 @@ public class NeighborhoodStrategy extends CommunicatingAgentStrategy {
 		return Optional.of(new TaskToDo(locToGoto));
 	}
 
-	@Override
-	public void receiveMessage(Location receivedLoc) {
-		Task t = Task.getTask(receivedLoc);
-		if (t != null && t.isComplete()) {
-			agent.getExecutedTasks().add(t);
-		}
-
-		if (!agent.getExecutedTasks().contains(t)) {
-			this.locToGoto = receivedLoc;
-			notifyNeighbors(receivedLoc);
-			setBroadcastReceived(true);
-		}
-	}
+//	@Override
+//	public void receiveMessage(Location receivedLoc) {
+//		if (receivedLoc == null) return;
+//		Task t = Task.getTask(receivedLoc);
+//		if (t != null && t.isComplete()) {
+//			agent.getExecutedTasks().add(t);
+//		}
+//
+//		if (!agent.getExecutedTasks().contains(t)) {
+//			this.locToGoto = receivedLoc;
+//			setBroadcastReceived(true);
+//		}
+//	}
 
 	/**
 	 * Broadcasts any received message to subordinates (if any). This is a recursive
