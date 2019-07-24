@@ -136,7 +136,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
             agent.getExecutedTasks().add(t);
         }
 
-        if (!agent.getExecutedTasks().contains(t)) {
+        if (!agent.getExecutedTasks().contains(t) && this.locToGoto == null) {
         	this.locToGoto = receivedLoc;
             setBroadcastReceived(true);
         }
