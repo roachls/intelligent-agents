@@ -47,7 +47,8 @@ public class NeighborhoodStrategy extends CommunicatingAgentStrategy {
 		RANDOM.setAlgorithm(a -> {
 			if (isBroadcastReceived()) {
 				setBroadcastReceived(false);
-				state = GOTO;
+				if (!a.getExecutedTasks().contains(Task.getTask(locToGoto)))
+					state = GOTO;
 			} else {
 				a.getLoc().randomMove();
 				if (a.foundNewTask()) {
@@ -78,6 +79,8 @@ public class NeighborhoodStrategy extends CommunicatingAgentStrategy {
 				state = RANDOM;
 			}
 		});
+		
+		this.state = RANDOM;
 	}
 
 	private void addNeighbor(Agent n) {

@@ -25,6 +25,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
 import org.roach.intelligentagents.AgentAppOpts;
+import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.controller.AgentApp;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Task;
@@ -363,9 +364,9 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 */
 	@Override
 	public void propertyChange(final PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals("time")) {
+		if (evt.getPropertyName().equals(PropertyConstants.TIME_TICK)) {
 			jtfTime.setText("Cycles: " + (Integer) evt.getNewValue());
-		} else if (evt.getPropertyName().equals("taskcomplete")) {
+		} else if (evt.getPropertyName().equals(PropertyConstants.TASK_COMPLETE)) {
 			Integer numTasksComplete = (Integer) evt.getNewValue();
 			progressBar.setValue(numTasksComplete);
 			if (numTasksComplete >= agentapp.getNumTasks() * (float) agentapp.getPercentFinished() / 100.0f) {

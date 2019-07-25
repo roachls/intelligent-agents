@@ -16,67 +16,67 @@ public class AgentAppOpts {
 	/**
 	 * width/height of the grid
 	 */
-	@Parameter(names = { "--roomsize" })
+	@Parameter(names = { "--roomsize" }, description="Size of the room in gridcells")
 	public int roomsize = 50;
 
 	/**
 	 * Number of agents in the grid
 	 */
-	@Parameter(names = { "--agents" })
+	@Parameter(names = { "--agents" }, description="Number of agents in the grid")
 	public int agents = 15;
 
 	/**
 	 * Number of tasks in the grid
 	 */
-	@Parameter(names = { "--tasks" })
+	@Parameter(names = { "--tasks" }, description="Number of tasks in the grid")
 	public int tasks = 100;
 
 	/**
 	 * Percentage of tasks to be complete before stopping
 	 */
-	@Parameter(names = { "--stopat" })
+	@Parameter(names = { "--stopat" }, description="Percentage of tasks to be complete before stopping")
 	public int stopat = 100;
 
 	/**
 	 * The strategy to use
 	 */
-	@Parameter(names = { "--strategy" }, converter=ClassConverter.class)
+	@Parameter(names = { "--strategy" }, converter=ClassConverter.class, description="The strategy to use")
 	public Class<? extends AgentStrategy> strategy;
 
 	/**
 	 * Whether to run in batch mode or not
 	 */
-	@Parameter(names = {"--batch"})
+	@Parameter(names = {"--batch"}, description="Enable batch mode")
 	public boolean batch = false;
 	
 	/**
 	 * communications distance
 	 */
-	@Parameter(names = {"--commDist"})
+	@Parameter(names = {"--commDist"}, description="Communications distance")
 	public int commDist = 12;
 	
 	/**
 	 * communications time
 	 */
-	@Parameter(names = {"--commTime"})
+	@Parameter(names = {"--commTime"}, description="Number of ticks an agent broadcasts before turning the receiver off")
 	public int commTime = 3;
 	
 	/**
 	 * 
 	 */
-	@Parameter(names= {"--showHelper"})
+	@Parameter(names= {"--showHelper"}, description="Show helper graphics (comm distance, etc.)")
 	public boolean showHelper = true;
 
 	/**
 	 * 
 	 */
-	@Parameter(names= {"--showGraphics"})
+	@Parameter(names= {"--showGraphics"}, description="Render graphics")
 	public boolean showGraphics = true;
 	
 	/**
 	 * 
 	 */
-	@Parameter(names= {"--cellSize"})
+	@Parameter(names= {"--cellSize"}, description="Size of a cell in pixels")
 	public int cellSize = 6;
 	
 	/**
@@ -88,13 +88,13 @@ public class AgentAppOpts {
 	/**
 	 * Used only by MilitaryStrategy
 	 */
-	@Parameter(names= {"--numSubordinates"})
+	@Parameter(names= {"--numSubordinates"}, description="Max number of subordinates (military strategy only)")
 	public int numSubordinates = 2;
 	
 	/**
 	 * 
 	 */
-	@Parameter(names= {"--numLevels"})
+	@Parameter(names= {"--numLevels"}, description="Number of levels deep a military agent should communicate with subordinates")
 	public int numLevels = 3;
 }
 

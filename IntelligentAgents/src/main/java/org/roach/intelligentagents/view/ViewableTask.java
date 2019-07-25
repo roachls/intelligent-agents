@@ -1,13 +1,14 @@
 package org.roach.intelligentagents.view;
 
-import javax.swing.JComponent;
-
-import org.roach.intelligentagents.model.Task;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+import javax.swing.JComponent;
+
+import org.roach.intelligentagents.PropertyConstants;
+import org.roach.intelligentagents.model.Task;
 
 /**
  * @author Larry S. Roach
@@ -68,7 +69,7 @@ public class ViewableTask extends JComponent implements PropertyChangeListener {
     
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals("taskexecute")) {
+		if (evt.getPropertyName().equals(PropertyConstants.TASK_EXECUTE)) {
 			color = null;
 			color = new Color(0, (Integer)evt.getNewValue() * COLOR_STEP, 0);
 		} else if (evt.getPropertyName().equals("taskcomplete")) {

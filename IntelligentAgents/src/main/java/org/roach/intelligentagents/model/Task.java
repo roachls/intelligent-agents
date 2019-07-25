@@ -9,9 +9,12 @@
  */
 
 package org.roach.intelligentagents.model;
-import java.beans.*;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Random;
+
+import org.roach.intelligentagents.PropertyConstants;
 
 
 /**
@@ -163,13 +166,13 @@ public final class Task implements ISimItem {
             float pUp = rand.nextFloat(); // Pick a random float
             if (pUp < TASK_COMPLETE_PROBABILITY) {
                 prio++;
-                mPcs.firePropertyChange("taskexecute", prio-1, prio);
+                mPcs.firePropertyChange(PropertyConstants.TASK_EXECUTE, prio-1, prio);
             }
         } else // if task is already complete
             return;
         if (isComplete()) { // If task is now complete, let listeners know
             numTasksComplete++;
-            mPcs.firePropertyChange("taskcomplete", numTasksComplete-1, numTasksComplete);
+            mPcs.firePropertyChange(PropertyConstants.TASK_COMPLETE, numTasksComplete-1, numTasksComplete);
         }
     }
     /**

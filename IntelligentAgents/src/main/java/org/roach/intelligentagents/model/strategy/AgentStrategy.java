@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.roach.intelligentagents.AgentAppOpts;
+import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.State;
 import org.roach.intelligentagents.model.TaskToDo;
@@ -77,9 +78,9 @@ public abstract class AgentStrategy {
 	 * delegated back to the state.
 	 */
 	public void doAction() {
-		agent.getmPcs().firePropertyChange("prepare_to_act", null, null);
+		agent.getmPcs().firePropertyChange(PropertyConstants.PREPARE_TO_ACT, null, null);
 		state.doAction();
-		agent.getmPcs().firePropertyChange("update_grid", null, null);
+		agent.getmPcs().firePropertyChange(PropertyConstants.UPDATE_GRID, null, null);
 	}
 
 	/**
