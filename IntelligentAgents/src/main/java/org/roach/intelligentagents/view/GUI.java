@@ -108,6 +108,23 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		mainPanel.setBackground(Color.white);
 		mainPanel.setPreferredSize(new Dimension(mainPanelSize, mainPanelSize));
 		mainPanel.addPropertyChangeListener(this);
+		mainPanel.addMouseWheelListener(e -> {
+			if (e.isControlDown()) {
+				int scrollAmount = e.getWheelRotation();
+				// negative = "up", positive = "down"
+				if (scrollAmount < 0) {
+					ViewableTask.incSquareSize();
+					ViewableAgent.incSquareSize();
+				} else if (scrollAmount > 0) {
+					ViewableTask.decSquareSize();
+					ViewableAgent.decSquareSize();
+				}
+				int newPanelSize = ViewableAgent.getSquareSize() * agentapp.getRoomSize() + 2;
+				mainPanel.setPreferredSize(new Dimension(newPanelSize, newPanelSize));
+				mainPanel.revalidate();
+				scrollpane.revalidate();
+			}
+		});
 		animator = new Animator(mainPanel);
 
 		// Add bottom portion of screen
@@ -166,41 +183,51 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		optionsPanel.add(toggleHelper);
 		optionsPanel.add(toggleRender);
 		c.add(optionsPanel, BorderLayout.EAST);
-		
+
 		// Add playback buttons
 		JPanel playbackCtlPanel = new JPanel();
-		
+
 		rewindBtn = new JButton();
-		rewindBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Rewind24.gif"), "start/pause icon"));
+		rewindBtn.setIcon(
+				new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Rewind24.gif"),
+						"start/pause icon"));
 		rewindBtn.setEnabled(false);
 		rewindBtn.addActionListener(e -> {
 			// TODO
 		});
-		
+
 		startPauseBtn = new JButton();
-		startPauseBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Play24.gif"), "start/pause icon"));
+		startPauseBtn.setIcon(new ImageIcon(
+				getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Play24.gif"), "start/pause icon"));
 		startPauseBtn.addActionListener(e -> {
 			if (animator.isStarted()) {
 				if (startPauseBtn.isEnabled()) {
 					if (animator.isPaused()) {
 						stepBtn.setEnabled(false);
 						animator.unpause();
-						startPauseBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Pause24.gif"), "start/pause icon"));
+						startPauseBtn.setIcon(new ImageIcon(
+								getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Pause24.gif"),
+								"start/pause icon"));
 					} else {
 						stepBtn.setEnabled(true);
 						animator.pause();
-						startPauseBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Play24.gif"), "start/pause icon"));
+						startPauseBtn.setIcon(new ImageIcon(
+								getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Play24.gif"),
+								"start/pause icon"));
 					}
 				}
 			} else {
 				animator.startSim();
-				startPauseBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Pause24.gif"), "start/pause icon"));
+				startPauseBtn.setIcon(new ImageIcon(
+						getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Pause24.gif"),
+						"start/pause icon"));
 				stopBtn.setEnabled(true);
 			}
 		});
 
 		stopBtn = new JButton();
-		stopBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Stop24.gif"), "stop icon"));
+		stopBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Stop24.gif"),
+				"stop icon"));
 		stopBtn.setEnabled(false);
 		stopBtn.addActionListener(e -> {
 			animator.stopSim();
@@ -210,9 +237,10 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 			startPauseBtn.setEnabled(false);
 			stepBtn.setEnabled(false);
 		});
-		
+
 		stepBtn = new JButton();
-		stepBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/StepForward24.gif"), "step icon"));
+		stepBtn.setIcon(new ImageIcon(
+				getClass().getClassLoader().getResource("toolbarButtonGraphics/media/StepForward24.gif"), "step icon"));
 		stepBtn.setEnabled(false);
 		stepBtn.addActionListener(e -> {
 			animator.step();
@@ -263,8 +291,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	/**
 	 * Called whenever the window receives focus; not implemented
 	 * 
-	 * @param e
-	 *            The activation event
+	 * @param e The activation event
 	 */
 	@Override
 	public void windowActivated(final WindowEvent e) {
@@ -273,8 +300,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	/**
 	 * Called whenever the window loses focus; not implemented
 	 * 
-	 * @param e
-	 *            The window deactivation event
+	 * @param e The window deactivation event
 	 */
 	@Override
 	public void windowDeactivated(final WindowEvent e) {
@@ -283,8 +309,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	/**
 	 * Called when the window is "un-minimized"; resumes the simulation.
 	 * 
-	 * @param e
-	 *            The window deiconification event
+	 * @param e The window deiconification event
 	 */
 	@Override
 	public void windowDeiconified(final WindowEvent e) {
@@ -294,8 +319,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	/**
 	 * Called when the window is minimized; pauses the sim.
 	 * 
-	 * @param e
-	 *            The window minimization event
+	 * @param e The window minimization event
 	 */
 	@Override
 	public void windowIconified(final WindowEvent e) {
@@ -305,8 +329,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	/**
 	 * Called when the window close button is pressed; stops the simulation.
 	 * 
-	 * @param e
-	 *            The window close event
+	 * @param e The window close event
 	 */
 	@Override
 	public void windowClosing(final WindowEvent e) {
@@ -317,8 +340,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 * Called when the window has been closed; does nothing (required by
 	 * WindowListener interface).
 	 * 
-	 * @param e
-	 *            The window closed event
+	 * @param e The window closed event
 	 */
 	@Override
 	public void windowClosed(final WindowEvent e) {
@@ -328,8 +350,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 * Called when the window is opened; does nothing (required by WindowListener
 	 * interface).
 	 * 
-	 * @param e
-	 *            The window opening event
+	 * @param e The window opening event
 	 */
 	@Override
 	public void windowOpened(final WindowEvent e) {
@@ -338,8 +359,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	/**
 	 * Called when a property is changed in the Animator; updates GUI information.
 	 * 
-	 * @param evt
-	 *            The property change that has occurred.
+	 * @param evt The property change that has occurred.
 	 */
 	@Override
 	public void propertyChange(final PropertyChangeEvent evt) {

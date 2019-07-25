@@ -26,11 +26,10 @@ public class ViewableTask extends JComponent implements PropertyChangeListener {
     /** The amount of green to add to each task as it gets more complete. */
     private static final int COLOR_STEP = MAX_COLOR / Task.getTaskComplete();
     /** The size to draw the graphical square. */
-    private static int squareSize = INITIAL_ZOOM_FACTOR;
+    private static volatile int squareSize = INITIAL_ZOOM_FACTOR;
     /** The task this object draws */
     private Task task;
     private Color color = new Color(0, 0, 0);
-    int x, y, width, height;
     
     /**
      * Sets the onscreen size of the task.
@@ -39,6 +38,16 @@ public class ViewableTask extends JComponent implements PropertyChangeListener {
     public static void setSquareSize(final int aSquareSize) {
         squareSize = aSquareSize;
     }
+    
+    public static void decSquareSize() {
+    	if (squareSize > 1)
+    		squareSize--;
+    }
+    
+    public static void incSquareSize() {
+    	squareSize++;
+    }
+    
     /**
      * Draws the Task on the screen.
      * @param g The graphics context in which to draw
@@ -47,7 +56,7 @@ public class ViewableTask extends JComponent implements PropertyChangeListener {
             // Calculate color of square based on priority of task
             g.setColor(color);
             // Draw the square
-            g.fillRect(x, y, width, height);
+            g.fillRect(task.getLocation().getX() * squareSize + 1, task.getLocation().getY() * squareSize + 1, squareSize - 1, squareSize - 1);
     }
 
     /**
@@ -55,10 +64,6 @@ public class ViewableTask extends JComponent implements PropertyChangeListener {
      */
     public ViewableTask(Task t) {
     	task = t;
-    	x = task.getLocation().getX() * squareSize + 1;
-    	y = task.getLocation().getY() * squareSize + 1;
-    	width = squareSize - 1;
-    	height = squareSize - 1;
     }
     
 	@Override

@@ -12,9 +12,17 @@ import org.roach.intelligentagents.model.Agent;
  */
 public class ViewableAgent extends JComponent {
 
+	/**
+	 * Getter for 
+	 * @return the squareSize
+	 */
+	public static int getSquareSize() {
+		return squareSize;
+	}
+
 	protected Agent agent; // The agent this object is displaying
 	/** The size of the square to be displayed. */
-	protected static int squareSize = 6;
+	protected static volatile int squareSize = 6;
 	/**
 	 * 
 	 */
@@ -35,6 +43,15 @@ public class ViewableAgent extends JComponent {
 	 */
 	public static void setSquareSize(int aSquareSize) {
 		squareSize = aSquareSize;
+	}
+	
+	public static void decSquareSize() {
+		if (squareSize > 1)
+			squareSize--;
+	}
+	
+	public static void incSquareSize() {
+		squareSize++;
 	}
 
 	/**

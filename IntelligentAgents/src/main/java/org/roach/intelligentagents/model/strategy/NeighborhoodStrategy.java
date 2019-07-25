@@ -99,7 +99,7 @@ public class NeighborhoodStrategy extends CommunicatingAgentStrategy {
 			agent.getExecutedTasks().add(t);
 		}
 
-		if (!agent.getExecutedTasks().contains(t)) {
+		if (!(agent.getExecutedTasks().contains(t) || this.locToGoto == null || this.locToGoto.equals(receivedLoc))) {
 			this.locToGoto = receivedLoc;
 			notifyNeighbors(receivedLoc);
 			setBroadcastReceived(true);
