@@ -1,8 +1,10 @@
 package org.roach.intelligentagents.model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,7 +16,7 @@ import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
  *
  */
 public class SimulationGrid implements PropertyChangeListener {
-	private Set<Agent>[][] grid;
+	private List<List<Set<Agent>>> grid;
 	private int gridSize;
     /**
      * A table of sets of agents. This data structure is used to greatly speed
@@ -25,19 +27,19 @@ public class SimulationGrid implements PropertyChangeListener {
      */
     private Map<Integer, HashSet<Integer>> xRef;
     
-	private class AgentList extends HashSet<Agent> {
-		/**
-		 * serial Version UID
-		 */
-		private static final long serialVersionUID = -3358985673880477446L;
-	}
-	
 	/**
 	 * @param gridSize
 	 */
 	public SimulationGrid(int gridSize) {
 		this.gridSize = gridSize;
-		grid = new AgentList[gridSize][gridSize];
+		grid = new ArrayList<List<Set<Agent>>>();
+		for (int x = 0; x < gridSize; x++) {
+			List<Set<Agent>> row = new ArrayList<Set<Agent>>();
+			for (int y = 0; y < gridSize; y++) {
+				row.add(new HashSet<Agent>());
+			}
+			grid.add(row);
+		}
 		xRef = new HashMap<Integer, HashSet<Integer>>();
 	}
 	
@@ -94,11 +96,7 @@ public class SimulationGrid implements PropertyChangeListener {
      * @param a The agent to be added
      */
     private void addAgentToCell(Agent a) {
-    	if (grid[a.getLoc().getX()][a.getLoc().getY()] == null) {
-    		grid[a.getLoc().getX()][a.getLoc().getY()] = new AgentList();
-    	}
-    	// Add the agent to the set
-    	grid[a.getLoc().getX()][a.getLoc().getY()].add(a);
+    	grid.get(a.getLoc().getX()).get(a.getLoc().getY()).add(a);
     }
     
     /**
@@ -107,7 +105,7 @@ public class SimulationGrid implements PropertyChangeListener {
      * @param a The agent to be removed
      */
     private void removeAgentFromCell(Agent a) {
-        grid[a.getLoc().getX()][a.getLoc().getY()].remove(a);
+        grid.get(a.getLoc().getX()).get(a.getLoc().getY()).remove(a);
     }
     
     /**
@@ -139,7 +137,7 @@ public class SimulationGrid implements PropertyChangeListener {
                         // communicate with itself)
                         if (loc.isInCircle(checkLoc, commDistSq)) // If the location is within broadcast range, add
                         // all agents in that location to the list
-                            list.addAll(grid[checkLoc.getX()][checkLoc.getY()]);
+                            list.addAll(grid.get(checkLoc.getX()).get(checkLoc.getY()));
                     }
                 }
             }

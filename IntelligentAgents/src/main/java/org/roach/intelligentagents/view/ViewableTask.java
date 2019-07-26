@@ -41,7 +41,7 @@ public class ViewableTask extends JComponent implements PropertyChangeListener {
     }
     
     public static void decSquareSize() {
-    	if (squareSize > 1)
+    	if (squareSize > 2)
     		squareSize--;
     }
     

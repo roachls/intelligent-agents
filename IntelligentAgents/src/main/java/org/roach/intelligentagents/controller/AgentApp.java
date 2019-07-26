@@ -13,7 +13,11 @@ import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
 import org.roach.intelligentagents.model.SimulationGrid;
 import org.roach.intelligentagents.model.strategy.AgentStrategy;
+import org.roach.intelligentagents.model.strategy.Strategy;
 import org.roach.intelligentagents.view.GUI;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
@@ -31,6 +35,8 @@ public final class AgentApp {
 	 * @param args Command-line arguments (if any)
 	 */
 	public static void main(final String[] args) {
+//		findAllStrategies();
+		
 		AgentAppOpts options = new AgentAppOpts();
 		JCommander jCommander = JCommander.newBuilder().addObject(options).build();
 		try {
@@ -47,6 +53,15 @@ public final class AgentApp {
 		GUI gui = new GUI(aa, options);
 		if (aa.isBatchMode())
 			gui.getAnimator().startSim();
+	}
+
+	private static void findAllStrategies() {
+		ClassPathScanningCandidateComponentProvider scanner =
+				new ClassPathScanningCandidateComponentProvider(false);
+		scanner.addIncludeFilter(new AnnotationTypeFilter(Strategy.class));
+		for (BeanDefinition bd : scanner.findCandidateComponents("org.roach")) {
+			System.out.println(bd.getBeanClassName());
+		}
 	}
 
 	/** Determines agent type. */

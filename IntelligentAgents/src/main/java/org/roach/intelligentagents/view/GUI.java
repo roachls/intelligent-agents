@@ -30,6 +30,8 @@ import org.roach.intelligentagents.controller.AgentApp;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Task;
 import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
+import org.roach.intelligentagents.view.strategy.CommunicatingViewStrategy;
+import org.roach.intelligentagents.view.strategy.DefaultViewStrategy;
 
 /**
  * @author Larry S. Roach
@@ -111,19 +113,24 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		mainPanel.addPropertyChangeListener(this);
 		mainPanel.addMouseWheelListener(e -> {
 			if (e.isControlDown()) {
+				animator.pause();
 				int scrollAmount = e.getWheelRotation();
 				// negative = "up", positive = "down"
 				if (scrollAmount < 0) {
-					ViewableTask.incSquareSize();
-					ViewableAgent.incSquareSize();
-				} else if (scrollAmount > 0) {
-					ViewableTask.decSquareSize();
-					ViewableAgent.decSquareSize();
+					cellSize++;
+				} else if (scrollAmount > 0 && cellSize > 2) {
+					cellSize--;
 				}
-				int newPanelSize = ViewableAgent.getSquareSize() * agentapp.getRoomSize() + 2;
-				mainPanel.setPreferredSize(new Dimension(newPanelSize, newPanelSize));
+				ViewableTask.setSquareSize(cellSize);
+				ViewableAgent.setSquareSize(cellSize);
+				mainPanelSize = cellSize * agentapp.getRoomSize() + 2;
+				Dimension newSize = new Dimension(mainPanelSize, mainPanelSize);
+				mainPanel.setPreferredSize(newSize);
+				mainPanel.setMinimumSize(newSize);
+				mainPanel.setSize(newSize);
 				mainPanel.revalidate();
 				scrollpane.revalidate();
+				animator.unpause();
 			}
 		});
 		animator = new Animator(mainPanel);
@@ -270,7 +277,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 			t.addPropertyChangeListener(vt);
 			mainPanel.add(vt);
 		}
-		initAgents();
+		initAgents(Agent.getAgents().get(0).getStrategy() instanceof CommunicatingAgentStrategy);
 		pack(); // Makes the main window just the right size to hold everything
 		setResizable(true);
 		setVisible(!agentapp.isBatchMode()); // Make the window visible
@@ -279,13 +286,14 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	/**
 	 * Initialize all agents and add them to the panel for display.
 	 */
-	private void initAgents() {
+	private void initAgents(boolean isCommunicating) {
 		for (Agent a : Agent.getAgents()) {
-			if (a.getStrategy() instanceof CommunicatingAgentStrategy)
-				mainPanel.add(new CommunicatingViewableAgent(a));
-			else
-				mainPanel.add(new ViewableAgent(a));
+			mainPanel.add(new ViewableAgent(a));
 		}
+		if (isCommunicating)
+			ViewableAgent.setViewStrategy(new CommunicatingViewStrategy());
+		else
+			ViewableAgent.setViewStrategy(new DefaultViewStrategy());
 	}
 
 	/* WindowListener Methods */
