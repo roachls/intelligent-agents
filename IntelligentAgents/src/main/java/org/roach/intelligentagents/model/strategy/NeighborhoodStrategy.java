@@ -14,6 +14,7 @@ import org.roach.intelligentagents.model.TaskToDo;
  * @author Larry S. Roach
  *
  */
+@Strategy
 public class NeighborhoodStrategy extends CommunicatingAgentStrategy {
 
 	private int numNeighbors = 3;

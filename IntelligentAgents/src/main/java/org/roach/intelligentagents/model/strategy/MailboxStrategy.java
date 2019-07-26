@@ -14,10 +14,11 @@ import org.roach.intelligentagents.model.TaskToDo;
  * @author Larry S. Roach
  *
  */
+@Strategy
 public class MailboxStrategy extends CommunicatingAgentStrategy {
 	/** The shared mailbox associated with all Mailbox agents. */
 	static Mailbox mailbox = new Mailbox();
-	private Optional<TaskToDo> taskToDo;
+	private TaskToDo taskToDo;
 	
 	/**
 	 * @param agent
@@ -34,7 +35,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 					search();
 				} else {
 					if (near(msg.location())) {
-						taskToDo = Optional.of(new TaskToDo(msg.location().clone()));
+						taskToDo = new TaskToDo(msg.location().clone());
 						state = GOTO;
 					} else {
 						mailbox.postMessage(l);
@@ -55,7 +56,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 				if (!t.isComplete()) {
 					mailbox.postMessage(a.getLoc().clone());
 				}
-				taskToDo = Optional.empty();
+				taskToDo = null;
 				state = RANDOM;
 			} else if (a.foundNewTask()) {
 				a.executeTask();
@@ -69,7 +70,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 
 	@Override
 	public Optional<TaskToDo> getTaskToDo() {
-		return taskToDo;
+		return taskToDo != null ? Optional.of(taskToDo) : Optional.empty();
 	}
 
 	/**

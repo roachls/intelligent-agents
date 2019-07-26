@@ -23,6 +23,7 @@ import org.roach.intelligentagents.model.TaskToDo;
  * chain to their subordinates.
  * @author L. Stephen Roach
  */
+@Strategy
 public class MilitaryStrategy extends CommunicatingAgentStrategy {
 	private int numSubordinates = 2;
 	private int numLevels = 3;
@@ -35,8 +36,8 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
 	@Override
 	public void setOptions(AgentAppOpts options) {
 		super.setOptions(options);
-		this.numSubordinates = options.numSubordinates;
-		this.numLevels = options.numLevels;
+		setNumLevels(options.numLevels);
+		setNumSubordinates(options.numSubordinates);
         // For all agents with ID not 0 or 1, they should have two subordinates.
         // I.e., agent 0 has subordinate agent 1. Agent 1 has subordinates 2 and
         // 3. Agent 2 has subordinates 4 and 5, etc.
@@ -150,5 +151,37 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
 	@Override
 	public List<Agent> getCommunicants() {
 		return subordinates;
+	}
+
+	/**
+	 * Getter for 
+	 * @return the numLevels
+	 */
+	public int getNumLevels() {
+		return numLevels;
+	}
+
+	/**
+	 * Setter for 
+	 * @param numLevels the numLevels to set
+	 */
+	public void setNumLevels(int numLevels) {
+		this.numLevels = numLevels;
+	}
+
+	/**
+	 * Getter for 
+	 * @return the numSubordinates
+	 */
+	public int getNumSubordinates() {
+		return numSubordinates;
+	}
+
+	/**
+	 * Setter for 
+	 * @param numSubordinates the numSubordinates to set
+	 */
+	public void setNumSubordinates(int numSubordinates) {
+		this.numSubordinates = numSubordinates;
 	}
 }

@@ -20,6 +20,7 @@ import org.roach.intelligentagents.model.TaskToDo;
  * @author L. Stephen Roach
  * @version 1.0
  */
+@Strategy
 public class SearchStrategy extends AgentStrategy {
 
 	private boolean starting = true;

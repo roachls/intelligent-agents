@@ -13,6 +13,7 @@ import org.roach.intelligentagents.model.TaskToDo;
  *         Seeker. A Seeker can only be in Random or Goto. A Finder can only be
  *         in Random or RandomComms.
  */
+@Strategy
 public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 
 	protected boolean isFinder;

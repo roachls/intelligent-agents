@@ -24,6 +24,7 @@ import org.roach.intelligentagents.model.TaskToDo;
  * be virtually ignored.
  * @author L. Stephen Roach
  */
+@Strategy
 public class PrioritizingStrategy extends CommunicatingAgentStrategy {
 	protected final PriorityQueue<TaskToDo> taskQueue = new PriorityQueue<TaskToDo>();
 	protected TaskToDo taskToDo;

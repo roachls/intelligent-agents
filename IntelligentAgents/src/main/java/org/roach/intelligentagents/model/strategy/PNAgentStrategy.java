@@ -14,6 +14,7 @@ import org.roach.intelligentagents.model.TaskToDo;
  * @author Larry S. Roach
  *
  */
+@Strategy
 public class PNAgentStrategy extends PrioritizingStrategy {
 
 	private int numNeighbors = 3;
