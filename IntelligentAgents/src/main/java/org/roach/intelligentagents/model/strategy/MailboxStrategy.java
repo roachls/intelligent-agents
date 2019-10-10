@@ -1,10 +1,13 @@
 package org.roach.intelligentagents.model.strategy;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
 import org.roach.intelligentagents.model.Task;
@@ -19,52 +22,15 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 	/** The shared mailbox associated with all Mailbox agents. */
 	static Mailbox mailbox = new Mailbox();
 	private TaskToDo taskToDo;
+	@SuppressWarnings("null")
+	@NonNull private final List<Agent> communicants = Collections.unmodifiableList(new ArrayList<>());
 	
 	/**
 	 * @param agent
 	 * 
 	 */
-	public MailboxStrategy(Agent agent) {
+	public MailboxStrategy(@NonNull final Agent agent) {
 		super(agent);
-		RANDOM.setAlgorithm(a -> {
-			if (mailbox.messagesExist()) {
-				Mailbox.MailMessage msg = mailbox.getMessage();
-				Location l = msg.location().clone();
-				if (a.hasDoneAlready(Task.getTask(l))) {
-					mailbox.postMessage(l);
-					search();
-				} else {
-					if (near(msg.location())) {
-						taskToDo = new TaskToDo(msg.location().clone());
-						state = GOTO;
-					} else {
-						mailbox.postMessage(l);
-						search();
-					}
-				}
-			} else {
-				search();
-			}
-
-		});
-
-		GOTO.setAlgorithm(a -> {
-			getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
-			if (reachedTask()) {
-				a.executeTask();
-				Task t = Task.getTask(a.getLoc());
-				if (!t.isComplete()) {
-					mailbox.postMessage(a.getLoc().clone());
-				}
-				taskToDo = null;
-				state = RANDOM;
-			} else if (a.foundNewTask()) {
-				a.executeTask();
-				if (!Task.isTaskComplete(a.getLoc())) {
-					mailbox.postMessage(a.getLoc().clone());
-				}
-			}
-		});
 		state = RANDOM;
 	}
 
@@ -78,7 +44,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 	 * If the task isn't complete, post a message about it.
 	 */
 	private void search() {
-		agent.getLoc().randomMove();
+		agent.setLoc(agent.getLoc().randomMove());
 		if (agent.foundNewTask()) {
 			agent.executeTask();
 			if (!Task.isTaskComplete(agent.getLoc())) {
@@ -109,7 +75,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 	static class Mailbox {
 
 		/** The deque of messages */
-		Deque<MailMessage> messages = new ArrayDeque<MailMessage>();
+		Deque<MailMessage> messages = new ArrayDeque<>();
 
 		/**
 		 * Add a message to the deque
@@ -180,9 +146,8 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 			public boolean equals(Object o) {
 				if (o instanceof MailMessage) {
 					return (loc == ((MailMessage) o).loc);
-				} else {
-					throw new IllegalArgumentException();
 				}
+				throw new IllegalArgumentException();
 			}
 
 			/**
@@ -198,7 +163,57 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 	}
 
 	@Override
-	public List<Agent> getCommunicants() {
-		return null;
+	@NonNull public List<Agent> getCommunicants() {
+		return communicants;
+	}
+
+	/**
+	 * 
+	 * @see org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy#initStates()
+	 */
+	@Override
+	protected void initStates() {
+		super.initStates();
+		RANDOM.setAgent(this.agent);
+		RANDOM.setAlgorithm(a -> {
+			if (mailbox.messagesExist()) {
+				Mailbox.MailMessage msg = mailbox.getMessage();
+				Location l = msg.location().clone();
+				if (a.hasDoneAlready(Task.getTask(l))) {
+					mailbox.postMessage(l);
+					search();
+				} else {
+					if (near(msg.location())) {
+						taskToDo = new TaskToDo(msg.location().clone());
+						state = GOTO;
+					} else {
+						mailbox.postMessage(l);
+						search();
+					}
+				}
+			} else {
+				search();
+			}
+
+		});
+
+		GOTO.setAgent(this.agent);
+		GOTO.setAlgorithm(a -> {
+			getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
+			if (reachedTask()) {
+				a.executeTask();
+				Task t = Task.getTask(a.getLoc());
+				if (t != null && !t.isComplete()) {
+					mailbox.postMessage(a.getLoc().clone());
+				}
+				taskToDo = null;
+				state = RANDOM;
+			} else if (a.foundNewTask()) {
+				a.executeTask();
+				if (!Task.isTaskComplete(a.getLoc())) {
+					mailbox.postMessage(a.getLoc().clone());
+				}
+			}
+		});
 	}
 }

@@ -1,8 +1,11 @@
 package org.roach.intelligentagents.model.strategy;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Task;
 import org.roach.intelligentagents.model.TaskToDo;
@@ -19,17 +22,41 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 	protected boolean isFinder;
 	protected int timeSinceLastBroadcast = 0;
 	protected int timeSinceLastFound = 0;
+	@SuppressWarnings("null")
+	@NonNull
+	private final List<Agent> communicants = Collections.unmodifiableList(new ArrayList<>()); 
 
 	/**
 	 * @param agent
 	 * 
 	 */
-	public FinderDoerStrategy(Agent agent) {
+	public FinderDoerStrategy(@NonNull final Agent agent) {
 		super(agent);
 		this.isFinder = Math.random() > 0.7;
-		
+		this.state = RANDOM;
+	}
+
+	@Override
+	public Optional<TaskToDo> getTaskToDo() {
+		return Optional.empty();
+	}
+
+	@Override
+	@NonNull
+	public List<Agent> getCommunicants() {
+		return communicants;
+	}
+
+	/**
+	 * 
+	 * @see org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy#initStates()
+	 */
+	@Override
+	protected void initStates() {
+		super.initStates();
+		RANDOM.setAgent(this.agent);
 		RANDOM.setAlgorithm(a -> {
-			a.getLoc().randomMove();
+			a.setLoc(a.getLoc().randomMove());
 			if (isFinder) {
 				if (a.foundNewTask()) {
 					timeSinceLastFound = 0;
@@ -61,10 +88,11 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 			}
 		});
 
+		RANDOMCOMMS.setAgent(this.agent);
 		RANDOMCOMMS.setAlgorithm(a -> {
 			assert (isFinder) : "Illegal state reached: Seeker in Comms state.";
 			sendMessageIfPossible(() -> state = RANDOM);
-			a.getLoc().randomMove();
+			a.setLoc(a.getLoc().randomMove());
 			if (agent.foundNewTask()) {
 				agent.executeTask();
 				initComms();
@@ -73,6 +101,7 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 
 		});
 
+		GOTO.setAgent(this.agent);
 		GOTO.setAlgorithm(a -> {
 			assert (!isFinder) : "Illegal state reached: Finder in Goto state";
 			if (getTaskToDo().isEmpty()) {
@@ -91,16 +120,5 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 			}
 
 		});
-		this.state = RANDOM;
-	}
-
-	@Override
-	public Optional<TaskToDo> getTaskToDo() {
-		return Optional.empty();
-	}
-
-	@Override
-	public List<Agent> getCommunicants() {
-		return null;
 	}
 }

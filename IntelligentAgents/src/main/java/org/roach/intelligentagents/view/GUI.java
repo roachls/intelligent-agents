@@ -144,8 +144,8 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		stats.setLayout(new BoxLayout(stats, BoxLayout.X_AXIS));
 
 		// Make the text-box with the size of the field and number of agents
-		JTextField jtfAgents = new JTextField("Size: " + agentapp.getRoomSize() + " Agents: " + agentapp.getNumAgents()
-				+ " Tasks: " + agentapp.getNumTasks() + " Type: " + agentapp.getStrategyType().getSimpleName());
+		JTextField jtfAgents = new JTextField("Size: " + agentapp.getRoomSize() + " Agents: " + Agent.getNumAgents()
+				+ " Tasks: " + Task.getNumTasks() + " Type: " + agentapp.getStrategyType().getSimpleName());
 		jtfAgents.setEditable(false);
 		stats.add(jtfAgents);
 
@@ -260,7 +260,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		playbackCtlPanel.add(stopBtn);
 		bottom.add(playbackCtlPanel, BorderLayout.CENTER);
 
-		progressBar = new JProgressBar(0, agentapp.getNumTasks());
+		progressBar = new JProgressBar(0, Task.getNumTasks());
 		progressBar.setStringPainted(true);
 		bottom.add(progressBar, "South");
 
@@ -271,7 +271,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollpane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		c.add(scrollpane, "Center");
-		Task.initTaskGrid(agentapp.getNumTasks(), agentapp.getRoomSize(), this);
+		Task.initTaskGrid(Task.getNumTasks(), agentapp.getRoomSize(), this);
 		for (Task t : Task.getTaskList()) {
 			ViewableTask vt = new ViewableTask(t);
 			t.addPropertyChangeListener(vt);
@@ -373,14 +373,14 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	@Override
 	public void propertyChange(final PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(PropertyConstants.TIME_TICK)) {
-			jtfTime.setText("Cycles: " + (Integer) evt.getNewValue());
+			jtfTime.setText("Cycles: " + evt.getNewValue());
 		} else if (evt.getPropertyName().equals(PropertyConstants.TASK_COMPLETE)) {
 			Integer numTasksComplete = (Integer) evt.getNewValue();
 			progressBar.setValue(numTasksComplete);
-			if (numTasksComplete >= agentapp.getNumTasks() * (float) agentapp.getPercentFinished() / 100.0f) {
+			if (numTasksComplete >= Task.getNumTasks() * (float) agentapp.getPercentFinished() / 100.0f) {
 				if (agentapp.isBatchMode()) {
-					System.out.println(agentapp.getRoomSize() + " " + agentapp.getNumTasks() + " "
-							+ agentapp.getNumAgents() + " " + agentapp.getStrategyType() + " " + Animator.getTime());
+					System.out.println(agentapp.getRoomSize() + " " + Task.getNumTasks() + " "
+							+ Agent.getNumAgents() + " " + agentapp.getStrategyType() + " " + Animator.getTime());
 					animator.endProgram();
 				} else {
 					animator.stopSim();

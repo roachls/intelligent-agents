@@ -9,6 +9,8 @@ package org.roach.intelligentagents.model;
 import java.awt.Dimension;
 import java.util.Random;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 /**
  * The Location class encapsulates an (x, y) coordinate along with tools
  * for measuring distance and moving.
@@ -21,11 +23,14 @@ public final class Location implements Cloneable {
     /**
      * The x-coordinate of the Location.
      */
-    private int x;
+    private final int x;
     /**
      * The y-coordinate of the Location.
      */
-    private int y;
+    private final int y;
+    
+    private static final Location nullLocation = new Location(0, 0);
+    
     /**
      * Creates a new instance of Location.
      * @param inputx x-coordinate
@@ -41,8 +46,8 @@ public final class Location implements Cloneable {
      * @param inputY y-coordinate
      */
     public Location(final Integer inputX, final Integer inputY) {
-        x = (int) inputX;
-        y = (int) inputY;
+        x = inputX;
+        y = inputY;
     }
     /**
      * Converts a Location to a java.awt.Dimension.
@@ -103,58 +108,54 @@ public final class Location implements Cloneable {
     /**
      * Moves the Location one square west.
      */
-    public void moveWest() {
-        x--;
+    public Location moveWest() {
+    	return new Location(this.x - 1, this.y);
     }
     /**
      * Moves the Location one square east.
      */
-    public void moveEast() {
-        x++;
+    public Location moveEast() {
+        return new Location(this.x + 1, this.y);
     }
     /**
      * Moves the Location one square north.
      */
-    public void moveNorth() {
-        y--;
+    public Location moveNorth() {
+        return new Location(this.x, this.y - 1);
     }
     /**
      * Moves the Location one square south.
      */
-    public void moveSouth() {
-        y++;
+    public Location moveSouth() {
+        return new Location(this.x, this.y + 1);
     }
     
     /**
      * 
      */
-    public void moveNorthWest() {
-    	moveNorth();
-    	moveWest();
+    public Location moveNorthWest() {
+    	return this.moveNorth().moveWest();
     }
     
     /**
      * 
      */
-    public void moveSouthWest() {
-    	moveSouth();
-    	moveWest();
+    public Location moveSouthWest() {
+    	return this.moveSouth().moveWest();
     }
     
     /**
      * 
      */
-    public void moveNorthEast() {
-    	moveNorth();
-    	moveEast();
+    public Location moveNorthEast() {
+    	return this.moveNorth().moveEast();
     }
     
     /**
      * 
      */
-    public void moveSouthEast() {
-    	moveSouth();
-    	moveEast();
+    public Location moveSouthEast() {
+    	return this.moveSouth().moveEast();
     }
     
     /**
@@ -163,7 +164,7 @@ public final class Location implements Cloneable {
      * @return True if both x and y coordinates are the same in each object
      */
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(final @Nullable Object o) {
         if (!(o instanceof Location)) {
             return false;
         }
@@ -218,7 +219,7 @@ public final class Location implements Cloneable {
 	 * When in Random or Random-Comms state, this method chooses a random direction
 	 * and moves the agent.
 	 */
-	public void randomMove() {
+	public Location randomMove() {
 		Random rand = new Random();
 		// Get a random number between 1 and 8
 		int dir = rand.nextInt(8);
@@ -226,47 +227,40 @@ public final class Location implements Cloneable {
 		case 0:
 			// move north
 			if (y > 0) { // Can't move past the north wall!
-				moveNorth();
+				return moveNorth();
 			}
-			break;
 		case 1:
 			// move east
 			if (x < gridSize - 1) {
 				// Can't move past the east wall!
-				moveEast();
+				return moveEast();
 			}
-			break;
 		case 2:
 			// move south
 			if (y < gridSize - 1) {
 				// Can't move past the south wall!
-				moveSouth();
+				return moveSouth();
 			}
-			break;
 		case 3:
 			// move west
 			if (x > 0) {
 				// Can't move past the west wall!
-				moveWest();
+				return moveWest();
 			}
-			break;
 		case 4:
 			if (x > 0 && y > 0)
-				moveNorthWest();
-			break;
+				return moveNorthWest();
 		case 5:
 			if (x > 0 && y < gridSize - 1)
-				moveSouthWest();
-			break;
+				return moveSouthWest();
 		case 6:
 			if (x < gridSize - 1 && y > 0)
-				moveNorthEast();
-			break;
+				return moveNorthEast();
 		case 7:
 			if (x < gridSize - 1 && y < gridSize - 1)
-				moveSouthEast();
-			break;
+				return moveSouthEast();
 		}
+		return this;
 	}
 	
 	/**
@@ -300,7 +294,7 @@ public final class Location implements Cloneable {
 	 * sought.
 	 * @param other Location to move towards
 	 */
-	void moveTowards(Location other) {
+	Location moveTowards(final Location other) {
 		// Calculate how far the agent is from the task along the X and Y axes
 		int diffx = getXDistance(other);
 		int diffy = getYDistance(other);
@@ -308,25 +302,29 @@ public final class Location implements Cloneable {
 		// Move one step along whichever axis the agent is further from the task
 		if (diffx > 0) {
 			if (diffy > 0)
-				moveNorthWest();
+				return moveNorthWest();
 			else if (diffy < 0)
-				moveSouthWest();
+				return moveSouthWest();
 			else
-				moveWest();
+				return moveWest();
 		} else if (diffx < 0) {
 			if (diffy > 0)
-				moveNorthEast();
+				return moveNorthEast();
 			else if (diffy < 0)
-				moveSouthEast();
+				return moveSouthEast();
 			else
-				moveEast();
+				return moveEast();
 		} else {
 			// diffx == 0
 			if (diffy > 0)
-				moveNorth();
+				return moveNorth();
 			else if (diffy < 0)
-				moveSouth();
+				return moveSouth();
 		}
+		return this;
 	}
 
+	public final static Location nullLocation() {
+		return nullLocation;
+	}
 }

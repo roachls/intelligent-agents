@@ -14,6 +14,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.roach.intelligentagents.PropertyConstants;
 
 
@@ -22,7 +23,6 @@ import org.roach.intelligentagents.PropertyConstants;
  * @author L. Stephen Roach
  */
 public final class Task implements ISimItem {
-// <editor-fold defaultstate="collapsed" desc="Static variables">
     /**
      * A task has this percentage probability of being bumped "up" in
      * completeness when executed.
@@ -31,15 +31,17 @@ public final class Task implements ISimItem {
     /** Constant indicating task completeness. */
     private static final int TASK_COMPLETE = 5;
     /** A grid of tasks in x-y coordinates */
-    private static Task[][] taskGrid;
+    private static Task[][] taskGrid = new Task[0][0];
     /** Number of "complete" tasks */
     private static int numTasksComplete = 0;
     /** List of all tasks */
-    private static ArrayList<Task> taskList;// </editor-fold>
+    private static ArrayList<Task> taskList = new ArrayList<>();
     /** Location of the task within the sim-space. */
     private Location location;
     /** Current priority of the task. */
     private int prio;
+    /** Number of tasks */
+    private static int numTasks;
 
     private PropertyChangeSupport mPcs = new PropertyChangeSupport(this);
     /**
@@ -66,7 +68,11 @@ public final class Task implements ISimItem {
      * @return Size of Tasks array
      */
     public static int getNumTasks() {
-        return taskList.size();
+        return numTasks;
+    }
+    
+    public static void setNumTasks(int numTasks) {
+    	Task.numTasks = numTasks;
     }
 
     /**
@@ -75,20 +81,13 @@ public final class Task implements ISimItem {
      * @param size Size of the playing field
      * @param pcl
      */
-    public static void initTaskGrid(int numTasks, int size, PropertyChangeListener pcl) {
-        if (taskGrid == null) {
-            taskGrid = new Task[size][size];
-
-        }
-        if (taskList == null) {
-            taskList = new ArrayList<Task>();
-
-        }
+    public static void initTaskGrid(int numTasksIn, int size, PropertyChangeListener pcl) {
+        taskGrid = new Task[size][size];
         if (!taskList.isEmpty()) {
             taskList.clear();
 
         }
-        for (int whichTask = 0; whichTask < numTasks; whichTask++) {
+        for (int whichTask = 0; whichTask < numTasksIn; whichTask++) {
             boolean taskPlaced = false;
             Random rand = new Random();
             while (!taskPlaced) { // Keep picking random locations until an unused
@@ -132,7 +131,10 @@ public final class Task implements ISimItem {
      * @return True if the task is complete, false if not
      */
     public static boolean isTaskComplete(Location loc) {
-        return getTask(loc).isComplete();
+    	Task t = getTask(loc);
+    	if (t != null)
+    		return t.isComplete();
+    	return false;
     }
 
     /**
@@ -140,7 +142,7 @@ public final class Task implements ISimItem {
      * @param loc The location of the task
      * @return The task at the given location, or null
      */
-    public static Task getTask(Location loc) {
+    @Nullable public static Task getTask(Location loc) {
         return taskGrid[loc.getX()][loc.getY()];
     }// </editor-fold>
     /**
@@ -199,7 +201,7 @@ public final class Task implements ISimItem {
      * o is null
      */
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(final @Nullable Object o) {
         if (!(o instanceof Task)) {
             return false;
         }

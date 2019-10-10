@@ -12,6 +12,7 @@ import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
 import org.roach.intelligentagents.model.SimulationGrid;
+import org.roach.intelligentagents.model.Task;
 import org.roach.intelligentagents.model.strategy.AgentStrategy;
 import org.roach.intelligentagents.model.strategy.Strategy;
 import org.roach.intelligentagents.view.GUI;
@@ -28,6 +29,16 @@ import com.beust.jcommander.ParameterException;
  * @author L. Stephen Roach
  */
 public final class AgentApp {
+	@SuppressWarnings("unused")
+	private static void findAllStrategies() {
+		ClassPathScanningCandidateComponentProvider scanner =
+				new ClassPathScanningCandidateComponentProvider(false);
+		scanner.addIncludeFilter(new AnnotationTypeFilter(Strategy.class));
+		for (BeanDefinition bd : scanner.findCandidateComponents("org.roach")) {
+			System.out.println(bd.getBeanClassName());
+		}
+	}
+
 	/**
 	 * The main() method. Parses command-line arguments (if any) and creates a new
 	 * AgentApp object, which takes over control.
@@ -49,66 +60,32 @@ public final class AgentApp {
 
 		AgentApp aa = new AgentApp(options);
 		Location.setGridSize(options.roomsize);
-		Agent.initAgents(options.strategy, aa.getNumAgents(), aa.simgrid, options);
+		Agent.initAgents(options.strategy, options.agents, aa.simgrid, options);
+		Task.setNumTasks(options.tasks);
 		GUI gui = new GUI(aa, options);
 		if (aa.isBatchMode())
 			gui.getAnimator().startSim();
 	}
 
-	private static void findAllStrategies() {
-		ClassPathScanningCandidateComponentProvider scanner =
-				new ClassPathScanningCandidateComponentProvider(false);
-		scanner.addIncludeFilter(new AnnotationTypeFilter(Strategy.class));
-		for (BeanDefinition bd : scanner.findCandidateComponents("org.roach")) {
-			System.out.println(bd.getBeanClassName());
-		}
-	}
-
-	/** Determines agent type. */
-	private Class<? extends AgentStrategy> strategyType;
 	/** Determines whether program runs in batch mode. */
 	private boolean batchMode;
-	/** The number of agents. */
-	private int numAgents;
-	/** The number of tasks. */
-	private int numTasks;
 	/** The percentage of tasks that must be complete for the simulation to stop. */
 	private int percentFinished;
 	/** The roomSize of the sim-space. */
 	private int roomSize;
-
 	/** The simulation grid */
 	private SimulationGrid simgrid;
 
+	/** Determines agent type. */
+	private Class<? extends AgentStrategy> strategyType;
+
 	private AgentApp(AgentAppOpts opts) {
 		roomSize = opts.roomsize;
-		numAgents = opts.agents;
-		numTasks = opts.tasks;
+//		numAgents = opts.agents;
 		percentFinished = opts.stopat;
 		batchMode = opts.batch;
 		strategyType = opts.strategy;
 		simgrid = new SimulationGrid(roomSize);
-	}
-
-	/**
-	 * @return type of agent
-	 */
-	public Class<? extends AgentStrategy> getStrategyType() {
-		return strategyType;
-	}
-
-	/**
-	 * @return number of agents
-	 */
-	public int getNumAgents() {
-		return numAgents;
-	}
-
-	/**
-	 * @return number of tasks
-	 */
-	public int getNumTasks() {
-		return numTasks;
 	}
 
 	/**
@@ -123,6 +100,13 @@ public final class AgentApp {
 	 */
 	public int getRoomSize() {
 		return roomSize;
+	}
+
+	/**
+	 * @return type of agent
+	 */
+	public Class<? extends AgentStrategy> getStrategyType() {
+		return strategyType;
 	}
 
 	/**

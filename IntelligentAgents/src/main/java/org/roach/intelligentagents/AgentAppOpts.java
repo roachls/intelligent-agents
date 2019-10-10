@@ -1,5 +1,7 @@
 package org.roach.intelligentagents;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.roach.intelligentagents.model.strategy.AgentStrategy;
 
 import com.beust.jcommander.IStringConverter;
@@ -41,7 +43,7 @@ public class AgentAppOpts {
 	 * The strategy to use
 	 */
 	@Parameter(names = { "--strategy" }, converter=ClassConverter.class, description="The strategy to use")
-	public Class<? extends AgentStrategy> strategy;
+	@NonNull public Class<? extends AgentStrategy> strategy = AgentStrategy.class;
 
 	/**
 	 * Whether to run in batch mode or not
@@ -98,15 +100,15 @@ public class AgentAppOpts {
 	public int numLevels = 3;
 }
 
-class ClassConverter implements IStringConverter<Class<?>> {
+class ClassConverter implements IStringConverter<Class<? extends AgentStrategy>> {
+	@SuppressWarnings({ "unchecked" })
 	@Override
-	public Class<?> convert(String value) {
+	public Class<? extends AgentStrategy> convert(@Nullable String value) {
 		try {
-			return Class.forName(value);
+			return (Class<? extends AgentStrategy>) Class.forName(value);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
+			return AgentStrategy.class;
 		}
 	}
 }

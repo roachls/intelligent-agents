@@ -16,15 +16,6 @@ public class LocationTest {
 	 * 
 	 */
 	@Test
-	public void testLocationCreation() {
-		Location l1 = new Location(0, 0);
-		assertTrue(l1 instanceof org.roach.intelligentagents.model.Location);
-	}
-	
-	/**
-	 * 
-	 */
-	@Test
 	public void testEquals() {
 		Location l1 = new Location(1, 1);
 		Location l2 = new Location(1, 1);

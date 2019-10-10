@@ -5,10 +5,12 @@
  */
 
 package org.roach.intelligentagents.model.strategy;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.PriorityQueue;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
 import org.roach.intelligentagents.model.Task;
@@ -26,16 +28,16 @@ import org.roach.intelligentagents.model.TaskToDo;
  */
 @Strategy
 public class PrioritizingStrategy extends CommunicatingAgentStrategy {
-	protected final PriorityQueue<TaskToDo> taskQueue = new PriorityQueue<TaskToDo>();
+	protected final PriorityQueue<TaskToDo> taskQueue = new PriorityQueue<>();
 	protected TaskToDo taskToDo;
+	@NonNull private final List<Agent> communicants = new ArrayList<>();
 	
 	/**
 	 * @param agent
 	 */
-	public PrioritizingStrategy(Agent agent) {
+	public PrioritizingStrategy(@NonNull final Agent agent) {
 		super(agent);
 		taskToDo = null;
-		state = RANDOM;
 	}
 
     /**
@@ -81,7 +83,7 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
     }
 
 	@Override
-	public List<Agent> getCommunicants() {
-		return null;
+	@NonNull public List<Agent> getCommunicants() {
+		return communicants;
 	}
 }

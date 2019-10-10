@@ -18,7 +18,7 @@ public class State {
 	}
 
 	/** The Color of the state, used by the Agent.draw method */
-    private final Color color;
+    private Color color;
     /** The algorithm that is performed in the State */
     private StateAlgorithm algorithm;
     private Agent agent;
@@ -31,6 +31,9 @@ public class State {
 		this.agent = agent;
 	}
 
+	public State() {
+	}
+	
 	/** 
      * @param c The color that the Agent in this State will be displayed in.
      * @param alg The algorithm called by this state.
@@ -45,9 +48,9 @@ public class State {
 	/** Initial state */
 	public final static State NOT_SET = new State(Color.black, new StateAlgorithm() {
 		@Override
-		public void go(Agent agent) {
+		public void go(final Agent agent) {
 		}
-	}, null);
+	}, new Agent(null));
 
     /**
      * Get the color for this state.
@@ -63,4 +66,12 @@ public class State {
     public void doAction() {
         algorithm.go(agent);
     }
+
+	/**
+	 * Setter for 
+	 * @param color the color to set
+	 */
+	public void setColor(Color color) {
+		this.color = color;
+	}
 }

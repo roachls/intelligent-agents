@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
 
@@ -16,6 +17,7 @@ import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
  *
  */
 public class SimulationGrid implements PropertyChangeListener {
+	// TODO why is this a list of lists of sets of Agents???
 	private List<List<Set<Agent>>> grid;
 	private int gridSize;
     /**
@@ -32,21 +34,28 @@ public class SimulationGrid implements PropertyChangeListener {
 	 */
 	public SimulationGrid(int gridSize) {
 		this.gridSize = gridSize;
-		grid = new ArrayList<List<Set<Agent>>>();
+		grid = new ArrayList<>();
 		for (int x = 0; x < gridSize; x++) {
-			List<Set<Agent>> row = new ArrayList<Set<Agent>>();
+			List<Set<Agent>> row = new ArrayList<>();
 			for (int y = 0; y < gridSize; y++) {
 				row.add(new HashSet<Agent>());
 			}
 			grid.add(row);
 		}
-		xRef = new HashMap<Integer, HashSet<Integer>>();
+		xRef = new HashMap<>();
 	}
 	
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(@Nullable PropertyChangeEvent evt) {
+		if (evt == null)
+			return;
 		String message = evt.getPropertyName();
 		Agent sender = (Agent)evt.getSource();
+		if (sender == null)
+			return;
+		Location newLocation = (Location)evt.getNewValue();
+		if (newLocation == null)
+			return;
 		if (message.equals(PropertyConstants.NEW_AGENT)) {
 	        addAgentToCell(sender);
 	        addAgentToXref(sender);
@@ -54,7 +63,7 @@ public class SimulationGrid implements PropertyChangeListener {
 		    Set<Agent> list = getNearbyAgents(sender.getLoc(), ((CommunicatingAgentStrategy)sender.getStrategy()).getCommDist());
 		    for (Agent receiver : list) { // For each agent in the list
 		        // Send the agent the message
-		        ((CommunicatingAgentStrategy)((Agent) receiver).getStrategy()).receiveMessage((Location)evt.getNewValue());
+		        ((CommunicatingAgentStrategy)receiver.getStrategy()).receiveMessage(newLocation);
 		    }
 		} else if (message.equals(PropertyConstants.PREPARE_TO_ACT)) {
 			removeAgentFromCell(sender);
@@ -118,7 +127,7 @@ public class SimulationGrid implements PropertyChangeListener {
             final int distance) {
         int commDistSq = distance * distance;
         // Initialize the list to return
-        Set<Agent> list = new HashSet<Agent>();
+        Set<Agent> list = new HashSet<>();
         // Calculate the rows to check
         Integer startCheckX = (loc.getX() > distance)
                 ? (loc.getX() - distance) : 0;

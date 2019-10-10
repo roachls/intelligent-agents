@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.model.Agent;
@@ -21,25 +22,28 @@ public abstract class AgentStrategy {
 	/**
 	 * 
 	 */
-	public State RANDOM;
+	public final State RANDOM = new State(Color.black, null, this.agent);
 	/**
 	 * 
 	 */
-	public State GOTO;
+	public final State GOTO = new State(Color.black, null, this.agent);
 	/**
 	 * @param agent 
 	 * 
 	 */
-	public AgentStrategy(Agent agent) {
+	public AgentStrategy(@NonNull final Agent agent) {
 		this.agent = agent;
-		RANDOM = new State(Color.black, a -> {
+	}
+
+	protected void initStates() {
+		assert(agent != null);
+		RANDOM.setAlgorithm(a -> {
 			a.getLoc().randomMove();
 			if (a.foundNewTask()) {
 				a.executeTask();
 			}	
-		}, this.agent);
-
-		
+		});
+		this.state = RANDOM;
 	}
 	
 	/**
@@ -78,6 +82,7 @@ public abstract class AgentStrategy {
 	 * delegated back to the state.
 	 */
 	public void doAction() {
+		assert (agent != null);
 		agent.getmPcs().firePropertyChange(PropertyConstants.PREPARE_TO_ACT, null, null);
 		state.doAction();
 		agent.getmPcs().firePropertyChange(PropertyConstants.UPDATE_GRID, null, null);
@@ -108,4 +113,34 @@ public abstract class AgentStrategy {
 	 * @return any Agents this agent is communicating with
 	 */
 	public abstract List<Agent> getCommunicants();
+	
+//	public final static AgentStrategy emptyStrategy() {
+//		return new AgentStrategy(new Agent(null)) {
+//
+//			@Override
+//			public void setOptions(AgentAppOpts options) {
+//				
+//			}
+//
+//			@Override
+//			public Optional<TaskToDo> getTaskToDo() {
+//				return Optional.empty();
+//			}
+//
+//			@Override
+//			public List<Agent> getCommunicants() {
+//				return Lists.newArrayList();
+//			}
+//			
+//		};
+//	}
+
+	/**
+	 * Setter for 
+	 * @param agent the agent to set
+	 */
+	public void setAgent(@NonNull final Agent agent) {
+		this.agent = agent;
+		initStates();
+	}
 }

@@ -3,6 +3,7 @@ package org.roach.intelligentagents.model.strategy;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
@@ -40,7 +41,7 @@ public class PNAgentStrategy extends PrioritizingStrategy {
      * @param agent 
      * 
      */
-    public PNAgentStrategy(Agent agent) {
+    public PNAgentStrategy(@NonNull final Agent agent) {
     	super(agent);
    		state = RANDOM;
     }
@@ -58,16 +59,16 @@ public class PNAgentStrategy extends PrioritizingStrategy {
     @Override
     public void receiveMessage(Location receivedLoc) {
         Task t = Task.getTask(receivedLoc);
-        TaskToDo taskToDo = new TaskToDo(receivedLoc);
-        if (isBroadcastReceived() || agent.hasDoneAlready(t) || taskQueue.contains(taskToDo))
+        TaskToDo newTaskToDo = new TaskToDo(receivedLoc);
+        if (isBroadcastReceived() || agent.hasDoneAlready(t) || taskQueue.contains(newTaskToDo))
         	return;
         setBroadcastReceived(true);
         // Add the state to the priority queue (not necessarily on top)
-        taskQueue.add(taskToDo);
+        taskQueue.add(newTaskToDo);
         boolean hasDoneAlready = true;
         while (!taskQueue.isEmpty() && hasDoneAlready) {
-            taskToDo = taskQueue.peek();
-            if (agent.hasDoneAlready(Task.getTask(taskToDo.getLocation()))) {
+            newTaskToDo = taskQueue.peek();
+            if (agent.hasDoneAlready(Task.getTask(newTaskToDo.getLocation()))) {
                 taskQueue.poll();
             } else {
             	sendMessageIfPossible(null);

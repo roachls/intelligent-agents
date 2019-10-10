@@ -3,11 +3,14 @@ package org.roach.intelligentagents.model.strategy;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
 import org.roach.intelligentagents.model.Task;
 import org.roach.intelligentagents.model.TaskToDo;
+
+import com.beust.jcommander.internal.Lists;
 
 
 /**
@@ -23,14 +26,45 @@ import org.roach.intelligentagents.model.TaskToDo;
 @Strategy
 public class SearchStrategy extends AgentStrategy {
 
-	private boolean starting = true;
+	enum Directions {
+        NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST, EMPTY
+    }
 
-	/**
+	private Directions dir = Directions.EMPTY;
+	
+    private boolean starting = true;
+    /**
 	 * @param agent 
 	 * 
 	 */
-	public SearchStrategy(Agent agent) {
+	public SearchStrategy(@NonNull final Agent agent) {
 		super(agent);
+		state = RANDOM;
+	}
+
+	@Override
+	public List<Agent> getCommunicants() {
+		return Lists.newArrayList();
+	}
+
+	@Override
+	public Optional<TaskToDo> getTaskToDo() {
+		return Optional.empty();
+	}
+
+	@Override
+	public void setOptions(AgentAppOpts options) {
+		
+	}
+
+	/**
+	 * 
+	 * @see org.roach.intelligentagents.model.strategy.AgentStrategy#initStates()
+	 */
+	@Override
+	protected void initStates() {
+		super.initStates();
+		RANDOM.setAgent(this.agent);
 		RANDOM.setAlgorithm(a -> {
 	        if (starting) {
 	            starting = false;
@@ -42,33 +76,33 @@ public class SearchStrategy extends AgentStrategy {
 	            }
 	            switch (dir) {
 	                case NORTHEAST:
-	                    if (a.getLoc().getY() > 0) a.getLoc().moveNorth();
+	                    if (a.getLoc().getY() > 0) a.setLoc(a.getLoc().moveNorth());
 	                    else {
-	                        a.getLoc().moveEast();
+	                        a.setLoc(a.getLoc().moveEast());
 	                        if (a.foundNewTask()) Task.executeTaskAt(a.getLoc());
 	                        dir = Directions.SOUTHEAST;
 	                    }
 	                    break;
 	                case SOUTHEAST:
-	                    if (a.getLoc().getY() < Location.getGridSize() - 1) a.getLoc().moveSouth();
+	                    if (a.getLoc().getY() < Location.getGridSize() - 1) a.setLoc(a.getLoc().moveSouth());
 	                    else {
-	                        a.getLoc().moveEast();
+	                        a.setLoc(a.getLoc().moveEast());
 	                        if (a.foundNewTask()) Task.executeTaskAt(a.getLoc());
 	                        dir = Directions.NORTHEAST;
 	                    }
 	                    break;
 	                case NORTHWEST:
-	                    if (a.getLoc().getY() > 0) a.getLoc().moveNorth();
+	                    if (a.getLoc().getY() > 0) a.setLoc(a.getLoc().moveNorth());
 	                    else {
-	                        a.getLoc().moveWest();
+	                        a.setLoc(a.getLoc().moveWest());
 	                        if (a.foundNewTask()) Task.executeTaskAt(a.getLoc());
 	                        dir = Directions.SOUTHWEST;
 	                    }
 	                    break;
 	                case SOUTHWEST:
-	                    if (a.getLoc().getY() < Location.getGridSize() - 1) a.getLoc().moveSouth();
+	                    if (a.getLoc().getY() < Location.getGridSize() - 1) a.setLoc(a.getLoc().moveSouth());
 	                    else {
-	                        a.getLoc().moveWest();
+	                        a.setLoc(a.getLoc().moveWest());
 	                        if (a.foundNewTask()) Task.executeTaskAt(a.getLoc());
 	                        dir = Directions.NORTHWEST;
 	                    }
@@ -79,26 +113,5 @@ public class SearchStrategy extends AgentStrategy {
 	        }
 			
 		});
-		state = RANDOM;
-	}
-	
-    enum Directions {
-        NORTHEAST, SOUTHEAST, NORTHWEST, SOUTHWEST
-    }
-    private Directions dir;
-
-	@Override
-	public Optional<TaskToDo> getTaskToDo() {
-		return Optional.empty();
-	}
-
-	@Override
-	public List<Agent> getCommunicants() {
-		return null;
-	}
-
-	@Override
-	public void setOptions(AgentAppOpts options) {
-		
 	}
 }

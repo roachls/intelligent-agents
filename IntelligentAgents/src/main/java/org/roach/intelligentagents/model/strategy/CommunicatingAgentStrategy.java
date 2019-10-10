@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.model.Agent;
@@ -32,7 +33,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 		return commDist;
 	}
 
-	protected Location locToGoto;
+	protected Location locToGoto = Location.nullLocation();
 
 	/**
 	 * @param options
@@ -48,12 +49,12 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	 * The location of the task, if any, that the agent is broadcasting in COMMS
 	 * mode, or going to in GOTO mode.
 	 */
-	protected Location commTaskLoc;
+	protected Location commTaskLoc = Location.nullLocation();
 
 	/**
 	 * 
 	 */
-	public State RANDOMCOMMS;
+	public final State RANDOMCOMMS = new State();
 
 	/** Flag to indicate whether a broadcast has been received. */
 	protected boolean broadcastReceived;
@@ -61,56 +62,15 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	/**
 	 * @param agent
 	 */
-	public CommunicatingAgentStrategy(Agent agent) {
+	public CommunicatingAgentStrategy(@NonNull final Agent agent) {
 		super(agent);
-
-		RANDOM.setAlgorithm(a -> {
-			a.getLoc().randomMove();
-			if (a.foundNewTask()) {
-				a.executeTask();
-				initComms();
-				setState(RANDOMCOMMS);
-			} else if (isBroadcastReceived()) {
-				setBroadcastReceived(false); // reset broadcast flag
-			}
-		});
-
-		/** The Goto state. */
-		GOTO = new State(Color.red, a -> {
-			a.getStrategy().getTaskToDo().ifPresentOrElse((t) -> {
-				if (isBroadcastReceived()) {
-					setBroadcastReceived(false);
-				}
-				getTaskToDo().ifPresent((task) -> a.moveTowards(task.getLocation()));
-				if (a.getStrategy().reachedTask()) {
-					if (!a.hasDoneAlready(Task.getTask(a.getLoc())))
-						a.executeTask(); // execute it and switch back to Random
-					setState(RANDOM);
-				}
-			}, () -> setState(RANDOM)); 
-			
-		}, this.agent);
-
-		// /** The random-comms state */
-		RANDOMCOMMS = new State(Color.blue, a -> {
-			sendMessageIfPossible(() -> state = RANDOM);
-			a.getLoc().randomMove();
-			if (a.foundNewTask()) {
-				a.executeTask();
-				initComms();
-				a.getStrategy().setState(RANDOMCOMMS);
-			} else if (isBroadcastReceived()) {
-				setBroadcastReceived(false);
-				a.getStrategy().setState(GOTO);
-			}
-		}, this.agent);
 	}
 
 	@Override
 	public abstract Optional<TaskToDo> getTaskToDo();
 
 	@Override
-	public abstract List<Agent> getCommunicants();
+	@NonNull public abstract List<Agent> getCommunicants();
 
 	/**
 	 * When an agent is is Random-Comms state, this method is used to "broadcast"
@@ -130,13 +90,12 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
      * @param receivedLoc
      */
     public void receiveMessage(Location receivedLoc) {
-    	if (receivedLoc == null) return;
         Task t = Task.getTask(receivedLoc);
         if (t != null && t.isComplete()) {
             agent.getExecutedTasks().add(t);
         }
 
-        if (!agent.getExecutedTasks().contains(t) && this.locToGoto == null) {
+        if (!agent.getExecutedTasks().contains(t)) {
         	this.locToGoto = receivedLoc;
             setBroadcastReceived(true);
         }
@@ -147,7 +106,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	 */
 	public void initComms() {
 		Task task = Task.getTask(agent.getLoc());
-		if (!task.isComplete()) { // if task isn'task compete
+		if (task != null && !task.isComplete()) { // if task isn'task compete
 			// Important - since loc will be changed later, commTaskLoc must
 			// be a clone of loc, not a reference to it
 			commTaskLoc = agent.getLoc().clone();
@@ -171,6 +130,59 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	 */
 	public boolean isBroadcastReceived() {
 		return broadcastReceived;
+	}
+
+	/**
+	 * 
+	 * @see org.roach.intelligentagents.model.strategy.AgentStrategy#initStates()
+	 */
+	@Override
+	protected void initStates() {
+		super.initStates();
+		RANDOM.setAlgorithm(a -> {
+			a.setLoc(a.getLoc().randomMove());
+			if (a.foundNewTask()) {
+				a.executeTask();
+				initComms();
+				setState(RANDOMCOMMS);
+			} else if (isBroadcastReceived()) {
+				setBroadcastReceived(false); // reset broadcast flag
+			}
+		});
+		RANDOM.setAgent(this.agent);
+
+		/** The Goto state. */
+		GOTO.setAlgorithm(a -> {
+			a.getStrategy().getTaskToDo().ifPresentOrElse((t) -> {
+				if (isBroadcastReceived()) {
+					setBroadcastReceived(false);
+				}
+			},
+			() -> getTaskToDo().ifPresent(task -> a.moveTowards(task.getLocation())));
+			if (a.getStrategy().reachedTask()) {
+				if (!a.hasDoneAlready(Task.getTask(a.getLoc())))
+					a.executeTask(); // execute it and switch back to Random
+				setState(RANDOM);
+			}
+		});
+		GOTO.setAgent(this.agent);
+		GOTO.setColor(Color.red);
+
+		// /** The random-comms state */
+		RANDOMCOMMS.setColor(Color.blue);
+		RANDOMCOMMS.setAlgorithm(a -> {
+			sendMessageIfPossible(() -> state = RANDOM);
+			a.getLoc().randomMove();
+			if (a.foundNewTask()) {
+				a.executeTask();
+				initComms();
+				a.getStrategy().setState(RANDOMCOMMS);
+			} else if (isBroadcastReceived()) {
+				setBroadcastReceived(false);
+				a.getStrategy().setState(GOTO);
+			}
+		});
+		RANDOMCOMMS.setAgent(this.agent);
 	}
 
 }

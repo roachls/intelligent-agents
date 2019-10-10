@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
@@ -27,7 +28,7 @@ import org.roach.intelligentagents.model.TaskToDo;
 public class MilitaryStrategy extends CommunicatingAgentStrategy {
 	private int numSubordinates = 2;
 	private int numLevels = 3;
-	private List<Agent> subordinates = new ArrayList<>();
+	@NonNull private List<Agent> subordinates = new ArrayList<>();
 	
 	/**
 	 * @param options
@@ -38,7 +39,7 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
 		super.setOptions(options);
 		setNumLevels(options.numLevels);
 		setNumSubordinates(options.numSubordinates);
-        // For all agents with ID not 0 or 1, they should have two subordinates.
+        // For all agents with ID not 0, they should have two subordinates.
         // I.e., agent 0 has subordinate agent 1. Agent 1 has subordinates 2 and
         // 3. Agent 2 has subordinates 4 and 5, etc.
         if (agent.getId() > 0) {
@@ -50,44 +51,9 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
      * Constructor. Adds this agent as a subordinate to the "boss" agent.
      * @param agent 
      */
-    public MilitaryStrategy(Agent agent) {
+    public MilitaryStrategy(@NonNull final Agent agent) {
     	super(agent);
     	
-        /*
-         * The actions this agent should do in the RANDOM state.
-         * <ol>
-         * <li>If a message has been received, switch to the GOTO state.</li>
-         * <li>Otherwise, move one cell in a random direction. If this results in
-         * finding a new task, execute it and notify subordinates.</li>
-         * </ol>
-         */
-        RANDOM.setAlgorithm(a -> {
-            if (isBroadcastReceived()) {
-                setBroadcastReceived(false);
-                state = GOTO;
-            } else {
-                a.getLoc().randomMove();
-                if (a.foundNewTask()) {
-                    a.executeTask();
-                    notifySubordinates(a.getLoc(), numLevels);
-                }
-            }
-        });
-        
-        GOTO.setAlgorithm(a -> {
-            getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
-            if (isBroadcastReceived()) {
-                setBroadcastReceived(false);
-                notifySubordinates(locToGoto, numLevels);
-            } else if (reachedTask()) {
-                a.executeTask();
-                notifySubordinates(a.getLoc(), numLevels);
-                state = RANDOM;
-            } else if (a.foundNewTask()) {
-            	a.executeTask();
-            	notifySubordinates(a.getLoc(), numLevels);
-            }
-        });
         state = RANDOM;
     }
     /**
@@ -149,7 +115,7 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
 	 * @return subordinates
 	 */
 	@Override
-	public List<Agent> getCommunicants() {
+	@NonNull public List<Agent> getCommunicants() {
 		return subordinates;
 	}
 
@@ -183,5 +149,51 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
 	 */
 	public void setNumSubordinates(int numSubordinates) {
 		this.numSubordinates = numSubordinates;
+	}
+
+	/**
+	 * 
+	 * @see org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy#initStates()
+	 */
+	@Override
+	protected void initStates() {
+		super.initStates();
+        /*
+         * The actions this agent should do in the RANDOM state.
+         * <ol>
+         * <li>If a message has been received, switch to the GOTO state.</li>
+         * <li>Otherwise, move one cell in a random direction. If this results in
+         * finding a new task, execute it and notify subordinates.</li>
+         * </ol>
+         */
+		RANDOM.setAgent(this.agent);
+        RANDOM.setAlgorithm(a -> {
+            if (isBroadcastReceived()) {
+                setBroadcastReceived(false);
+                state = GOTO;
+            } else {
+                a.setLoc(a.getLoc().randomMove());
+                if (a.foundNewTask()) {
+                    a.executeTask();
+                    notifySubordinates(a.getLoc(), numLevels);
+                }
+            }
+        });
+        
+        GOTO.setAgent(this.agent);
+        GOTO.setAlgorithm(a -> {
+            getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
+            if (isBroadcastReceived()) {
+                setBroadcastReceived(false);
+                notifySubordinates(locToGoto, numLevels);
+            } else if (reachedTask()) {
+                a.executeTask();
+                notifySubordinates(a.getLoc(), numLevels);
+                state = RANDOM;
+            } else if (a.foundNewTask()) {
+            	a.executeTask();
+            	notifySubordinates(a.getLoc(), numLevels);
+            }
+        });
 	}
 }

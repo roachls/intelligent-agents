@@ -13,6 +13,7 @@ import java.awt.Image;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.model.Agent;
 
@@ -29,7 +30,7 @@ public final class Animator implements Runnable {
     /** The JPanel to display everything on */
     private JPanel panel;
     /** The animation thread. */
-    private Thread animatorThread;
+    @Nullable private Thread animatorThread;
     /**
      * Determines whether the simulation is running or not. When this is false,
      * the application terminates.
@@ -52,9 +53,9 @@ public final class Animator implements Runnable {
     /** Determines whether agents are displayed. */
     private boolean showAgents = true;
     /** The double-buffered graphics context in which to render frames. */
-    private Graphics dbg;
+    @Nullable private Graphics dbg;
     /** The buffer image in which to render each new frame. */
-    private Image dbImage = null;
+    @Nullable private Image dbImage = null;
     /** The current master time. */
     private static int time;
     
@@ -62,7 +63,7 @@ public final class Animator implements Runnable {
      * Creates a new instance of Animator.
      * @param p The JPanel to display everything on
      */
-    public Animator(JPanel p) {
+    public Animator(final JPanel p) {
         this.panel = p;
         // Initialize simulation components
         time = 0;
@@ -133,7 +134,8 @@ public final class Animator implements Runnable {
         if (!simOver) { // If the sim isn't paused or complete
             // Update all agents
             for (Agent a : Agent.getAgents()) {
-                a.getStrategy().doAction();
+            	if (a != null)
+            		a.getStrategy().doAction();
             }
             // Display the new time
             time++;
@@ -159,32 +161,33 @@ public final class Animator implements Runnable {
             int windowHeight = panel.getHeight();
             if (dbImage == null) {
                 dbImage = panel.createImage(windowWidth, windowHeight);
-                if (dbImage == null) {
-                    return;
-                } else {
-                    dbg = dbImage.getGraphics();
-                }
+                if (dbImage != null)
+                	dbg = dbImage.getGraphics();
+                else
+                	return;
             }
             // clear the background
-            dbg.clearRect(0, 0, windowWidth, windowHeight);
+            if (dbg != null) {
+            	dbg.clearRect(0, 0, windowWidth, windowHeight);
 
-            for (Component c : panel.getComponents()) {
-            	if (c instanceof ViewableTask) {
-            		ViewableTask t = (ViewableTask)c;
-            		t.draw(dbg);
-            	}
-            }
-            // Now display the agents
-            if (showAgents) {
-                for (Component c : panel.getComponents()) {
-                	if (c instanceof ViewableAgent) {
-                		ViewableAgent a = (ViewableAgent)c;
-                		a.draw(dbg);
-                		if (showHelperGraphics) { // Display helper graphics if selected
-                			a.drawHelperGraphics(dbg);
-                		}
-                	}
-                }
+	            for (Component c : panel.getComponents()) {
+	            	if (c instanceof ViewableTask) {
+	            		ViewableTask t = (ViewableTask)c;
+	            		t.draw(dbg);
+	            	}
+	            }
+	            // Now display the agents
+	            if (showAgents) {
+	                for (Component c : panel.getComponents()) {
+	                	if (c instanceof ViewableAgent) {
+	                		ViewableAgent a = (ViewableAgent)c;
+	                		a.draw(dbg);
+	                		if (showHelperGraphics) { // Display helper graphics if selected
+	                			a.drawHelperGraphics(dbg);
+	                		}
+	                	}
+	                }
+	            }
             }
         }
     }

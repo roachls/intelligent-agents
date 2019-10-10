@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
@@ -18,7 +19,7 @@ import org.roach.intelligentagents.model.TaskToDo;
 public class NeighborhoodStrategy extends CommunicatingAgentStrategy {
 
 	private int numNeighbors = 3;
-	private List<Agent> neighbors = new ArrayList<>(); 
+	@NonNull private List<Agent> neighbors = new ArrayList<>(); 
 
 	/**
 	 * @param options
@@ -42,45 +43,9 @@ public class NeighborhoodStrategy extends CommunicatingAgentStrategy {
 	 * @param agent
 	 * 
 	 */
-	public NeighborhoodStrategy(Agent agent) {
+	public NeighborhoodStrategy(@NonNull final Agent agent) {
 		super(agent);
 
-		RANDOM.setAlgorithm(a -> {
-			if (isBroadcastReceived()) {
-				setBroadcastReceived(false);
-				if (!a.getExecutedTasks().contains(Task.getTask(locToGoto)))
-					state = GOTO;
-			} else {
-				a.getLoc().randomMove();
-				if (a.foundNewTask()) {
-					a.executeTask();
-					notifyNeighbors(a.getLoc());
-				}
-			}
-		});
-
-		/**
-		 * The actions for this agent to take in the GOTO state.
-		 * <ol>
-		 * <li>Move towards the current broadcast location.</li>
-		 * <li>If a message is received, pass it along to subordinates</li>
-		 * <li>If the task is reached, execute it, notify subordinates about it, and
-		 * switch back to RANDOM</li>
-		 * </ol>
-		 */
-		GOTO.setAlgorithm(a -> {
-			getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
-			if (isBroadcastReceived()) {
-				setBroadcastReceived(false);
-				notifyNeighbors(locToGoto);
-			}
-			if (reachedTask()) {
-				a.executeTask();
-				notifyNeighbors(a.getLoc());
-				state = RANDOM;
-			}
-		});
-		
 		this.state = RANDOM;
 	}
 
@@ -139,7 +104,54 @@ public class NeighborhoodStrategy extends CommunicatingAgentStrategy {
 	 * @return neighbors
 	 */
 	@Override
-	public List<Agent> getCommunicants() {
+	@NonNull public List<Agent> getCommunicants() {
 		return neighbors;
+	}
+
+	/**
+	 * 
+	 * @see org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy#initStates()
+	 */
+	@Override
+	protected void initStates() {
+		super.initStates();
+		RANDOM.setAgent(this.agent);
+		RANDOM.setAlgorithm(a -> {
+			if (isBroadcastReceived()) {
+				setBroadcastReceived(false);
+				if (!a.getExecutedTasks().contains(Task.getTask(locToGoto)))
+					state = GOTO;
+			} else {
+				a.setLoc(a.getLoc().randomMove());
+				if (a.foundNewTask()) {
+					a.executeTask();
+					notifyNeighbors(a.getLoc());
+				}
+			}
+		});
+
+		/**
+		 * The actions for this agent to take in the GOTO state.
+		 * <ol>
+		 * <li>Move towards the current broadcast location.</li>
+		 * <li>If a message is received, pass it along to subordinates</li>
+		 * <li>If the task is reached, execute it, notify subordinates about it, and
+		 * switch back to RANDOM</li>
+		 * </ol>
+		 */
+		GOTO.setAgent(this.agent);
+		GOTO.setAlgorithm(a -> {
+			getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
+			if (isBroadcastReceived()) {
+				setBroadcastReceived(false);
+				notifyNeighbors(locToGoto);
+			}
+			if (reachedTask()) {
+				a.executeTask();
+				notifyNeighbors(a.getLoc());
+				state = RANDOM;
+			}
+		});
+		
 	}
 }
