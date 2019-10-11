@@ -33,7 +33,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 		return commDist;
 	}
 
-	protected Location locToGoto = Location.nullLocation();
+	protected Location locToGoto;
 
 	/**
 	 * @param options
@@ -49,7 +49,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	 * The location of the task, if any, that the agent is broadcasting in COMMS
 	 * mode, or going to in GOTO mode.
 	 */
-	protected Location commTaskLoc = Location.nullLocation();
+	protected Location commTaskLoc;
 
 	/**
 	 * 

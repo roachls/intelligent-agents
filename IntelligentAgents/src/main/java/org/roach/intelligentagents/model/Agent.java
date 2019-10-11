@@ -43,7 +43,7 @@ public class Agent implements ISimItem {
 	protected int id;
 
 	/** Location of the agent within the sim-space. */
-	protected Location loc;
+	@NonNull protected Location loc;
 
 	// Setup property-change support
 	@NonNull private final PropertyChangeSupport mPcs = new PropertyChangeSupport(this);
@@ -188,6 +188,7 @@ public class Agent implements ISimItem {
 	 * 
 	 * @return loc
 	 */
+	@NonNull
 	public Location getLoc() {
 		return loc;
 	}
@@ -261,7 +262,7 @@ public class Agent implements ISimItem {
 	 * 
 	 * @param loc the loc to set
 	 */
-	public void setLoc(Location loc) {
+	public void setLoc(@NonNull final Location loc) {
 		this.loc = loc;
 	}
 

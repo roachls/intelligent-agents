@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
@@ -17,7 +18,6 @@ import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
  *
  */
 public class SimulationGrid implements PropertyChangeListener {
-	// TODO why is this a list of lists of sets of Agents???
 	private List<List<Set<Agent>>> grid;
 	private int gridSize;
     /**
@@ -34,9 +34,9 @@ public class SimulationGrid implements PropertyChangeListener {
 	 */
 	public SimulationGrid(int gridSize) {
 		this.gridSize = gridSize;
-		grid = new ArrayList<>();
+		grid = new ArrayList<>(gridSize);
 		for (int x = 0; x < gridSize; x++) {
-			List<Set<Agent>> row = new ArrayList<>();
+			List<Set<Agent>> row = new ArrayList<>(gridSize);
 			for (int y = 0; y < gridSize; y++) {
 				row.add(new HashSet<Agent>());
 			}
@@ -81,7 +81,7 @@ public class SimulationGrid implements PropertyChangeListener {
      * the xRef data structure.
      * @param a The agent to be added
      */
-    private void addAgentToXref(Agent a) {
+    private void addAgentToXref(@NonNull final Agent a) {
         Integer X = a.getLoc().getX();
         // If the HashSet entry doesn't exist, create it
         if (!xRef.containsKey(X)) {
@@ -96,7 +96,7 @@ public class SimulationGrid implements PropertyChangeListener {
      * the xRef data structure.
      * @param a The agent to be removed
      */
-    private void removeAgentFromXref(Agent a) {
+    private void removeAgentFromXref(@NonNull final Agent a) {
         // Remove value from set
         xRef.get(a.getLoc().getX()).remove(a.getLoc().getY());
     }
@@ -104,7 +104,7 @@ public class SimulationGrid implements PropertyChangeListener {
     /**
      * @param a The agent to be added
      */
-    private void addAgentToCell(Agent a) {
+    private void addAgentToCell(@NonNull final Agent a) {
     	grid.get(a.getLoc().getX()).get(a.getLoc().getY()).add(a);
     }
     
@@ -113,7 +113,7 @@ public class SimulationGrid implements PropertyChangeListener {
      * the agentGrid data structure.
      * @param a The agent to be removed
      */
-    private void removeAgentFromCell(Agent a) {
+    private void removeAgentFromCell(@NonNull final Agent a) {
         grid.get(a.getLoc().getX()).get(a.getLoc().getY()).remove(a);
     }
     
@@ -123,7 +123,8 @@ public class SimulationGrid implements PropertyChangeListener {
      * @param loc The location at the center of the search area
      * @param distance The radius to search around the location
      */
-    public Set<Agent> getNearbyAgents(final Location loc,
+    @NonNull
+    public Set<Agent> getNearbyAgents(@NonNull final Location loc,
             final int distance) {
         int commDistSq = distance * distance;
         // Initialize the list to return

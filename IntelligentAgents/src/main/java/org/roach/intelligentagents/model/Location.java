@@ -9,6 +9,7 @@ package org.roach.intelligentagents.model;
 import java.awt.Dimension;
 import java.util.Random;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
@@ -28,8 +29,6 @@ public final class Location implements Cloneable {
      * The y-coordinate of the Location.
      */
     private final int y;
-    
-    private static final Location nullLocation = new Location(0, 0);
     
     /**
      * Creates a new instance of Location.
@@ -108,24 +107,28 @@ public final class Location implements Cloneable {
     /**
      * Moves the Location one square west.
      */
+    @NonNull
     public Location moveWest() {
     	return new Location(this.x - 1, this.y);
     }
     /**
      * Moves the Location one square east.
      */
+    @NonNull
     public Location moveEast() {
         return new Location(this.x + 1, this.y);
     }
     /**
      * Moves the Location one square north.
      */
+    @NonNull
     public Location moveNorth() {
         return new Location(this.x, this.y - 1);
     }
     /**
      * Moves the Location one square south.
      */
+    @NonNull
     public Location moveSouth() {
         return new Location(this.x, this.y + 1);
     }
@@ -133,6 +136,7 @@ public final class Location implements Cloneable {
     /**
      * 
      */
+    @NonNull
     public Location moveNorthWest() {
     	return this.moveNorth().moveWest();
     }
@@ -140,6 +144,7 @@ public final class Location implements Cloneable {
     /**
      * 
      */
+    @NonNull
     public Location moveSouthWest() {
     	return this.moveSouth().moveWest();
     }
@@ -147,6 +152,7 @@ public final class Location implements Cloneable {
     /**
      * 
      */
+    @NonNull
     public Location moveNorthEast() {
     	return this.moveNorth().moveEast();
     }
@@ -154,6 +160,7 @@ public final class Location implements Cloneable {
     /**
      * 
      */
+    @NonNull
     public Location moveSouthEast() {
     	return this.moveSouth().moveEast();
     }
@@ -219,6 +226,7 @@ public final class Location implements Cloneable {
 	 * When in Random or Random-Comms state, this method chooses a random direction
 	 * and moves the agent.
 	 */
+    @NonNull
 	public Location randomMove() {
 		Random rand = new Random();
 		// Get a random number between 1 and 8
@@ -281,6 +289,7 @@ public final class Location implements Cloneable {
 	/**
 	 * @return a random location
 	 */
+	@NonNull
 	public static Location getRandomLocation() {
 		// Randomly pick a position on the grid for the agent to start at
 		Random rand = new Random();
@@ -294,6 +303,7 @@ public final class Location implements Cloneable {
 	 * sought.
 	 * @param other Location to move towards
 	 */
+	@NonNull
 	Location moveTowards(final Location other) {
 		// Calculate how far the agent is from the task along the X and Y axes
 		int diffx = getXDistance(other);
@@ -324,7 +334,4 @@ public final class Location implements Cloneable {
 		return this;
 	}
 
-	public final static Location nullLocation() {
-		return nullLocation;
-	}
 }
