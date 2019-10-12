@@ -1,6 +1,5 @@
 package org.roach.intelligentagents.model.strategy;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -9,8 +8,6 @@ import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
 import org.roach.intelligentagents.model.Task;
 import org.roach.intelligentagents.model.TaskToDo;
-
-import com.beust.jcommander.internal.Lists;
 
 
 /**
@@ -40,11 +37,6 @@ public class SearchStrategy extends AgentStrategy {
 	public SearchStrategy(@NonNull final Agent agent) {
 		super(agent);
 		state = RANDOM;
-	}
-
-	@Override
-	public List<Agent> getCommunicants() {
-		return Lists.newArrayList();
 	}
 
 	@Override

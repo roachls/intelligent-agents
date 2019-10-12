@@ -34,12 +34,5 @@ public class CommunicatingViewStrategy extends DefaultViewStrategy {
 						toGraphicLoc(l.getX(), squareSize) + midPoint, toGraphicLoc(l.getY(), squareSize) + midPoint);
 			});
 		}
-		int midPoint = squareSize / 2;
-		for (Agent a : agent.getStrategy().getCommunicants()) {
-			Location l = a.getLoc();
-			g.drawLine(toGraphicLoc(agent.getLoc().getX(), squareSize) + midPoint,
-					toGraphicLoc(agent.getLoc().getY(), squareSize) + midPoint,
-					toGraphicLoc(l.getX(), squareSize) + midPoint, toGraphicLoc(l.getY(), squareSize) + midPoint);
-		}
 	}
 }

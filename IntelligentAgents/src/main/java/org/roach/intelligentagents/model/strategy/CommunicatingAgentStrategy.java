@@ -1,7 +1,6 @@
 package org.roach.intelligentagents.model.strategy;
 
 import java.awt.Color;
-import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -69,9 +68,6 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 
 	@Override
 	public abstract Optional<TaskToDo> getTaskToDo();
-
-	@Override
-	@NonNull public abstract List<Agent> getCommunicants();
 
 	/**
 	 * When an agent is is Random-Comms state, this method is used to "broadcast"

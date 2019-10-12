@@ -5,8 +5,6 @@
  */
 
 package org.roach.intelligentagents.model.strategy;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.PriorityQueue;
 
@@ -30,7 +28,6 @@ import org.roach.intelligentagents.model.TaskToDo;
 public class PrioritizingStrategy extends CommunicatingAgentStrategy {
 	protected final PriorityQueue<TaskToDo> taskQueue = new PriorityQueue<>();
 	protected TaskToDo taskToDo;
-	@NonNull private final List<Agent> communicants = new ArrayList<>();
 	
 	/**
 	 * @param agent
@@ -80,9 +77,4 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
 	public void executeTask() {
         taskQueue.poll(); // remove top TaskToDo from queue
     }
-
-	@Override
-	@NonNull public List<Agent> getCommunicants() {
-		return communicants;
-	}
 }

@@ -1,7 +1,6 @@
 package org.roach.intelligentagents.model.strategy;
 
 import java.awt.Color;
-import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -108,12 +107,6 @@ public abstract class AgentStrategy {
 		return false;
 	}
 
-	/**
-	 * TODO: needs to go away
-	 * @return any Agents this agent is communicating with
-	 */
-	public abstract List<Agent> getCommunicants();
-	
 	/**
 	 * Setter for 
 	 * @param agent the agent to set

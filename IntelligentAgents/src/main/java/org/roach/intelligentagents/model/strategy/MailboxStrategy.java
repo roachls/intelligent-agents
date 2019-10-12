@@ -1,10 +1,7 @@
 package org.roach.intelligentagents.model.strategy;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
-import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -22,8 +19,6 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 	/** The shared mailbox associated with all Mailbox agents. */
 	static Mailbox mailbox = new Mailbox();
 	private TaskToDo taskToDo;
-	@SuppressWarnings("null")
-	@NonNull private final List<Agent> communicants = Collections.unmodifiableList(new ArrayList<>());
 	
 	/**
 	 * @param agent
@@ -160,11 +155,6 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 				return loc.hashCode();
 			}
 		}
-	}
-
-	@Override
-	@NonNull public List<Agent> getCommunicants() {
-		return communicants;
 	}
 
 	/**

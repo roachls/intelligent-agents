@@ -1,8 +1,5 @@
 package org.roach.intelligentagents.model.strategy;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -22,9 +19,6 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 	protected boolean isFinder;
 	protected int timeSinceLastBroadcast = 0;
 	protected int timeSinceLastFound = 0;
-	@SuppressWarnings("null")
-	@NonNull
-	private final List<Agent> communicants = Collections.unmodifiableList(new ArrayList<>()); 
 
 	/**
 	 * @param agent
@@ -39,12 +33,6 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 	@Override
 	public Optional<TaskToDo> getTaskToDo() {
 		return Optional.empty();
-	}
-
-	@Override
-	@NonNull
-	public List<Agent> getCommunicants() {
-		return communicants;
 	}
 
 	/**
