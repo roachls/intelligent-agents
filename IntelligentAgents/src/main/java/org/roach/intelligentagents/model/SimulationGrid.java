@@ -19,7 +19,7 @@ import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
  */
 public class SimulationGrid implements PropertyChangeListener {
 	private List<List<Set<Agent>>> grid;
-	private int gridSize;
+	private static int gridSize;
     /**
      * A table of sets of agents. This data structure is used to greatly speed
      * up the "communications" between agents. Each table entry represents a row
@@ -29,11 +29,20 @@ public class SimulationGrid implements PropertyChangeListener {
      */
     private Map<Integer, HashSet<Integer>> xRef;
     
+    private static SimulationGrid instance;
+    
+    public static SimulationGrid getInstance(int gridSizeIn) {
+    	if (instance == null) {
+    		SimulationGrid.gridSize = gridSizeIn;
+    		instance = new SimulationGrid();
+    	}
+    	return instance;
+    }
+    
 	/**
 	 * @param gridSize
 	 */
-	public SimulationGrid(int gridSize) {
-		this.gridSize = gridSize;
+	private SimulationGrid() {
 		grid = new ArrayList<>(gridSize);
 		for (int x = 0; x < gridSize; x++) {
 			List<Set<Agent>> row = new ArrayList<>(gridSize);
@@ -154,4 +163,12 @@ public class SimulationGrid implements PropertyChangeListener {
         }
         return list;
     }
+
+	/**
+	 * Getter for 
+	 * @return the gridSize
+	 */
+	public static int getGridSize() {
+		return gridSize;
+	}
 }
