@@ -62,13 +62,13 @@ public class NeighborhoodStrategy extends CommunicatingAgentStrategy {
 	}
 
 	@Override
-	public void receiveMessage(Location receivedLoc) {
+	public void receiveMessage(@NonNull Location receivedLoc) {
 		Task t = Task.getTask(receivedLoc);
 		if (t != null && t.isComplete()) {
 			agent.getExecutedTasks().add(t);
 		}
 
-		if (!(agent.getExecutedTasks().contains(t) || this.locToGoto == null || this.locToGoto.equals(receivedLoc))) {
+		if (!(agent.getExecutedTasks().contains(t) || this.locToGoto.equals(receivedLoc))) {
 			this.locToGoto = receivedLoc;
 			notifyNeighbors(receivedLoc);
 			setBroadcastReceived(true);
@@ -84,7 +84,7 @@ public class NeighborhoodStrategy extends CommunicatingAgentStrategy {
 	 * @param l
 	 *            The location subordinates should go to
 	 */
-	public void notifyNeighbors(Location l) {
+	public void notifyNeighbors(@NonNull final Location l) {
 		for (Agent m : neighbors) {
 			((NeighborhoodStrategy)m.getStrategy()).receiveMessage(l);
 		}

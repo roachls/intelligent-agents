@@ -33,7 +33,8 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 		return commDist;
 	}
 
-	protected Location locToGoto;
+	@NonNull
+	protected Location locToGoto = new Location(0, 0);
 
 	/**
 	 * @param options
@@ -89,7 +90,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
     /**
      * @param receivedLoc
      */
-    public void receiveMessage(Location receivedLoc) {
+    public void receiveMessage(@NonNull final Location receivedLoc) {
         Task t = Task.getTask(receivedLoc);
         if (t != null && t.isComplete()) {
             agent.getExecutedTasks().add(t);

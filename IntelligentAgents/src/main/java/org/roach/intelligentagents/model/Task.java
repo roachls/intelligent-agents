@@ -14,6 +14,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.roach.intelligentagents.PropertyConstants;
 
@@ -35,7 +36,7 @@ public final class Task implements ISimItem {
     /** Number of "complete" tasks */
     private static int numTasksComplete = 0;
     /** List of all tasks */
-    private static ArrayList<Task> taskList = new ArrayList<>();
+    @NonNull private static ArrayList<Task> taskList = new ArrayList<>();
     /** Location of the task within the sim-space. */
     private Location location;
     /** Current priority of the task. */
@@ -60,6 +61,7 @@ public final class Task implements ISimItem {
     /**
      * @return task list
      */
+    @NonNull
     public static ArrayList<Task> getTaskList() {
         return taskList;
     }
@@ -81,7 +83,7 @@ public final class Task implements ISimItem {
      * @param size Size of the playing field
      * @param pcl
      */
-    public static void initTaskGrid(int numTasksIn, int size, PropertyChangeListener pcl) {
+    public static void initTaskGrid(int numTasksIn, int size, @NonNull PropertyChangeListener pcl) {
         taskGrid = new Task[size][size];
         if (!taskList.isEmpty()) {
             taskList.clear();
@@ -119,7 +121,7 @@ public final class Task implements ISimItem {
      * Executes the task at the given location.
      * @param loc The location of the task to execute
      */
-    public static void executeTaskAt(Location loc) {
+    public static void executeTaskAt(@NonNull final Location loc) {
         if (isTask(loc)) {
             taskGrid[loc.getX()][loc.getY()].execute();
         }
@@ -130,7 +132,7 @@ public final class Task implements ISimItem {
      * @param loc The location of the task to check
      * @return True if the task is complete, false if not
      */
-    public static boolean isTaskComplete(Location loc) {
+    public static boolean isTaskComplete(@NonNull final Location loc) {
     	Task t = getTask(loc);
     	if (t != null)
     		return t.isComplete();
@@ -142,13 +144,13 @@ public final class Task implements ISimItem {
      * @param loc The location of the task
      * @return The task at the given location, or null
      */
-    @Nullable public static Task getTask(Location loc) {
+    @Nullable public static Task getTask(@NonNull Location loc) {
         return taskGrid[loc.getX()][loc.getY()];
     }// </editor-fold>
     /**
      * @param inputLoc The location to place the task
      */
-    public Task(final Location inputLoc) {
+    public Task(@NonNull final Location inputLoc) {
         location = inputLoc;
     }
 

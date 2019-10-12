@@ -47,8 +47,7 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
      * @param receivedLoc Location of the task
      */
 	@Override
-	public void receiveMessage(Location receivedLoc) {
-		if (receivedLoc == null) return;
+	public void receiveMessage(@NonNull final Location receivedLoc) {
         Task t = Task.getTask(receivedLoc);
         if (!agent.hasDoneAlready(t)) {
             setBroadcastReceived(true);

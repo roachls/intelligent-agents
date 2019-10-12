@@ -71,7 +71,7 @@ public class MilitaryStrategy extends CommunicatingAgentStrategy {
      * @param l The location subordinates should go to
      * @param level The level of this recursive call.
      */
-    public void notifySubordinates(Location l, int level) {
+    public void notifySubordinates(@NonNull final Location l, int level) {
         if (level < 0) {
             return;
         }

@@ -199,6 +199,7 @@ public final class Location implements Cloneable {
      * @return A new copy of this Location
      */
     @Override
+    @NonNull
     public Location clone() {
         return new Location(x, y);
     }

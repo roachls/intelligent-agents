@@ -57,7 +57,7 @@ public class PNAgentStrategy extends PrioritizingStrategy {
      * @param receivedLoc Location of the task
      */
     @Override
-    public void receiveMessage(Location receivedLoc) {
+    public void receiveMessage(@NonNull final Location receivedLoc) {
         Task t = Task.getTask(receivedLoc);
         TaskToDo newTaskToDo = new TaskToDo(receivedLoc);
         if (isBroadcastReceived() || agent.hasDoneAlready(t) || taskQueue.contains(newTaskToDo))

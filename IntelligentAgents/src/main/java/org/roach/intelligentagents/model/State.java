@@ -2,6 +2,9 @@ package org.roach.intelligentagents.model;
 
 import java.awt.Color;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+
 
 /**
  * @author Larry S. Roach
@@ -9,20 +12,51 @@ import java.awt.Color;
  */
 public class State {
 	
-    /**
-	 * Setter for 
-	 * @param algorithm the algorithm to set
-	 */
-	public void setAlgorithm(StateAlgorithm algorithm) {
-		this.algorithm = algorithm;
-	}
+    /** Initial state */
+	@SuppressWarnings("null")
+	public final static State NOT_SET = new State(Color.black, new StateAlgorithm() {
+		@Override
+		public void go(final Agent agent) {
+		}
+	}, new Agent(null));
 
-	/** The Color of the state, used by the Agent.draw method */
-    private Color color;
+	private Agent agent;
     /** The algorithm that is performed in the State */
     private StateAlgorithm algorithm;
-    private Agent agent;
+    /** The Color of the state, used by the Agent.draw method */
+    @SuppressWarnings("null")
+	@NonNull private Color color = Color.BLACK;
     
+    public State() {
+	}
+
+	/** 
+     * @param c The color that the Agent in this State will be displayed in.
+     * @param alg The algorithm called by this state.
+     * @param agent 
+     */
+    public State(@NonNull final Color c, StateAlgorithm alg, Agent agent) {
+        this.color = c;
+        this.algorithm = alg;
+        this.agent = agent;
+    }
+	
+	/**
+     * Calls the Agent's public method.
+     */
+    public void doAction() {
+        algorithm.go(agent);
+    }
+
+	/**
+     * Get the color for this state.
+     * @return color
+     */
+    @NonNull
+    public Color getColor() {
+        return color;
+    }
+
     /**
 	 * Setter for 
 	 * @param agent the agent to set
@@ -31,47 +65,20 @@ public class State {
 		this.agent = agent;
 	}
 
-	public State() {
+    /**
+	 * Setter for 
+	 * @param algorithm the algorithm to set
+	 */
+	public void setAlgorithm(StateAlgorithm algorithm) {
+		this.algorithm = algorithm;
 	}
-	
-	/** 
-     * @param c The color that the Agent in this State will be displayed in.
-     * @param alg The algorithm called by this state.
-     * @param agent 
-     */
-    public State(Color c, StateAlgorithm alg, Agent agent) {
-        this.color = c;
-        this.algorithm = alg;
-        this.agent = agent;
-    }
-
-	/** Initial state */
-	public final static State NOT_SET = new State(Color.black, new StateAlgorithm() {
-		@Override
-		public void go(final Agent agent) {
-		}
-	}, new Agent(null));
-
-    /**
-     * Get the color for this state.
-     * @return color
-     */
-    public Color getColor() {
-        return color;
-    }
-
-    /**
-     * Calls the Agent's public method.
-     */
-    public void doAction() {
-        algorithm.go(agent);
-    }
 
 	/**
 	 * Setter for 
 	 * @param color the color to set
 	 */
-	public void setColor(Color color) {
-		this.color = color;
+	public void setColor(@Nullable final Color color) {
+		if (color != null)
+			this.color = color;
 	}
 }

@@ -1,5 +1,6 @@
 package org.roach.intelligentagents.model;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.view.Animator;
 
 /**
@@ -9,7 +10,7 @@ import org.roach.intelligentagents.view.Animator;
  */
 public final class TaskToDo implements Comparable<TaskToDo> {
     /** The Location of the task. */
-    private Location taskLoc;
+    @NonNull private Location taskLoc;
     /** The time the task was found */
     private int timeWhenFound;
 
@@ -17,7 +18,7 @@ public final class TaskToDo implements Comparable<TaskToDo> {
      * Creates a new instance of a TaskToDo.
      * @param inputTaskLoc Location of the new task
      */
-    public TaskToDo(final Location inputTaskLoc) {
+    public TaskToDo(@NonNull final Location inputTaskLoc) {
         taskLoc = inputTaskLoc;
         this.timeWhenFound = Animator.getTime();
     }
@@ -25,6 +26,7 @@ public final class TaskToDo implements Comparable<TaskToDo> {
      * Get the location of the TaskToDo.
      * @return A location
      */
+    @NonNull
     public Location getLocation() {
         return taskLoc;
     }
