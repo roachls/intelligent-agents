@@ -40,7 +40,7 @@ public final class Location implements Cloneable {
      * @param inputX x-coordinate
      * @param inputY y-coordinate
      */
-    public Location(final Integer inputX, final Integer inputY) {
+    public Location(@NonNull final Integer inputX, @NonNull final Integer inputY) {
         x = inputX;
         y = inputY;
     }
@@ -48,7 +48,7 @@ public final class Location implements Cloneable {
      * Converts a Location to a java.awt.Dimension.
      * @return A Dimension object
      */
-    public Dimension toDimension() {
+    @NonNull public Dimension toDimension() {
         return new Dimension(x, y);
     }
     /**
@@ -68,7 +68,7 @@ public final class Location implements Cloneable {
      * @return True if the distance from this to rhs is less than or equal to
      * radius, false otherwise
      */
-    public boolean isInCircle(final Location rhs, final int radius) {
+    public boolean isInCircle(@NonNull final Location rhs, final int radius) {
         // We can avoid floating-point math by using the circular formula
         //     (rhs.x - x)^2 + (rhs.y - y)^2 = radius^2,
         // and so any for any point within the circle it will be true that
@@ -81,7 +81,7 @@ public final class Location implements Cloneable {
      * @param rhs The Location to be compared
      * @return An int representing the distance
      */
-    public int getXDistance(final Location rhs) {
+    public int getXDistance(@NonNull final Location rhs) {
         // Note: we don't take the absolute value because this distance will
         // be used by an agent to determine which direction to go.  A negative
         // distance indicates that this Location is north of rhs; positive
@@ -93,7 +93,7 @@ public final class Location implements Cloneable {
      * @param rhs The Location to be compared
      * @return An int representing the distance
      */
-    public int getYDistance(final Location rhs) {
+    public int getYDistance(@NonNull final Location rhs) {
         // Note: we don't take the absolute value because this distance will
         // be used by an agent to determine which direction to go.  A negative
         // distance indicates that this Location is east of rhs; positive

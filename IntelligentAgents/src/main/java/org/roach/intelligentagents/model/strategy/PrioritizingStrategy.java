@@ -34,6 +34,7 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
 	 */
 	public PrioritizingStrategy(@NonNull final Agent agent) {
 		super(agent);
+		state = RANDOM;
 		taskToDo = null;
 	}
 

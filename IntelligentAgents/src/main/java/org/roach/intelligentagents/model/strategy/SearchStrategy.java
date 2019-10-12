@@ -1,11 +1,13 @@
 package org.roach.intelligentagents.model.strategy;
 
+import java.awt.Color;
 import java.util.Optional;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.SimulationGrid;
+import org.roach.intelligentagents.model.State;
 import org.roach.intelligentagents.model.Task;
 import org.roach.intelligentagents.model.TaskToDo;
 
@@ -28,6 +30,8 @@ public class SearchStrategy extends AgentStrategy {
     }
 
 	private Directions dir = Directions.EMPTY;
+
+	public final State SEARCH = new State(Color.black, null, this.agent);
 	
     private boolean starting = true;
     /**
@@ -36,7 +40,7 @@ public class SearchStrategy extends AgentStrategy {
 	 */
 	public SearchStrategy(@NonNull final Agent agent) {
 		super(agent);
-		state = RANDOM;
+		state = SEARCH;
 	}
 
 	@Override
@@ -55,9 +59,8 @@ public class SearchStrategy extends AgentStrategy {
 	 */
 	@Override
 	protected void initStates() {
-		super.initStates();
-		RANDOM.setAgent(this.agent);
-		RANDOM.setAlgorithm(a -> {
+		SEARCH.setAgent(this.agent);
+		SEARCH.setAlgorithm(a -> {
 	        if (starting) {
 	            starting = false;
 	            if (a.getLoc().getY() == 0) dir = (a.getLoc().getX() == 0) ? Directions.SOUTHEAST : Directions.SOUTHWEST;

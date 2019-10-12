@@ -19,6 +19,15 @@ import org.roach.intelligentagents.model.TaskToDo;
 public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 
 	/**
+	 * The default state
+	 */
+	public final State RANDOM = new State(Color.black, null, this.agent);
+	/**
+	 * State where the agent is "going to" a location
+	 */
+	public final State GOTO = new State(Color.black, null, this.agent);
+
+	/**
 	 * property representing communications distance for all agents
 	 */
 	protected int commDist = 12;
@@ -135,7 +144,6 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	 */
 	@Override
 	protected void initStates() {
-		super.initStates();
 		RANDOM.setAlgorithm(a -> {
 			a.randomMove();
 			if (a.foundNewTask()) {

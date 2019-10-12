@@ -150,7 +150,8 @@ public class SimulationGrid implements PropertyChangeListener {
                 // If there are any agents on this row...
                 for (Integer Y : xRef.get(X)) {
                     // For each Y-coordinate on the row
-                    Location checkLoc = new Location(X, Y);
+                    @SuppressWarnings("null")
+					Location checkLoc = new Location(X, Y);
                     if (!loc.equals(checkLoc)) {
                         // Make sure loc != checkLoc (i.e., agent doesn't
                         // communicate with itself)

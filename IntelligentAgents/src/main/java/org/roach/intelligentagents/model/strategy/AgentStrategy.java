@@ -1,6 +1,5 @@
 package org.roach.intelligentagents.model.strategy;
 
-import java.awt.Color;
 import java.util.Optional;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -19,14 +18,6 @@ public abstract class AgentStrategy {
 	/** The current state of the agent. */
 	protected State state = State.NOT_SET;
 	/**
-	 * 
-	 */
-	public final State RANDOM = new State(Color.black, null, this.agent);
-	/**
-	 * 
-	 */
-	public final State GOTO = new State(Color.black, null, this.agent);
-	/**
 	 * @param agent 
 	 * 
 	 */
@@ -34,16 +25,7 @@ public abstract class AgentStrategy {
 		this.agent = agent;
 	}
 
-	protected void initStates() {
-		assert(agent != null);
-		RANDOM.setAlgorithm(a -> {
-			a.randomMove();
-			if (a.foundNewTask()) {
-				a.executeTask();
-			}	
-		});
-		this.state = RANDOM;
-	}
+	protected abstract void initStates();
 	
 	/**
 	 * @param options
