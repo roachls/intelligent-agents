@@ -76,33 +76,33 @@ public class SearchStrategy extends AgentStrategy {
 	            }
 	            switch (dir) {
 	                case NORTHEAST:
-	                    if (a.getLoc().getY() > 0) a.setLoc(a.getLoc().moveNorth());
+	                    if (a.getLoc().getY() > 0) a.moveNorth();
 	                    else {
-	                        a.setLoc(a.getLoc().moveEast());
+	                        a.moveEast();
 	                        if (a.foundNewTask()) Task.executeTaskAt(a.getLoc());
 	                        dir = Directions.SOUTHEAST;
 	                    }
 	                    break;
 	                case SOUTHEAST:
-	                    if (a.getLoc().getY() < Location.getGridSize() - 1) a.setLoc(a.getLoc().moveSouth());
+	                    if (a.getLoc().getY() < Location.getGridSize() - 1) a.moveSouth();
 	                    else {
-	                        a.setLoc(a.getLoc().moveEast());
+	                        a.moveEast();
 	                        if (a.foundNewTask()) Task.executeTaskAt(a.getLoc());
 	                        dir = Directions.NORTHEAST;
 	                    }
 	                    break;
 	                case NORTHWEST:
-	                    if (a.getLoc().getY() > 0) a.setLoc(a.getLoc().moveNorth());
+	                    if (a.getLoc().getY() > 0) a.moveNorth();
 	                    else {
-	                        a.setLoc(a.getLoc().moveWest());
+	                        a.moveWest();
 	                        if (a.foundNewTask()) Task.executeTaskAt(a.getLoc());
 	                        dir = Directions.SOUTHWEST;
 	                    }
 	                    break;
 	                case SOUTHWEST:
-	                    if (a.getLoc().getY() < Location.getGridSize() - 1) a.setLoc(a.getLoc().moveSouth());
+	                    if (a.getLoc().getY() < Location.getGridSize() - 1) a.moveSouth();
 	                    else {
-	                        a.setLoc(a.getLoc().moveWest());
+	                        a.moveWest();
 	                        if (a.foundNewTask()) Task.executeTaskAt(a.getLoc());
 	                        dir = Directions.NORTHWEST;
 	                    }

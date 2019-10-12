@@ -91,46 +91,6 @@ public class LocationTest {
 	 * 
 	 */
 	@Test
-	public void testMoveWest() {
-		Location l1 = new Location(0, 0);
-		l1.moveWest();
-		assertEquals(l1.getX(), -1);
-	}
-
-	/**
-	 * 
-	 */
-	@Test
-	public void testMoveEast() {
-		Location l1 = new Location(0, 0);
-		l1.moveEast();
-		assertEquals(l1.getX(), 1);
-	}
-
-	/**
-	 * 
-	 */
-	@Test
-	public void testMoveNorth() {
-		Location l1 = new Location(0, 0);
-		l1.moveNorth();
-		assertEquals(l1.getY(), -1);
-	}
-
-	/**
-	 * 
-	 */
-	@Test
-	public void testMoveSouth() {
-		Location l1 = new Location(0, 0);
-		l1.moveSouth();
-		assertEquals(l1.getY(), 1);
-	}
-
-	/**
-	 * 
-	 */
-	@Test
 	public void testGetX() {
 		Location l1 = new Location(4, 5);
 		assertEquals(l1.getX(), 4);

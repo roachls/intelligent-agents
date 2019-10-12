@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -30,7 +31,8 @@ import org.roach.intelligentagents.model.strategy.AgentStrategy;
  */
 public class Agent implements ISimItem {
 	/** The list of all agents */
-	@NonNull private static List<Agent> agents = new ArrayList<>();
+	@NonNull
+	private static List<Agent> agents = new ArrayList<>();
 
 	private static int id_root = 0;
 
@@ -43,10 +45,12 @@ public class Agent implements ISimItem {
 	protected int id;
 
 	/** Location of the agent within the sim-space. */
-	@NonNull protected Location loc;
+	@NonNull
+	protected Location loc;
 
 	// Setup property-change support
-	@NonNull private final PropertyChangeSupport mPcs = new PropertyChangeSupport(this);
+	@NonNull
+	private final PropertyChangeSupport mPcs = new PropertyChangeSupport(this);
 
 	protected final AgentStrategy strategy;
 
@@ -90,7 +94,7 @@ public class Agent implements ISimItem {
 			AgentStrategy strategy = null;
 			try {
 				Constructor<? extends AgentStrategy> strategyConst = strategyType.getConstructor(Agent.class);
-				strategy = strategyConst.newInstance((Agent)null);
+				strategy = strategyConst.newInstance((Agent) null);
 				if (strategy != null) {
 					Agent a = new Agent(strategy);
 					agents.add(a);
@@ -198,7 +202,8 @@ public class Agent implements ISimItem {
 	 * 
 	 * @return the mPcs
 	 */
-	@NonNull public PropertyChangeSupport getmPcs() {
+	@NonNull
+	public PropertyChangeSupport getmPcs() {
 		return mPcs;
 	}
 
@@ -232,15 +237,6 @@ public class Agent implements ISimItem {
 	}
 
 	/**
-	 * Moves the agent towards the given location
-	 * 
-	 * @param location
-	 */
-	public void moveTowards(Location location) {
-		loc = loc.moveTowards(location);
-	}
-
-	/**
 	 * @param listener
 	 */
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
@@ -264,6 +260,120 @@ public class Agent implements ISimItem {
 	 */
 	public void setLoc(@NonNull final Location loc) {
 		this.loc = loc;
+	}
+
+	public void moveNorth() {
+		if (this.loc.getY() > 0)
+			this.loc = new Location(this.loc.getX(), this.loc.getY() - 1);
+	}
+
+	public void moveSouth() {
+		if (this.loc.getY() < Location.gridSize - 1)
+			this.loc = new Location(this.loc.getX(), this.loc.getY() + 1);
+	}
+
+	public void moveWest() {
+		if (this.loc.getX() > 0)
+			this.loc = new Location(this.loc.getX() - 1, this.loc.getY());
+	}
+
+	public void moveEast() {
+		if (this.loc.getX() < Location.gridSize - 1)
+			this.loc = new Location(this.loc.getX() + 1, this.loc.getY());
+	}
+
+	public void moveNorthEast() {
+		if (loc.getX() < Location.gridSize - 1 && loc.getY() > 0)
+			this.loc = new Location(this.loc.getX() + 1, this.loc.getY() - 1);
+	}
+
+	public void moveSouthEast() {
+		if (loc.getX() < Location.gridSize - 1 && loc.getY() < Location.gridSize - 1)
+			this.loc = new Location(this.loc.getX() + 1, this.loc.getY() + 1);
+	}
+
+	public void moveNorthWest() {
+		if (loc.getX() > 0 && loc.getY() > 0)
+			this.loc = new Location(this.loc.getX() - 1, this.loc.getY() - 1);
+	}
+
+	public void moveSouthWest() {
+		if (loc.getX() > 0 && loc.getY() < Location.gridSize - 1)
+			this.loc = new Location(this.loc.getX() - 1, this.loc.getY() + 1);
+	}
+
+	/**
+	 * When in Random or Random-Comms state, this method chooses a random direction
+	 * and moves the agent.
+	 */
+	public void randomMove() {
+		Random rand = new Random();
+		// Get a random number between 1 and 8
+		int dir = rand.nextInt(8);
+		switch (dir) { // Move the selected direction
+		case 0:
+			// move north
+			moveNorth();
+			break;
+		case 1:
+			// move east
+			moveEast();
+			break;
+		case 2:
+			// move south
+			moveSouth();
+			break;
+		case 3:
+			// move west
+			moveWest();
+			break;
+		case 4:
+			moveNorthWest();
+			break;
+		case 5:
+			moveSouthWest();
+			break;
+		case 6:
+			moveNorthEast();
+			break;
+		case 7:
+			moveSouthEast();
+			break;
+		}
+	}
+
+	/**
+	 * When the agent is in Goto state, this method moves it towards the task being
+	 * sought.
+	 * @param other Location to move towards
+	 */
+	public void moveTowards(@NonNull final Location other) {
+		// Calculate how far the agent is from the task along the X and Y axes
+		int diffx = loc.getXDistance(other);
+		int diffy = loc.getYDistance(other);
+		
+		// Move one step along whichever axis the agent is further from the task
+		if (diffx > 0) {
+			if (diffy > 0)
+				moveNorthWest();
+			else if (diffy < 0)
+				moveSouthWest();
+			else
+				moveWest();
+		} else if (diffx < 0) {
+			if (diffy > 0)
+				moveNorthEast();
+			else if (diffy < 0)
+				moveSouthEast();
+			else
+				moveEast();
+		} else {
+			// diffx == 0
+			if (diffy > 0)
+				moveNorth();
+			else if (diffy < 0)
+				moveSouth();
+		}
 	}
 
 }

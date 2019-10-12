@@ -38,7 +38,7 @@ public abstract class AgentStrategy {
 	protected void initStates() {
 		assert(agent != null);
 		RANDOM.setAlgorithm(a -> {
-			a.getLoc().randomMove();
+			a.randomMove();
 			if (a.foundNewTask()) {
 				a.executeTask();
 			}	
@@ -114,27 +114,6 @@ public abstract class AgentStrategy {
 	 */
 	public abstract List<Agent> getCommunicants();
 	
-//	public final static AgentStrategy emptyStrategy() {
-//		return new AgentStrategy(new Agent(null)) {
-//
-//			@Override
-//			public void setOptions(AgentAppOpts options) {
-//				
-//			}
-//
-//			@Override
-//			public Optional<TaskToDo> getTaskToDo() {
-//				return Optional.empty();
-//			}
-//
-//			@Override
-//			public List<Agent> getCommunicants() {
-//				return Lists.newArrayList();
-//			}
-//			
-//		};
-//	}
-
 	/**
 	 * Setter for 
 	 * @param agent the agent to set

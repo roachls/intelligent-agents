@@ -141,7 +141,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	protected void initStates() {
 		super.initStates();
 		RANDOM.setAlgorithm(a -> {
-			a.setLoc(a.getLoc().randomMove());
+			a.randomMove();
 			if (a.foundNewTask()) {
 				a.executeTask();
 				initComms();
@@ -173,7 +173,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 		RANDOMCOMMS.setColor(Color.blue);
 		RANDOMCOMMS.setAlgorithm(a -> {
 			sendMessageIfPossible(() -> state = RANDOM);
-			a.getLoc().randomMove();
+			a.randomMove();
 			if (a.foundNewTask()) {
 				a.executeTask();
 				initComms();

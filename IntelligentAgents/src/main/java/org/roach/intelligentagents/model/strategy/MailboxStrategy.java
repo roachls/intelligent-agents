@@ -44,7 +44,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 	 * If the task isn't complete, post a message about it.
 	 */
 	private void search() {
-		agent.setLoc(agent.getLoc().randomMove());
+		agent.randomMove();
 		if (agent.foundNewTask()) {
 			agent.executeTask();
 			if (!Task.isTaskComplete(agent.getLoc())) {

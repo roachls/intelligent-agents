@@ -56,7 +56,7 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 		super.initStates();
 		RANDOM.setAgent(this.agent);
 		RANDOM.setAlgorithm(a -> {
-			a.setLoc(a.getLoc().randomMove());
+			a.randomMove();
 			if (isFinder) {
 				if (a.foundNewTask()) {
 					timeSinceLastFound = 0;
@@ -92,7 +92,7 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 		RANDOMCOMMS.setAlgorithm(a -> {
 			assert (isFinder) : "Illegal state reached: Seeker in Comms state.";
 			sendMessageIfPossible(() -> state = RANDOM);
-			a.setLoc(a.getLoc().randomMove());
+			a.randomMove();
 			if (agent.foundNewTask()) {
 				agent.executeTask();
 				initComms();
