@@ -38,7 +38,8 @@ public final class Task implements ISimItem {
     /** List of all tasks */
     @NonNull private static ArrayList<Task> taskList = new ArrayList<>();
     /** Location of the task within the sim-space. */
-    private Location location;
+    @NonNull
+    private final Location location;
     /** Current priority of the task. */
     private int prio;
     /** Number of tasks */
@@ -48,13 +49,13 @@ public final class Task implements ISimItem {
     /**
      * @param listener
      */
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
+    public void addPropertyChangeListener(@NonNull final PropertyChangeListener listener) {
     	mPcs.addPropertyChangeListener(listener);
     }
     /**
      * @param listener
      */
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
+    public void removePropertyChangeListener(@NonNull final PropertyChangeListener listener) {
     	mPcs.removePropertyChangeListener(listener);
     }
     
@@ -113,7 +114,7 @@ public final class Task implements ISimItem {
      * @param   loc The location to look at
      * @return True if a task exists at loc
      */
-    public static boolean isTask(Location loc) {
+    public static boolean isTask(@NonNull final Location loc) {
         return (taskGrid[loc.getX()][loc.getY()] != null);
     }
 
@@ -144,7 +145,7 @@ public final class Task implements ISimItem {
      * @param loc The location of the task
      * @return The task at the given location, or null
      */
-    @Nullable public static Task getTask(@NonNull Location loc) {
+    @Nullable public static Task getTask(@NonNull final Location loc) {
         return taskGrid[loc.getX()][loc.getY()];
     }// </editor-fold>
     /**
@@ -230,13 +231,7 @@ public final class Task implements ISimItem {
 	/**
 	 * @return location of this task
 	 */
-	public Location getLocation() {
+	@NonNull public Location getLocation() {
 		return location;
-	}
-	/**
-	 * @param location location of this task
-	 */
-	public void setLocation(Location location) {
-		this.location = location;
 	}
 }

@@ -10,7 +10,7 @@ import org.roach.intelligentagents.view.Animator;
  */
 public final class TaskToDo implements Comparable<TaskToDo> {
     /** The Location of the task. */
-    @NonNull private Location taskLoc;
+    @NonNull private final Location taskLoc;
     /** The time the task was found */
     private int timeWhenFound;
 
