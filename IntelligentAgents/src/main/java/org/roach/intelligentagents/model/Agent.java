@@ -60,8 +60,17 @@ public class Agent implements ISimItem {
 	public Agent(final AgentStrategy strategy) {
 		this.strategy = strategy;
 		id = id_root++;
-		loc = Location.getRandomLocation();
+		loc = makeRandomLocation();
 		executedTasks = new HashSet<>();
+	}
+
+	private @NonNull
+	static Location makeRandomLocation() {
+		// Randomly pick a position on the grid for the agent to start at
+		Random rand = new Random();
+		int x = (rand.nextInt(100) < 50) ? 0 : SimulationGrid.getGridSize() - 1;
+		int y = (rand.nextInt(100) < 50) ? 0 : SimulationGrid.getGridSize() - 1;
+		return new Location(x, y);
 	}
 
 	/**
@@ -268,7 +277,7 @@ public class Agent implements ISimItem {
 	}
 
 	public void moveSouth() {
-		if (this.loc.getY() < Location.gridSize - 1)
+		if (this.loc.getY() < SimulationGrid.getGridSize() - 1)
 			this.loc = new Location(this.loc.getX(), this.loc.getY() + 1);
 	}
 
@@ -278,17 +287,17 @@ public class Agent implements ISimItem {
 	}
 
 	public void moveEast() {
-		if (this.loc.getX() < Location.gridSize - 1)
+		if (this.loc.getX() < SimulationGrid.getGridSize() - 1)
 			this.loc = new Location(this.loc.getX() + 1, this.loc.getY());
 	}
 
 	public void moveNorthEast() {
-		if (loc.getX() < Location.gridSize - 1 && loc.getY() > 0)
+		if (loc.getX() < SimulationGrid.getGridSize() - 1 && loc.getY() > 0)
 			this.loc = new Location(this.loc.getX() + 1, this.loc.getY() - 1);
 	}
 
 	public void moveSouthEast() {
-		if (loc.getX() < Location.gridSize - 1 && loc.getY() < Location.gridSize - 1)
+		if (loc.getX() < SimulationGrid.getGridSize() - 1 && loc.getY() < SimulationGrid.getGridSize() - 1)
 			this.loc = new Location(this.loc.getX() + 1, this.loc.getY() + 1);
 	}
 
@@ -298,7 +307,7 @@ public class Agent implements ISimItem {
 	}
 
 	public void moveSouthWest() {
-		if (loc.getX() > 0 && loc.getY() < Location.gridSize - 1)
+		if (loc.getX() > 0 && loc.getY() < SimulationGrid.getGridSize() - 1)
 			this.loc = new Location(this.loc.getX() - 1, this.loc.getY() + 1);
 	}
 

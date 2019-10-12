@@ -10,7 +10,6 @@ package org.roach.intelligentagents.controller;
 
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
-import org.roach.intelligentagents.model.Location;
 import org.roach.intelligentagents.model.SimulationGrid;
 import org.roach.intelligentagents.model.Task;
 import org.roach.intelligentagents.model.strategy.AgentStrategy;
@@ -46,8 +45,6 @@ public final class AgentApp {
 	 * @param args Command-line arguments (if any)
 	 */
 	public static void main(final String[] args) {
-//		findAllStrategies();
-		
 		AgentAppOpts options = new AgentAppOpts();
 		JCommander jCommander = JCommander.newBuilder().addObject(options).build();
 		try {
@@ -59,7 +56,6 @@ public final class AgentApp {
 		}
 
 		AgentApp aa = new AgentApp(options);
-		Location.setGridSize(options.roomsize);
 		Agent.initAgents(options.strategy, options.agents, aa.simgrid, options);
 		Task.setNumTasks(options.tasks);
 		GUI gui = new GUI(aa, options);
@@ -81,11 +77,10 @@ public final class AgentApp {
 
 	private AgentApp(AgentAppOpts opts) {
 		roomSize = opts.roomsize;
-//		numAgents = opts.agents;
 		percentFinished = opts.stopat;
 		batchMode = opts.batch;
 		strategyType = opts.strategy;
-		simgrid = new SimulationGrid(roomSize);
+		simgrid = SimulationGrid.getInstance(roomSize);
 	}
 
 	/**

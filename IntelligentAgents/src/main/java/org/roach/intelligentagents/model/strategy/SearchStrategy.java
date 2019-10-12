@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
-import org.roach.intelligentagents.model.Location;
+import org.roach.intelligentagents.model.SimulationGrid;
 import org.roach.intelligentagents.model.Task;
 import org.roach.intelligentagents.model.TaskToDo;
 
@@ -76,7 +76,7 @@ public class SearchStrategy extends AgentStrategy {
 	                    }
 	                    break;
 	                case SOUTHEAST:
-	                    if (a.getLoc().getY() < Location.getGridSize() - 1) a.moveSouth();
+	                    if (a.getLoc().getY() < SimulationGrid.getGridSize() - 1) a.moveSouth();
 	                    else {
 	                        a.moveEast();
 	                        if (a.foundNewTask()) Task.executeTaskAt(a.getLoc());
@@ -92,7 +92,7 @@ public class SearchStrategy extends AgentStrategy {
 	                    }
 	                    break;
 	                case SOUTHWEST:
-	                    if (a.getLoc().getY() < Location.getGridSize() - 1) a.moveSouth();
+	                    if (a.getLoc().getY() < SimulationGrid.getGridSize() - 1) a.moveSouth();
 	                    else {
 	                        a.moveWest();
 	                        if (a.foundNewTask()) Task.executeTaskAt(a.getLoc());

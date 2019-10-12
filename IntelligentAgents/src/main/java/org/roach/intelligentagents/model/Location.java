@@ -7,7 +7,6 @@
 
 package org.roach.intelligentagents.model;
 import java.awt.Dimension;
-import java.util.Random;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -18,9 +17,6 @@ import org.eclipse.jdt.annotation.Nullable;
  * @author L. Stephen Roach
  */
 public final class Location implements Cloneable {
-	/** The size of the grid-space in which the agent moves. */
-	protected static int gridSize = 100;
-
     /**
      * The x-coordinate of the Location.
      */
@@ -163,31 +159,4 @@ public final class Location implements Cloneable {
     public String toString() {
         return "(" + x + "," + y + ")";
     }
-	
-	/**
-	 * @return the gridSize
-	 */
-	public static int getGridSize() {
-		return gridSize;
-	}
-	
-	/**
-	 * @param aGridSize
-	 *            Number of squares on a side for the grid
-	 */
-	public static void setGridSize(int aGridSize) {
-		gridSize = aGridSize;
-	}
-
-	/**
-	 * @return a random location
-	 */
-	@NonNull
-	public static Location getRandomLocation() {
-		// Randomly pick a position on the grid for the agent to start at
-		Random rand = new Random();
-		int x = (rand.nextInt(100) < 50) ? 0 : gridSize - 1;
-		int y = (rand.nextInt(100) < 50) ? 0 : gridSize - 1;
-		return new Location(x, y);
-	}
 }
