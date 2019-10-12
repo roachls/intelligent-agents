@@ -80,24 +80,6 @@ public class AgentAppOpts {
 	 */
 	@Parameter(names= {"--cellSize"}, description="Size of a cell in pixels")
 	public int cellSize = 6;
-	
-	/**
-	 * Used only by NeighborhoodStrategy
-	 */
-	@Parameter(names= {"--neighbors"})
-	public int neighbors = 3;
-	
-	/**
-	 * Used only by MilitaryStrategy
-	 */
-	@Parameter(names= {"--numSubordinates"}, description="Max number of subordinates (military strategy only)")
-	public int numSubordinates = 2;
-	
-	/**
-	 * 
-	 */
-	@Parameter(names= {"--numLevels"}, description="Number of levels deep a military agent should communicate with subordinates")
-	public int numLevels = 3;
 }
 
 class ClassConverter implements IStringConverter<Class<? extends AgentStrategy>> {
