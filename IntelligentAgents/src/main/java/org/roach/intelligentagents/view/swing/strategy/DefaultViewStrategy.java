@@ -1,4 +1,4 @@
-package org.roach.intelligentagents.view.strategy;
+package org.roach.intelligentagents.view.swing.strategy;
 
 import java.awt.Graphics;
 

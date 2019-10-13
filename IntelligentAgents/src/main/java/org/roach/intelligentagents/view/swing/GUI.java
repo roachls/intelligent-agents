@@ -32,8 +32,8 @@ import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Task;
 import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
 import org.roach.intelligentagents.view.IAnimator;
-import org.roach.intelligentagents.view.strategy.CommunicatingViewStrategy;
-import org.roach.intelligentagents.view.strategy.DefaultViewStrategy;
+import org.roach.intelligentagents.view.swing.strategy.CommunicatingViewStrategy;
+import org.roach.intelligentagents.view.swing.strategy.DefaultViewStrategy;
 
 /**
  * @author Larry S. Roach
