@@ -6,12 +6,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
+import org.roach.intelligentagents.view.GUI;
 
 /**
  * @author Larry S. Roach
@@ -20,6 +22,11 @@ import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
 public class SimulationGrid implements PropertyChangeListener {
 	private List<List<Set<Agent>>> grid;
 	private static int gridSize;
+    /** A grid of tasks in x-y coordinates */
+    private Task[][] taskGrid = new Task[0][0];
+    /** List of all tasks */
+    @NonNull private ArrayList<Task> taskList = new ArrayList<>();
+
     /**
      * A table of sets of agents. This data structure is used to greatly speed
      * up the "communications" between agents. Each table entry represents a row
@@ -31,10 +38,10 @@ public class SimulationGrid implements PropertyChangeListener {
     
     private static SimulationGrid instance;
     
-    public static SimulationGrid getInstance(int gridSizeIn) {
+    public static SimulationGrid getInstance(final int gridSizeIn, final int numTasksIn) {
     	if (instance == null) {
     		SimulationGrid.gridSize = gridSizeIn;
-    		instance = new SimulationGrid();
+    		instance = new SimulationGrid(numTasksIn);
     	}
     	return instance;
     }
@@ -42,7 +49,7 @@ public class SimulationGrid implements PropertyChangeListener {
 	/**
 	 * @param gridSize
 	 */
-	private SimulationGrid() {
+	private SimulationGrid(final int numTasksIn) {
 		grid = new ArrayList<>(gridSize);
 		for (int x = 0; x < gridSize; x++) {
 			List<Set<Agent>> row = new ArrayList<>(gridSize);
@@ -52,6 +59,7 @@ public class SimulationGrid implements PropertyChangeListener {
 			grid.add(row);
 		}
 		xRef = new HashMap<>();
+		initTaskGrid(numTasksIn, gridSize);
 	}
 	
 	@Override
@@ -172,4 +180,89 @@ public class SimulationGrid implements PropertyChangeListener {
 	public static int getGridSize() {
 		return gridSize;
 	}
+	
+    /**
+     * Initializes the task grid and task list
+     * @param numTasks Number of tasks to create
+     * @param size Size of the playing field
+     * @param pcl
+     */
+    private void initTaskGrid(int numTasksIn, int size) {
+        taskGrid = new Task[size][size];
+        if (!taskList.isEmpty()) {
+            taskList.clear();
+
+        }
+        for (int whichTask = 0; whichTask < numTasksIn; whichTask++) {
+            boolean taskPlaced = false;
+            Random rand = new Random();
+            while (!taskPlaced) { // Keep picking random locations until an unused
+                // square is found.
+                int x = rand.nextInt(size); // pick a random x
+                int y = rand.nextInt(size); // pick a random y
+                Location tempLoc = new Location(x, y);
+                if (!isTask(tempLoc)) { // If no task exists there
+                    taskPlaced = true; // Set to exit the while-loop
+                    Task newTask = new Task(tempLoc);
+                    taskList.add(newTask);
+                    taskGrid[x][y] = newTask;
+                }
+            }
+        }
+        Task.setNumTasksComplete(0);
+    }
+
+    /**
+     * Executes the task at the given location.
+     * @param loc The location of the task to execute
+     */
+    public void executeTaskAt(@NonNull final Location loc) {
+        if (isTask(loc)) {
+            taskGrid[loc.getX()][loc.getY()].execute();
+        }
+    }
+
+    /** Determines if a task exists at a given location.
+     * @param   loc The location to look at
+     * @return True if a task exists at loc
+     */
+    public boolean isTask(@NonNull final Location loc) {
+        return (taskGrid[loc.getX()][loc.getY()] != null);
+    }
+
+    /**
+     * Returns the task at the given location, or null if no task exists.
+     * @param loc The location of the task
+     * @return The task at the given location, or null
+     */
+    @Nullable public Task getTask(@NonNull final Location loc) {
+        return taskGrid[loc.getX()][loc.getY()];
+    }
+
+    /**
+     * Checks to see if a given task has been completed.
+     * @param loc The location of the task to check
+     * @return True if the task is complete, false if not
+     */
+    public boolean isTaskComplete(@NonNull final Location loc) {
+    	Task t = getTask(loc);
+    	if (t != null)
+    		return t.isComplete();
+    	return false;
+    }
+    
+    /**
+     * @return task list
+     */
+    @NonNull
+    public ArrayList<Task> getTaskList() {
+        return taskList;
+    }
+
+	public void addPropertyChangeListener(final @NonNull GUI gui) {
+		for (Task task : taskList) {
+			task.addPropertyChangeListener(gui);
+		}
+	}
+
 }

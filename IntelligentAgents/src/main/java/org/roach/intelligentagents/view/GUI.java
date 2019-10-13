@@ -271,8 +271,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		scrollpane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollpane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		c.add(scrollpane, "Center");
-		Task.initTaskGrid(Task.getNumTasks(), agentapp.getRoomSize(), this);
-		for (Task t : Task.getTaskList()) {
+		for (Task t : agentapp.getSimgrid().getTaskList()) {
 			ViewableTask vt = new ViewableTask(t);
 			t.addPropertyChangeListener(vt);
 			mainPanel.add(vt);

@@ -6,6 +6,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.model.Agent;
+import org.roach.intelligentagents.model.SimulationGrid;
 import org.roach.intelligentagents.model.State;
 import org.roach.intelligentagents.model.TaskToDo;
 
@@ -15,14 +16,16 @@ import org.roach.intelligentagents.model.TaskToDo;
  */
 public abstract class AgentStrategy {
 	protected Agent agent;
+	protected final SimulationGrid simGrid;
 	/** The current state of the agent. */
-	protected State state = State.NOT_SET;
+	protected State state = null;
 	/**
 	 * @param agent 
 	 * 
 	 */
-	public AgentStrategy(@NonNull final Agent agent) {
+	public AgentStrategy(@NonNull final Agent agent, @NonNull final SimulationGrid simGrid) {
 		this.agent = agent;
+		this.simGrid = simGrid;
 	}
 
 	protected abstract void initStates();

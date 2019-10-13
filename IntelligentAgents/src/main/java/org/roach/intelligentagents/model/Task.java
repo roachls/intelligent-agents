@@ -11,7 +11,6 @@
 package org.roach.intelligentagents.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
 import java.util.Random;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -31,12 +30,8 @@ public final class Task implements ISimItem {
     private static final float TASK_COMPLETE_PROBABILITY = 1.0f;
     /** Constant indicating task completeness. */
     private static final int TASK_COMPLETE = 5;
-    /** A grid of tasks in x-y coordinates */
-    private static Task[][] taskGrid = new Task[0][0];
     /** Number of "complete" tasks */
-    private static int numTasksComplete = 0;
-    /** List of all tasks */
-    @NonNull private static ArrayList<Task> taskList = new ArrayList<>();
+    private volatile static int numTasksComplete = 0;
     /** Location of the task within the sim-space. */
     @NonNull
     private final Location location;
@@ -60,13 +55,6 @@ public final class Task implements ISimItem {
     }
     
     /**
-     * @return task list
-     */
-    @NonNull
-    public static ArrayList<Task> getTaskList() {
-        return taskList;
-    }
-    /**
      * Get the number of tasks in the simulation.
      * @return Size of Tasks array
      */
@@ -78,76 +66,6 @@ public final class Task implements ISimItem {
     	Task.numTasks = numTasks;
     }
 
-    /**
-     * Initializes the task grid and task list
-     * @param numTasks Number of tasks to create
-     * @param size Size of the playing field
-     * @param pcl
-     */
-    public static void initTaskGrid(int numTasksIn, int size, @NonNull PropertyChangeListener pcl) {
-        taskGrid = new Task[size][size];
-        if (!taskList.isEmpty()) {
-            taskList.clear();
-
-        }
-        for (int whichTask = 0; whichTask < numTasksIn; whichTask++) {
-            boolean taskPlaced = false;
-            Random rand = new Random();
-            while (!taskPlaced) { // Keep picking random locations until an unused
-                // square is found.
-                int x = rand.nextInt(size); // pick a random x
-                int y = rand.nextInt(size); // pick a random y
-                Location tempLoc = new Location(x, y);
-                if (!isTask(tempLoc)) { // If no task exists there
-                    taskPlaced = true; // Set to exit the while-loop
-                    Task newTask = new Task(tempLoc);
-                    taskList.add(newTask);
-                    taskGrid[x][y] = newTask;
-                    newTask.addPropertyChangeListener(pcl);
-                }
-            }
-        }
-        numTasksComplete = 0;
-    }
-
-    /** Determines if a task exists at a given location.
-     * @param   loc The location to look at
-     * @return True if a task exists at loc
-     */
-    public static boolean isTask(@NonNull final Location loc) {
-        return (taskGrid[loc.getX()][loc.getY()] != null);
-    }
-
-    /**
-     * Executes the task at the given location.
-     * @param loc The location of the task to execute
-     */
-    public static void executeTaskAt(@NonNull final Location loc) {
-        if (isTask(loc)) {
-            taskGrid[loc.getX()][loc.getY()].execute();
-        }
-    }
-
-    /**
-     * Checks to see if a given task has been completed.
-     * @param loc The location of the task to check
-     * @return True if the task is complete, false if not
-     */
-    public static boolean isTaskComplete(@NonNull final Location loc) {
-    	Task t = getTask(loc);
-    	if (t != null)
-    		return t.isComplete();
-    	return false;
-    }
-
-    /**
-     * Returns the task at the given location, or null if no task exists.
-     * @param loc The location of the task
-     * @return The task at the given location, or null
-     */
-    @Nullable public static Task getTask(@NonNull final Location loc) {
-        return taskGrid[loc.getX()][loc.getY()];
-    }// </editor-fold>
     /**
      * @param inputLoc The location to place the task
      */
@@ -233,5 +151,12 @@ public final class Task implements ISimItem {
 	 */
 	@NonNull public Location getLocation() {
 		return location;
+	}
+	/**
+	 * Setter for 
+	 * @param numTasksComplete the numTasksComplete to set
+	 */
+	public static void setNumTasksComplete(int numTasksComplete) {
+		Task.numTasksComplete = numTasksComplete;
 	}
 }

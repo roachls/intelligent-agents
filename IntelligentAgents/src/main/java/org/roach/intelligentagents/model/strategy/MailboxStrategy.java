@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
+import org.roach.intelligentagents.model.SimulationGrid;
 import org.roach.intelligentagents.model.Task;
 import org.roach.intelligentagents.model.TaskToDo;
 
@@ -24,8 +25,8 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 	 * @param agent
 	 * 
 	 */
-	public MailboxStrategy(@NonNull final Agent agent) {
-		super(agent);
+	public MailboxStrategy(@NonNull final Agent agent, @NonNull final SimulationGrid simGrid) {
+		super(agent, simGrid);
 		state = RANDOM;
 	}
 
@@ -42,7 +43,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 		agent.randomMove();
 		if (agent.foundNewTask()) {
 			agent.executeTask();
-			if (!Task.isTaskComplete(agent.getLoc())) {
+			if (!simGrid.isTaskComplete(agent.getLoc())) {
 				Location locold = agent.getLoc().clone();
 				mailbox.postMessage(locold);
 			}
@@ -169,7 +170,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 			if (mailbox.messagesExist()) {
 				Mailbox.MailMessage msg = mailbox.getMessage();
 				Location l = msg.location().clone();
-				if (a.hasDoneAlready(Task.getTask(l))) {
+				if (a.hasDoneAlready(simGrid.getTask(l))) {
 					mailbox.postMessage(l);
 					search();
 				} else {
@@ -192,7 +193,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 			getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
 			if (reachedTask()) {
 				a.executeTask();
-				Task t = Task.getTask(a.getLoc());
+				Task t = simGrid.getTask(a.getLoc());
 				if (t != null && !t.isComplete()) {
 					mailbox.postMessage(a.getLoc().clone());
 				}
@@ -200,7 +201,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 				state = RANDOM;
 			} else if (a.foundNewTask()) {
 				a.executeTask();
-				if (!Task.isTaskComplete(a.getLoc())) {
+				if (!simGrid.isTaskComplete(a.getLoc())) {
 					mailbox.postMessage(a.getLoc().clone());
 				}
 			}

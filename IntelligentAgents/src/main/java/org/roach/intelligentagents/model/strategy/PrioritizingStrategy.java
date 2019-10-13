@@ -11,6 +11,7 @@ import java.util.PriorityQueue;
 import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
+import org.roach.intelligentagents.model.SimulationGrid;
 import org.roach.intelligentagents.model.Task;
 import org.roach.intelligentagents.model.TaskToDo;
 
@@ -32,8 +33,8 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
 	/**
 	 * @param agent
 	 */
-	public PrioritizingStrategy(@NonNull final Agent agent) {
-		super(agent);
+	public PrioritizingStrategy(@NonNull final Agent agent, @NonNull final SimulationGrid simGrid) {
+		super(agent, simGrid);
 		state = RANDOM;
 		taskToDo = null;
 	}
@@ -46,7 +47,7 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
      */
 	@Override
 	public void receiveMessage(@NonNull final Location receivedLoc) {
-        Task t = Task.getTask(receivedLoc);
+        Task t = simGrid.getTask(receivedLoc);
         if (!agent.hasDoneAlready(t)) {
             setBroadcastReceived(true);
             // Add the state to the priority queue (not necessarily on top)
@@ -54,7 +55,7 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
             boolean hasDoneAlready = true;
             while (!taskQueue.isEmpty() && hasDoneAlready) {
             	this.taskToDo = taskQueue.peek();
-                if (agent.hasDoneAlready(Task.getTask((taskToDo).getLocation()))) {
+                if (agent.hasDoneAlready(simGrid.getTask((taskToDo).getLocation()))) {
                     taskQueue.poll();
                 } else {
                     hasDoneAlready = false;

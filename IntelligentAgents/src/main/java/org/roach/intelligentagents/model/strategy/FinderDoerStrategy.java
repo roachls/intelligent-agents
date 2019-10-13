@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.model.Agent;
-import org.roach.intelligentagents.model.Task;
+import org.roach.intelligentagents.model.SimulationGrid;
 import org.roach.intelligentagents.model.TaskToDo;
 
 /**
@@ -24,8 +24,8 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 	 * @param agent
 	 * 
 	 */
-	public FinderDoerStrategy(@NonNull final Agent agent) {
-		super(agent);
+	public FinderDoerStrategy(@NonNull final Agent agent, @NonNull final SimulationGrid simGrid) {
+		super(agent, simGrid);
 		this.isFinder = Math.random() > 0.7;
 		this.state = RANDOM;
 	}
@@ -100,7 +100,7 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 				}
 				getTaskToDo().ifPresent((t) -> a.moveTowards(t.getLocation()));
 				if (reachedTask()) {
-					if (!agent.hasDoneAlready(Task.getTask(agent.getLoc()))) {
+					if (!agent.hasDoneAlready(simGrid.getTask(agent.getLoc()))) {
 						agent.executeTask(); // execute it and switch back to Random
 					}
 					state = RANDOM;

@@ -53,12 +53,16 @@ public class Agent implements ISimItem {
 	private final PropertyChangeSupport mPcs = new PropertyChangeSupport(this);
 
 	protected final AgentStrategy strategy;
+	
+	@NonNull
+	private final SimulationGrid simGrid; 
 
 	/**
 	 * Creates a new instance of Agent.
 	 */
-	public Agent(final AgentStrategy strategy) {
+	public Agent(final AgentStrategy strategy, @NonNull final SimulationGrid simGrid) {
 		this.strategy = strategy;
+		this.simGrid = simGrid;
 		id = id_root++;
 		loc = makeRandomLocation();
 		executedTasks = new HashSet<>();
@@ -95,17 +99,17 @@ public class Agent implements ISimItem {
 	 * @param options
 	 */
 	public static void initAgents(final Class<? extends AgentStrategy> strategyType, final int numAgents,
-			PropertyChangeListener simGrid, AgentAppOpts options) {
+			SimulationGrid simGrid, AgentAppOpts options) {
 		agents = new ArrayList<>();
 
 		for (int i = 0; i < numAgents; i++) {
 			@Nullable
 			AgentStrategy strategy = null;
 			try {
-				Constructor<? extends AgentStrategy> strategyConst = strategyType.getConstructor(Agent.class);
-				strategy = strategyConst.newInstance((Agent) null);
+				Constructor<? extends AgentStrategy> strategyConst = strategyType.getConstructor(Agent.class, SimulationGrid.class);
+				strategy = strategyConst.newInstance((Agent) null, simGrid);
 				if (strategy != null) {
-					Agent a = new Agent(strategy);
+					Agent a = new Agent(strategy, simGrid);
 					agents.add(a);
 					strategy.setAgent(a);
 					strategy.setOptions(options);
@@ -161,8 +165,8 @@ public class Agent implements ISimItem {
 	 * Executes the task at the current location.
 	 */
 	public void executeTask() {
-		Task.executeTaskAt(loc);
-		Task gotTask = Task.getTask(loc);
+		simGrid.executeTaskAt(loc);
+		Task gotTask = simGrid.getTask(loc);
 		if (gotTask != null)
 			executedTasks.add(gotTask);
 	}
@@ -175,7 +179,7 @@ public class Agent implements ISimItem {
 	 * @return True if new task found
 	 */
 	public boolean foundNewTask() {
-		return (Task.isTask(loc) && !Task.isTaskComplete(loc)) && !hasDoneAlready(Task.getTask(loc));
+		return (simGrid.isTask(loc) && !simGrid.isTaskComplete(loc)) && !hasDoneAlready(simGrid.getTask(loc));
 	}
 
 	/**

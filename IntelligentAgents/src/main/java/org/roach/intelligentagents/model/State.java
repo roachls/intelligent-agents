@@ -11,15 +11,6 @@ import org.eclipse.jdt.annotation.Nullable;
  *
  */
 public class State {
-	
-    /** Initial state */
-	@SuppressWarnings("null")
-	public final static State NOT_SET = new State(Color.black, new StateAlgorithm() {
-		@Override
-		public void go(final Agent agent) {
-		}
-	}, new Agent(null));
-
 	private Agent agent;
     /** The algorithm that is performed in the State */
     private StateAlgorithm algorithm;

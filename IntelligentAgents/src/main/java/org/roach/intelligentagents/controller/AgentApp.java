@@ -59,6 +59,7 @@ public final class AgentApp {
 		Agent.initAgents(options.strategy, options.agents, aa.simgrid, options);
 		Task.setNumTasks(options.tasks);
 		GUI gui = new GUI(aa, options);
+		aa.simgrid.addPropertyChangeListener(gui);
 		if (aa.isBatchMode())
 			gui.getAnimator().startSim();
 	}
@@ -80,7 +81,7 @@ public final class AgentApp {
 		percentFinished = opts.stopat;
 		batchMode = opts.batch;
 		strategyType = opts.strategy;
-		simgrid = SimulationGrid.getInstance(roomSize);
+		simgrid = SimulationGrid.getInstance(roomSize, opts.tasks);
 	}
 
 	/**
@@ -109,5 +110,13 @@ public final class AgentApp {
 	 */
 	public boolean isBatchMode() {
 		return batchMode;
+	}
+
+	/**
+	 * Getter for 
+	 * @return the simgrid
+	 */
+	public SimulationGrid getSimgrid() {
+		return simgrid;
 	}
 }

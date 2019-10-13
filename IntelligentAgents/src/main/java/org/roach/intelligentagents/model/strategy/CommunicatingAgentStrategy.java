@@ -8,6 +8,7 @@ import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Location;
+import org.roach.intelligentagents.model.SimulationGrid;
 import org.roach.intelligentagents.model.State;
 import org.roach.intelligentagents.model.Task;
 import org.roach.intelligentagents.model.TaskToDo;
@@ -71,8 +72,8 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	/**
 	 * @param agent
 	 */
-	public CommunicatingAgentStrategy(@NonNull final Agent agent) {
-		super(agent);
+	public CommunicatingAgentStrategy(@NonNull final Agent agent, @NonNull final SimulationGrid simGrid) {
+		super(agent, simGrid);
 	}
 
 	@Override
@@ -96,7 +97,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
      * @param receivedLoc
      */
     public void receiveMessage(@NonNull final Location receivedLoc) {
-        Task t = Task.getTask(receivedLoc);
+        Task t = simGrid.getTask(receivedLoc);
         if (t != null && t.isComplete()) {
             agent.getExecutedTasks().add(t);
         }
@@ -111,7 +112,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	 * Initialize communications
 	 */
 	public void initComms() {
-		Task task = Task.getTask(agent.getLoc());
+		Task task = simGrid.getTask(agent.getLoc());
 		if (task != null && !task.isComplete()) { // if task isn'task compete
 			// Important - since loc will be changed later, commTaskLoc must
 			// be a clone of loc, not a reference to it
@@ -165,7 +166,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 			},
 			() -> getTaskToDo().ifPresent(task -> a.moveTowards(task.getLocation())));
 			if (a.getStrategy().reachedTask()) {
-				if (!a.hasDoneAlready(Task.getTask(a.getLoc())))
+				if (!a.hasDoneAlready(simGrid.getTask(a.getLoc())))
 					a.executeTask(); // execute it and switch back to Random
 				setState(RANDOM);
 			}

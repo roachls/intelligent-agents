@@ -8,7 +8,6 @@ import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.SimulationGrid;
 import org.roach.intelligentagents.model.State;
-import org.roach.intelligentagents.model.Task;
 import org.roach.intelligentagents.model.TaskToDo;
 
 
@@ -38,8 +37,8 @@ public class SearchStrategy extends AgentStrategy {
 	 * @param agent 
 	 * 
 	 */
-	public SearchStrategy(@NonNull final Agent agent) {
-		super(agent);
+	public SearchStrategy(@NonNull final Agent agent, @NonNull final SimulationGrid simGrid) {
+		super(agent, simGrid);
 		state = SEARCH;
 	}
 
@@ -67,14 +66,14 @@ public class SearchStrategy extends AgentStrategy {
 	            else dir = (a.getLoc().getX() == 0) ? Directions.NORTHEAST : Directions.NORTHWEST;
 	        } else {
 	            if (a.foundNewTask()) {
-	                Task.executeTaskAt(a.getLoc());
+	                simGrid.executeTaskAt(a.getLoc());
 	            }
 	            switch (dir) {
 	                case NORTHEAST:
 	                    if (a.getLoc().getY() > 0) a.moveNorth();
 	                    else {
 	                        a.moveEast();
-	                        if (a.foundNewTask()) Task.executeTaskAt(a.getLoc());
+	                        if (a.foundNewTask()) simGrid.executeTaskAt(a.getLoc());
 	                        dir = Directions.SOUTHEAST;
 	                    }
 	                    break;
@@ -82,7 +81,7 @@ public class SearchStrategy extends AgentStrategy {
 	                    if (a.getLoc().getY() < SimulationGrid.getGridSize() - 1) a.moveSouth();
 	                    else {
 	                        a.moveEast();
-	                        if (a.foundNewTask()) Task.executeTaskAt(a.getLoc());
+	                        if (a.foundNewTask()) simGrid.executeTaskAt(a.getLoc());
 	                        dir = Directions.NORTHEAST;
 	                    }
 	                    break;
@@ -90,7 +89,7 @@ public class SearchStrategy extends AgentStrategy {
 	                    if (a.getLoc().getY() > 0) a.moveNorth();
 	                    else {
 	                        a.moveWest();
-	                        if (a.foundNewTask()) Task.executeTaskAt(a.getLoc());
+	                        if (a.foundNewTask()) simGrid.executeTaskAt(a.getLoc());
 	                        dir = Directions.SOUTHWEST;
 	                    }
 	                    break;
@@ -98,7 +97,7 @@ public class SearchStrategy extends AgentStrategy {
 	                    if (a.getLoc().getY() < SimulationGrid.getGridSize() - 1) a.moveSouth();
 	                    else {
 	                        a.moveWest();
-	                        if (a.foundNewTask()) Task.executeTaskAt(a.getLoc());
+	                        if (a.foundNewTask()) simGrid.executeTaskAt(a.getLoc());
 	                        dir = Directions.NORTHWEST;
 	                    }
 	                    break;
