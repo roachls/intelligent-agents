@@ -3,7 +3,7 @@ package org.roach.intelligentagents.view.strategy;
 import java.awt.Graphics;
 
 import org.roach.intelligentagents.model.Agent;
-import org.roach.intelligentagents.view.ViewStrategy;
+import org.roach.intelligentagents.view.swing.ViewStrategy;
 
 public class DefaultViewStrategy implements ViewStrategy {
 	@Override

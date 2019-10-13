@@ -13,7 +13,7 @@ import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.SimulationGrid;
 import org.roach.intelligentagents.model.strategy.Strategy;
 import org.roach.intelligentagents.view.ConsoleAnimator;
-import org.roach.intelligentagents.view.GUI;
+import org.roach.intelligentagents.view.swing.GUI;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;

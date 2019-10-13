@@ -1,4 +1,4 @@
-package org.roach.intelligentagents.view;
+package org.roach.intelligentagents.view.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -31,6 +31,7 @@ import org.roach.intelligentagents.controller.AgentApp;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.Task;
 import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
+import org.roach.intelligentagents.view.IAnimator;
 import org.roach.intelligentagents.view.strategy.CommunicatingViewStrategy;
 import org.roach.intelligentagents.view.strategy.DefaultViewStrategy;
 

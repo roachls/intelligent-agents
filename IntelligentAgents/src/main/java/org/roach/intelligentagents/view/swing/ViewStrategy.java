@@ -1,4 +1,4 @@
-package org.roach.intelligentagents.view;
+package org.roach.intelligentagents.view.swing;
 
 import java.awt.Graphics;
 

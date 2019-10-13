@@ -4,7 +4,7 @@
  * Created on December 1, 2006, 4:34 PM
  * @author L. Stephen Roach
  */
-package org.roach.intelligentagents.view;
+package org.roach.intelligentagents.view.swing;
 
 import java.awt.Component;
 import java.awt.Graphics;
@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.roach.intelligentagents.controller.AgentApp;
+import org.roach.intelligentagents.view.AAnimator;
 
 /**
  * <p>The SwingAnimator class is the Thread that animates and runs the simulation.
