@@ -12,7 +12,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.model.SimulationGrid;
 import org.roach.intelligentagents.model.strategy.Strategy;
-import org.roach.intelligentagents.view.ConsoleAnimator;
+import org.roach.intelligentagents.view.console.ConsoleAnimator;
 import org.roach.intelligentagents.view.swing.GUI;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
