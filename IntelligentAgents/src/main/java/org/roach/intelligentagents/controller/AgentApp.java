@@ -8,11 +8,11 @@
  */
 package org.roach.intelligentagents.controller;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.AgentAppOpts;
-import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.model.SimulationGrid;
-import org.roach.intelligentagents.model.strategy.AgentStrategy;
 import org.roach.intelligentagents.model.strategy.Strategy;
+import org.roach.intelligentagents.view.ConsoleAnimator;
 import org.roach.intelligentagents.view.GUI;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -55,31 +55,27 @@ public final class AgentApp {
 		}
 
 		AgentApp aa = new AgentApp(options);
-		Agent.initAgents(options.strategy, options.agents, aa.simgrid, options);
-		GUI gui = new GUI(aa, options);
-		aa.simgrid.addPropertyChangeListener(gui);
-		if (aa.isBatchMode())
-			gui.getAnimator().startSim();
+		if (options.batch) {
+			new ConsoleAnimator(aa).startSim();
+		} else {
+			GUI gui = new GUI(aa, options);
+			aa.simgrid.addPropertyChangeListener(gui);
+		}
 	}
 
-	/** Determines whether program runs in batch mode. */
-	private boolean batchMode;
 	/** The percentage of tasks that must be complete for the simulation to stop. */
-	private int percentFinished;
-	/** The roomSize of the sim-space. */
-	private int roomSize;
+	private final int percentFinished;
 	/** The simulation grid */
+	@NonNull
 	private SimulationGrid simgrid;
 
 	/** Determines agent type. */
-	private Class<? extends AgentStrategy> strategyType;
+	private final String strategyType;
 
 	private AgentApp(AgentAppOpts opts) {
-		roomSize = opts.roomsize;
 		percentFinished = opts.stopat;
-		batchMode = opts.batch;
-		strategyType = opts.strategy;
-		simgrid = SimulationGrid.getInstance(roomSize, opts.tasks);
+		strategyType = opts.strategy.getSimpleName();
+		simgrid = SimulationGrid.getInstance(opts);
 	}
 
 	/**
@@ -90,24 +86,10 @@ public final class AgentApp {
 	}
 
 	/**
-	 * @return size of room
-	 */
-	public int getRoomSize() {
-		return roomSize;
-	}
-
-	/**
 	 * @return type of agent
 	 */
-	public Class<? extends AgentStrategy> getStrategyType() {
+	public String getStrategyType() {
 		return strategyType;
-	}
-
-	/**
-	 * @return batch mode
-	 */
-	public boolean isBatchMode() {
-		return batchMode;
 	}
 
 	/**
@@ -117,4 +99,5 @@ public final class AgentApp {
 	public SimulationGrid getSimgrid() {
 		return simgrid;
 	}
+	
 }

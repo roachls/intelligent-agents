@@ -24,6 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.controller.AgentApp;
@@ -50,13 +51,13 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	private boolean showHelperGraphics = true;
 	/** Determines whether graphics are rendered. */
 	private boolean showGraphics = true;
-	private JPanel mainPanel;
-	private Animator animator;
+	@NonNull private JPanel mainPanel;
+	private SwingAnimator animator;
 
 	/**
 	 * @return animator
 	 */
-	public Animator getAnimator() {
+	public IAnimator getAnimator() {
 		return animator;
 	}
 
@@ -66,7 +67,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	private JButton rewindBtn;
 	/** The "startPauseBtn" button. */
 	private JButton startPauseBtn;
-	/** Allows the Animator to scroll within the window. */
+	/** Allows the SwingAnimator to scroll within the window. */
 	private JScrollPane scrollpane;
 	/** The "render" checkbox. */
 	private JCheckBox toggleRender;
@@ -91,13 +92,13 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 * @param agentapp
 	 * @param options
 	 */
-	public GUI(AgentApp agentapp, AgentAppOpts options) {
+	public GUI(@NonNull final AgentApp agentapp, @NonNull final AgentAppOpts options) {
 		this.agentapp = agentapp;
 		cellSize = options.cellSize;
-		mainPanelSize = cellSize * agentapp.getRoomSize() + 2;
+		mainPanelSize = cellSize * options.roomsize + 2;
 		showHelperGraphics = options.showHelper;
 		showGraphics = options.showGraphics;
-		if (agentapp.isBatchMode()) {
+		if (options.batch) {
 			showHelperGraphics = false;
 			showGraphics = false;
 		}
@@ -123,7 +124,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 				}
 				ViewableTask.setSquareSize(cellSize);
 				ViewableAgent.setSquareSize(cellSize);
-				mainPanelSize = cellSize * agentapp.getRoomSize() + 2;
+				mainPanelSize = cellSize * options.roomsize + 2;
 				Dimension newSize = new Dimension(mainPanelSize, mainPanelSize);
 				mainPanel.setPreferredSize(newSize);
 				mainPanel.setMinimumSize(newSize);
@@ -133,7 +134,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 				animator.unpause();
 			}
 		});
-		animator = new Animator(mainPanel);
+		animator = new SwingAnimator(mainPanel, agentapp);
 
 		// Add bottom portion of screen
 		JPanel bottom = new JPanel();
@@ -144,8 +145,8 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		stats.setLayout(new BoxLayout(stats, BoxLayout.X_AXIS));
 
 		// Make the text-box with the size of the field and number of agents
-		JTextField jtfAgents = new JTextField("Size: " + agentapp.getRoomSize() + " Agents: " + Agent.getNumAgents()
-				+ " Tasks: " + agentapp.getSimgrid().getNumTasks() + " Type: " + agentapp.getStrategyType().getSimpleName());
+		JTextField jtfAgents = new JTextField("Size: " + options.roomsize + " Agents: " + agentapp.getSimgrid().getNumAgents()
+				+ " Tasks: " + agentapp.getSimgrid().getNumTasks() + " Type: " + agentapp.getStrategyType());
 		jtfAgents.setEditable(false);
 		stats.add(jtfAgents);
 
@@ -276,17 +277,17 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 			t.addPropertyChangeListener(vt);
 			mainPanel.add(vt);
 		}
-		initAgents(Agent.getAgents().get(0).getStrategy() instanceof CommunicatingAgentStrategy);
+		initAgents(agentapp.getSimgrid().getAgents().get(0).getStrategy() instanceof CommunicatingAgentStrategy);
 		pack(); // Makes the main window just the right size to hold everything
 		setResizable(true);
-		setVisible(!agentapp.isBatchMode()); // Make the window visible
+		setVisible(!options.batch); // Make the window visible
 	}
 
 	/**
 	 * Initialize all agents and add them to the panel for display.
 	 */
 	private void initAgents(boolean isCommunicating) {
-		for (Agent a : Agent.getAgents()) {
+		for (Agent a : agentapp.getSimgrid().getAgents()) {
 			mainPanel.add(new ViewableAgent(a));
 		}
 		if (isCommunicating)
@@ -365,7 +366,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	}
 
 	/**
-	 * Called when a property is changed in the Animator; updates GUI information.
+	 * Called when a property is changed in the SwingAnimator; updates GUI information.
 	 * 
 	 * @param evt The property change that has occurred.
 	 */
@@ -377,13 +378,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 			Integer numTasksComplete = (Integer) evt.getNewValue();
 			progressBar.setValue(numTasksComplete);
 			if (numTasksComplete >= agentapp.getSimgrid().getNumTasks() * (float) agentapp.getPercentFinished() / 100.0f) {
-				if (agentapp.isBatchMode()) {
-					System.out.println(agentapp.getRoomSize() + " " + agentapp.getSimgrid().getNumTasks() + " "
-							+ Agent.getNumAgents() + " " + agentapp.getStrategyType() + " " + Animator.getTime());
-					animator.endProgram();
-				} else {
-					animator.stopSim();
-				}
+				animator.stopSim();
 			}
 
 		}

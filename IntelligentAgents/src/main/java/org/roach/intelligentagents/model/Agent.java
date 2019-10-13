@@ -8,18 +8,12 @@ package org.roach.intelligentagents.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.roach.intelligentagents.AgentAppOpts;
-import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.model.strategy.AgentStrategy;
 
 /**
@@ -30,10 +24,6 @@ import org.roach.intelligentagents.model.strategy.AgentStrategy;
  * @version %I%, %G%
  */
 public class Agent implements ISimItem {
-	/** The list of all agents */
-	@NonNull
-	private static List<Agent> agents = new ArrayList<>();
-
 	private static int id_root = 0;
 
 	/**
@@ -78,73 +68,21 @@ public class Agent implements ISimItem {
 	}
 
 	/**
-	 * Get the list of all agents
-	 * 
-	 * @return Agents
+	 * @param listener
 	 */
-	public static List<Agent> getAgents() {
-		return agents;
-	}
-
-	public static int getNumAgents() {
-		return agents.size();
-	}
-
-	/**
-	 * Initialize/reset/create all agents and grids
-	 * 
-	 * @param strategyType
-	 * @param numAgents    Number of agents to create
-	 * @param simGrid
-	 * @param options
-	 */
-	public static void initAgents(final Class<? extends AgentStrategy> strategyType, final int numAgents,
-			SimulationGrid simGrid, AgentAppOpts options) {
-		agents = new ArrayList<>();
-
-		for (int i = 0; i < numAgents; i++) {
-			@Nullable
-			AgentStrategy strategy = null;
-			try {
-				Constructor<? extends AgentStrategy> strategyConst = strategyType.getConstructor(Agent.class, SimulationGrid.class);
-				strategy = strategyConst.newInstance((Agent) null, simGrid);
-				if (strategy != null) {
-					Agent a = new Agent(strategy, simGrid);
-					agents.add(a);
-					strategy.setAgent(a);
-					strategy.setOptions(options);
-					a.addPropertyChangeListener(simGrid);
-					a.mPcs.firePropertyChange(PropertyConstants.NEW_AGENT, null, null);
-				}
-			} catch (InstantiationException ex) {
-				System.err.println("Unable to instantiate class.");
-				ex.printStackTrace();
-				System.exit(2);
-			} catch (IllegalAccessException ex) {
-				System.err.println("Illegal access exception.");
-				ex.printStackTrace();
-				System.exit(3);
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-				System.exit(4);
-			} catch (SecurityException e) {
-				e.printStackTrace();
-				System.exit(5);
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-				System.exit(6);
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-				System.exit(7);
-			}
-		}
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		mPcs.addPropertyChangeListener(listener);
 	}
 
 	/**
 	 * @param listener
 	 */
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		mPcs.addPropertyChangeListener(listener);
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		mPcs.removePropertyChangeListener(listener);
+	}
+	
+	public void firePropertyChange(@NonNull final String propertyName, final Object oldValue, final Object newValue) {
+		mPcs.firePropertyChange(propertyName, oldValue, newValue);
 	}
 
 	/**
@@ -247,13 +185,6 @@ public class Agent implements ISimItem {
 	@Override
 	public int hashCode() {
 		return id % 7;
-	}
-
-	/**
-	 * @param listener
-	 */
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		mPcs.removePropertyChangeListener(listener);
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /**
- * Animator.java
+ * SwingAnimator.java
  *
  * Created on December 1, 2006, 4:34 PM
  * @author L. Stephen Roach
@@ -13,33 +13,24 @@ import java.awt.Image;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.roach.intelligentagents.PropertyConstants;
-import org.roach.intelligentagents.model.Agent;
+import org.roach.intelligentagents.controller.AgentApp;
 
 /**
- * <p>The Animator class is the Thread that animates and runs the simulation.
+ * <p>The SwingAnimator class is the Thread that animates and runs the simulation.
  * <p>NOTE: The overall concepts of the graphics programming for this simulation
  * is derived from the book <i>Killer Game Programming in Java</i>, by Andrew
  * Davison.</p>
  *
  * @author L. Stephen Roach
  */
-public final class Animator implements Runnable {
+public final class SwingAnimator extends AAnimator {
 
     /** The JPanel to display everything on */
     private JPanel panel;
-    /** The animation thread. */
-    @Nullable private Thread animatorThread;
-    /**
-     * Determines whether the simulation is running or not. When this is false,
-     * the application terminates.
-     */
-    private volatile boolean isRunning = true;
     /** Determines whether the simulation is paused. */
     private volatile boolean isPaused = true;
-    /** Determines whether the simulation is complete. */
-    private volatile boolean simOver = false;
     /**
      * Determines whether the sim is rendered to the screen. This may speed up
      * progress because it reduces the overhead of the graphics.
@@ -56,30 +47,26 @@ public final class Animator implements Runnable {
     @Nullable private Graphics dbg;
     /** The buffer image in which to render each new frame. */
     @Nullable private Image dbImage = null;
-    /** The current master time. */
-    private static int time;
     
     /**
-     * Creates a new instance of Animator.
+     * Creates a new instance of SwingAnimator.
      * @param p The JPanel to display everything on
      */
-    public Animator(final JPanel p) {
+    public SwingAnimator(@NonNull final JPanel p, @NonNull final AgentApp agentApp) {
+    	super(agentApp);
         this.panel = p;
         // Initialize simulation components
-        time = 0;
         isPaused = true;
     }
 
     /**
      * Initialize and start the simulation thread.
      */
-    public void startSim() {
+    @Override
+	public void startSim() {
         // If the thread doesn't exist, create it and start it
-        if (animatorThread == null || !isRunning) {
-            animatorThread = new Thread(this, "AnimationThread");
-            animatorThread.start();
-            isPaused = false;
-        }
+    	super.startSim();
+        isPaused = false;
     }
 
     /**
@@ -88,23 +75,6 @@ public final class Animator implements Runnable {
      */
     public boolean isStarted() {
         return (animatorThread != null && isRunning);
-    }
-
-    /**
-     * Called when all tasks have been found or when the user presses the
-     * Stop button.
-     */
-    public void stopSim() {
-        simOver = true;
-    }
-
-    /**
-     * Sets isRunning to false, thus ending the main loop and the thread.
-     */
-    public void endProgram() {
-        isRunning = false;
-        animatorThread = null;
-        System.exit(0);
     }
 
     /**
@@ -120,27 +90,11 @@ public final class Animator implements Runnable {
         }
     }
     
-    public void step() {
+    @Override
+	public void step() {
         simUpdate();    // update sim state
         simRender();    // render to a graphics buffer
         paintScreen();  // draw buffer to screen
-    }
-
-    /**
-     * Updates the status of all agents (calls the doAction() method of each
-     * agent).
-     */
-    private void simUpdate() {
-        if (!simOver) { // If the sim isn't paused or complete
-            // Update all agents
-            for (Agent a : Agent.getAgents()) {
-            	if (a != null)
-            		a.getStrategy().doAction();
-            }
-            // Display the new time
-            time++;
-            panel.firePropertyChange(PropertyConstants.TIME_TICK, time, time - 1);
-        }
     }
 
     /**
@@ -221,14 +175,6 @@ public final class Animator implements Runnable {
     
     public void unpause() {
     	isPaused = false;
-    }
-
-    /**
-     * Get the current time.
-     * @return time
-     */
-    public static int getTime() {
-        return time;
     }
 
     /**

@@ -1,7 +1,7 @@
 package org.roach.intelligentagents.model;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.roach.intelligentagents.view.Animator;
+import org.roach.intelligentagents.view.AAnimator;
 
 /**
  * A TaskToDo object represents a single task for an agent to perform in
@@ -20,7 +20,7 @@ public final class TaskToDo implements Comparable<TaskToDo> {
      */
     public TaskToDo(@NonNull final Location inputTaskLoc) {
         taskLoc = inputTaskLoc;
-        this.timeWhenFound = Animator.getTime();
+        this.timeWhenFound = AAnimator.getTime();
     }
     /**
      * Get the location of the TaskToDo.

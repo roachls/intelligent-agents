@@ -2,6 +2,8 @@ package org.roach.intelligentagents.model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,9 +14,10 @@ import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.roach.intelligentagents.AgentAppOpts;
 import org.roach.intelligentagents.PropertyConstants;
+import org.roach.intelligentagents.model.strategy.AgentStrategy;
 import org.roach.intelligentagents.model.strategy.CommunicatingAgentStrategy;
-import org.roach.intelligentagents.view.GUI;
 
 /**
  * @author Larry S. Roach
@@ -32,7 +35,10 @@ public class SimulationGrid implements PropertyChangeListener {
     /** Number of "complete" tasks */
     private volatile int numTasksComplete = 0;
     private PropertyChangeSupport mPcs = new PropertyChangeSupport(this);
-    
+	/** The list of all agents */
+	@NonNull
+	private List<Agent> agents = new ArrayList<>();
+
     /**
      * A table of sets of agents. This data structure is used to greatly speed
      * up the "communications" between agents. Each table entry represents a row
@@ -44,9 +50,11 @@ public class SimulationGrid implements PropertyChangeListener {
     
     private static SimulationGrid instance;
     
-    public static SimulationGrid getInstance(final int gridSizeIn, final int numTasksIn) {
+    @SuppressWarnings("null")
+	@NonNull
+    public static SimulationGrid getInstance(@NonNull final AgentAppOpts options) {
     	if (instance == null) {
-    		instance = new SimulationGrid(gridSizeIn, numTasksIn);
+    		instance = new SimulationGrid(options);
     	}
     	return instance;
     }
@@ -54,9 +62,9 @@ public class SimulationGrid implements PropertyChangeListener {
 	/**
 	 * @param gridSize
 	 */
-	private SimulationGrid(final int gridSizeIn, final int numTasksIn) {
-		this.gridSize = gridSizeIn;
-		this.numTasks = numTasksIn;
+	private SimulationGrid(@NonNull final AgentAppOpts options) {
+		this.gridSize = options.roomsize;
+		this.numTasks = options.tasks;
 		grid = new ArrayList<>(gridSize);
 		for (int x = 0; x < gridSize; x++) {
 			List<Set<Agent>> row = new ArrayList<>(gridSize);
@@ -66,7 +74,8 @@ public class SimulationGrid implements PropertyChangeListener {
 			grid.add(row);
 		}
 		xRef = new HashMap<>();
-		initTaskGrid(numTasksIn, gridSize);
+		initTaskGrid(options);
+		initAgents(options);
 	}
 	
 	@Override
@@ -194,19 +203,19 @@ public class SimulationGrid implements PropertyChangeListener {
      * @param size Size of the playing field
      * @param pcl
      */
-    private void initTaskGrid(int numTasksIn, int size) {
-        taskGrid = new Task[size][size];
+    private void initTaskGrid(@NonNull final AgentAppOpts options) {
+        taskGrid = new Task[options.roomsize][options.roomsize];
         if (!taskList.isEmpty()) {
             taskList.clear();
 
         }
-        for (int whichTask = 0; whichTask < numTasksIn; whichTask++) {
+        for (int whichTask = 0; whichTask < options.tasks; whichTask++) {
             boolean taskPlaced = false;
             Random rand = new Random();
             while (!taskPlaced) { // Keep picking random locations until an unused
                 // square is found.
-                int x = rand.nextInt(size); // pick a random x
-                int y = rand.nextInt(size); // pick a random y
+                int x = rand.nextInt(options.roomsize); // pick a random x
+                int y = rand.nextInt(options.roomsize); // pick a random y
                 Location tempLoc = new Location(x, y);
                 if (!isTask(tempLoc)) { // If no task exists there
                     taskPlaced = true; // Set to exit the while-loop
@@ -218,6 +227,55 @@ public class SimulationGrid implements PropertyChangeListener {
         }
         numTasksComplete = 0;
     }
+    
+	/**
+	 * Initialize/reset/create all agents and grids
+	 * 
+	 * @param strategyType
+	 * @param numAgents    Number of agents to create
+	 * @param simGrid
+	 * @param options
+	 */
+	private void initAgents(@NonNull final AgentAppOpts options) {
+		agents = new ArrayList<>();
+
+		for (int i = 0; i < options.agents; i++) {
+			@Nullable
+			AgentStrategy strategy = null;
+			try {
+				Constructor<? extends AgentStrategy> strategyConst = options.strategy.getConstructor(Agent.class, SimulationGrid.class);
+				strategy = strategyConst.newInstance((Agent) null, this);
+				if (strategy != null) {
+					Agent a = new Agent(strategy, this);
+					agents.add(a);
+					strategy.setAgent(a);
+					strategy.setOptions(options);
+					a.addPropertyChangeListener(this);
+					a.firePropertyChange(PropertyConstants.NEW_AGENT, null, null);
+				}
+			} catch (InstantiationException ex) {
+				System.err.println("Unable to instantiate class.");
+				ex.printStackTrace();
+				System.exit(2);
+			} catch (IllegalAccessException ex) {
+				System.err.println("Illegal access exception.");
+				ex.printStackTrace();
+				System.exit(3);
+			} catch (NoSuchMethodException e) {
+				e.printStackTrace();
+				System.exit(4);
+			} catch (SecurityException e) {
+				e.printStackTrace();
+				System.exit(5);
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+				System.exit(6);
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+				System.exit(7);
+			}
+		}
+	}
 
     /**
      * Executes the task at the given location.
@@ -272,7 +330,7 @@ public class SimulationGrid implements PropertyChangeListener {
         return taskList;
     }
 
-	public void addPropertyChangeListener(final @NonNull GUI gui) {
+	public void addPropertyChangeListener(final @NonNull PropertyChangeListener gui) {
 		this.mPcs.addPropertyChangeListener(gui);
 	}
 
@@ -284,4 +342,17 @@ public class SimulationGrid implements PropertyChangeListener {
         return numTasks;
     }
     
+	/**
+	 * Get the list of all agents
+	 * 
+	 * @return Agents
+	 */
+	public List<Agent> getAgents() {
+		return agents;
+	}
+
+	public int getNumAgents() {
+		return agents.size();
+	}
+
 }
