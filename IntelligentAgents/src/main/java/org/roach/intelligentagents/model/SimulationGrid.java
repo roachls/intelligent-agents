@@ -21,7 +21,7 @@ import org.roach.intelligentagents.view.GUI;
  */
 public class SimulationGrid implements PropertyChangeListener {
 	private List<List<Set<Agent>>> grid;
-	private static int gridSize;
+	private final int gridSize;
     /** A grid of tasks in x-y coordinates */
     private Task[][] taskGrid = new Task[0][0];
     /** List of all tasks */
@@ -42,8 +42,7 @@ public class SimulationGrid implements PropertyChangeListener {
     
     public static SimulationGrid getInstance(final int gridSizeIn, final int numTasksIn) {
     	if (instance == null) {
-    		SimulationGrid.gridSize = gridSizeIn;
-    		instance = new SimulationGrid(numTasksIn);
+    		instance = new SimulationGrid(gridSizeIn, numTasksIn);
     	}
     	return instance;
     }
@@ -51,7 +50,8 @@ public class SimulationGrid implements PropertyChangeListener {
 	/**
 	 * @param gridSize
 	 */
-	private SimulationGrid(final int numTasksIn) {
+	private SimulationGrid(final int gridSizeIn, final int numTasksIn) {
+		this.gridSize = gridSizeIn;
 		this.numTasks = numTasksIn;
 		grid = new ArrayList<>(gridSize);
 		for (int x = 0; x < gridSize; x++) {
@@ -180,7 +180,7 @@ public class SimulationGrid implements PropertyChangeListener {
 	 * Getter for 
 	 * @return the gridSize
 	 */
-	public static int getGridSize() {
+	public int getGridSize() {
 		return gridSize;
 	}
 	

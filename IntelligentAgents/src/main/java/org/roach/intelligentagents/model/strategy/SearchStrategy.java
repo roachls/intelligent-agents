@@ -78,7 +78,7 @@ public class SearchStrategy extends AgentStrategy {
 	                    }
 	                    break;
 	                case SOUTHEAST:
-	                    if (a.getLoc().getY() < SimulationGrid.getGridSize() - 1) a.moveSouth();
+	                    if (a.getLoc().getY() < simGrid.getGridSize() - 1) a.moveSouth();
 	                    else {
 	                        a.moveEast();
 	                        if (a.foundNewTask()) simGrid.executeTaskAt(a.getLoc());
@@ -94,7 +94,7 @@ public class SearchStrategy extends AgentStrategy {
 	                    }
 	                    break;
 	                case SOUTHWEST:
-	                    if (a.getLoc().getY() < SimulationGrid.getGridSize() - 1) a.moveSouth();
+	                    if (a.getLoc().getY() < simGrid.getGridSize() - 1) a.moveSouth();
 	                    else {
 	                        a.moveWest();
 	                        if (a.foundNewTask()) simGrid.executeTaskAt(a.getLoc());
