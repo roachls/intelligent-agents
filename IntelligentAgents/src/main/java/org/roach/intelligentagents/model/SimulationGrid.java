@@ -1,6 +1,7 @@
 package org.roach.intelligentagents.model;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,7 +29,10 @@ public class SimulationGrid implements PropertyChangeListener {
     @NonNull private ArrayList<Task> taskList = new ArrayList<>();
     /** Number of tasks */
     private final int numTasks;
-
+    /** Number of "complete" tasks */
+    private volatile int numTasksComplete = 0;
+    private PropertyChangeSupport mPcs = new PropertyChangeSupport(this);
+    
     /**
      * A table of sets of agents. This data structure is used to greatly speed
      * up the "communications" between agents. Each table entry represents a row
@@ -212,7 +216,7 @@ public class SimulationGrid implements PropertyChangeListener {
                 }
             }
         }
-        Task.setNumTasksComplete(0);
+        numTasksComplete = 0;
     }
 
     /**
@@ -221,7 +225,13 @@ public class SimulationGrid implements PropertyChangeListener {
      */
     public void executeTaskAt(@NonNull final Location loc) {
         if (isTask(loc)) {
-            taskGrid[loc.getX()][loc.getY()].execute();
+        	Task task = taskGrid[loc.getX()][loc.getY()];
+            task.execute();
+            if (task.isComplete()) { // If task is now complete, let listeners know
+                numTasksComplete++;
+                mPcs.firePropertyChange(PropertyConstants.TASK_COMPLETE, numTasksComplete-1, numTasksComplete);
+            }
+
         }
     }
 
@@ -263,9 +273,7 @@ public class SimulationGrid implements PropertyChangeListener {
     }
 
 	public void addPropertyChangeListener(final @NonNull GUI gui) {
-		for (Task task : taskList) {
-			task.addPropertyChangeListener(gui);
-		}
+		this.mPcs.addPropertyChangeListener(gui);
 	}
 
     /**

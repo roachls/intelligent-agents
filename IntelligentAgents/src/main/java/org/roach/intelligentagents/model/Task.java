@@ -30,8 +30,6 @@ public final class Task implements ISimItem {
     private static final float TASK_COMPLETE_PROBABILITY = 1.0f;
     /** Constant indicating task completeness. */
     private static final int TASK_COMPLETE = 5;
-    /** Number of "complete" tasks */
-    private volatile static int numTasksComplete = 0;
     /** Location of the task within the sim-space. */
     @NonNull
     private final Location location;
@@ -79,10 +77,6 @@ public final class Task implements ISimItem {
             }
         } else // if task is already complete
             return;
-        if (isComplete()) { // If task is now complete, let listeners know
-            numTasksComplete++;
-            mPcs.firePropertyChange(PropertyConstants.TASK_COMPLETE, numTasksComplete-1, numTasksComplete);
-        }
     }
     /**
      * Return completeness of the task.
@@ -137,12 +131,5 @@ public final class Task implements ISimItem {
 	 */
 	@NonNull public Location getLocation() {
 		return location;
-	}
-	/**
-	 * Setter for 
-	 * @param numTasksComplete the numTasksComplete to set
-	 */
-	public static void setNumTasksComplete(int numTasksComplete) {
-		Task.numTasksComplete = numTasksComplete;
 	}
 }
