@@ -26,6 +26,8 @@ public class SimulationGrid implements PropertyChangeListener {
     private Task[][] taskGrid = new Task[0][0];
     /** List of all tasks */
     @NonNull private ArrayList<Task> taskList = new ArrayList<>();
+    /** Number of tasks */
+    private final int numTasks;
 
     /**
      * A table of sets of agents. This data structure is used to greatly speed
@@ -50,6 +52,7 @@ public class SimulationGrid implements PropertyChangeListener {
 	 * @param gridSize
 	 */
 	private SimulationGrid(final int numTasksIn) {
+		this.numTasks = numTasksIn;
 		grid = new ArrayList<>(gridSize);
 		for (int x = 0; x < gridSize; x++) {
 			List<Set<Agent>> row = new ArrayList<>(gridSize);
@@ -265,4 +268,12 @@ public class SimulationGrid implements PropertyChangeListener {
 		}
 	}
 
+    /**
+     * Get the number of tasks in the simulation.
+     * @return Size of Tasks array
+     */
+    public int getNumTasks() {
+        return numTasks;
+    }
+    
 }

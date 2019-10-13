@@ -145,7 +145,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 
 		// Make the text-box with the size of the field and number of agents
 		JTextField jtfAgents = new JTextField("Size: " + agentapp.getRoomSize() + " Agents: " + Agent.getNumAgents()
-				+ " Tasks: " + Task.getNumTasks() + " Type: " + agentapp.getStrategyType().getSimpleName());
+				+ " Tasks: " + agentapp.getSimgrid().getNumTasks() + " Type: " + agentapp.getStrategyType().getSimpleName());
 		jtfAgents.setEditable(false);
 		stats.add(jtfAgents);
 
@@ -260,7 +260,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		playbackCtlPanel.add(stopBtn);
 		bottom.add(playbackCtlPanel, BorderLayout.CENTER);
 
-		progressBar = new JProgressBar(0, Task.getNumTasks());
+		progressBar = new JProgressBar(0, agentapp.getSimgrid().getNumTasks());
 		progressBar.setStringPainted(true);
 		bottom.add(progressBar, "South");
 
@@ -376,9 +376,9 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		} else if (evt.getPropertyName().equals(PropertyConstants.TASK_COMPLETE)) {
 			Integer numTasksComplete = (Integer) evt.getNewValue();
 			progressBar.setValue(numTasksComplete);
-			if (numTasksComplete >= Task.getNumTasks() * (float) agentapp.getPercentFinished() / 100.0f) {
+			if (numTasksComplete >= agentapp.getSimgrid().getNumTasks() * (float) agentapp.getPercentFinished() / 100.0f) {
 				if (agentapp.isBatchMode()) {
-					System.out.println(agentapp.getRoomSize() + " " + Task.getNumTasks() + " "
+					System.out.println(agentapp.getRoomSize() + " " + agentapp.getSimgrid().getNumTasks() + " "
 							+ Agent.getNumAgents() + " " + agentapp.getStrategyType() + " " + Animator.getTime());
 					animator.endProgram();
 				} else {

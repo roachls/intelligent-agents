@@ -37,8 +37,6 @@ public final class Task implements ISimItem {
     private final Location location;
     /** Current priority of the task. */
     private int prio;
-    /** Number of tasks */
-    private static int numTasks;
 
     private PropertyChangeSupport mPcs = new PropertyChangeSupport(this);
     /**
@@ -54,18 +52,6 @@ public final class Task implements ISimItem {
     	mPcs.removePropertyChangeListener(listener);
     }
     
-    /**
-     * Get the number of tasks in the simulation.
-     * @return Size of Tasks array
-     */
-    public static int getNumTasks() {
-        return numTasks;
-    }
-    
-    public static void setNumTasks(int numTasks) {
-    	Task.numTasks = numTasks;
-    }
-
     /**
      * @param inputLoc The location to place the task
      */
