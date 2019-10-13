@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package org.roach.intelligentagents.view.console;
 
 import java.beans.PropertyChangeEvent;
@@ -8,16 +7,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.controller.AgentApp;
 import org.roach.intelligentagents.view.AAnimator;
-=======
-package org.roach.intelligentagents.view;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import org.eclipse.jdt.annotation.NonNull;
-import org.roach.intelligentagents.PropertyConstants;
-import org.roach.intelligentagents.controller.AgentApp;
->>>>>>> branch 'master' of https://github.com/roachls/intelligent-agents.git
 
 public class ConsoleAnimator extends AAnimator implements PropertyChangeListener {
 
