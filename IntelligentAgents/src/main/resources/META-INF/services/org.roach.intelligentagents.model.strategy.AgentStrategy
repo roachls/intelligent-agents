@@ -1,0 +1,4 @@
+org.roach.intelligentagents.model.strategy.FinderDoerStrategy
+org.roach.intelligentagents.model.strategy.MailboxStrategy
+org.roach.intelligentagents.model.strategy.PrioritizingStrategy
+org.roach.intelligentagents.model.strategy.SearchStrategy

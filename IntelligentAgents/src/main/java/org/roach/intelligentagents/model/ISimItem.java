@@ -5,5 +5,5 @@ package org.roach.intelligentagents.model;
  *
  */
 public interface ISimItem {
-	
+	// Nothing to do
 }

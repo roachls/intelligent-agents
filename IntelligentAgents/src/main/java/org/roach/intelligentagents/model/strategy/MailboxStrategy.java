@@ -15,11 +15,17 @@ import org.roach.intelligentagents.model.TaskToDo;
  * @author Larry S. Roach
  *
  */
-@Strategy
 public class MailboxStrategy extends CommunicatingAgentStrategy {
 	/** The shared mailbox associated with all Mailbox agents. */
 	static Mailbox mailbox = new Mailbox();
 	private TaskToDo taskToDo;
+	
+	/**
+	 * No-arg constructor used only by the resource loader
+	 */
+	public MailboxStrategy() {
+		
+	}
 	
 	/**
 	 * @param agent
@@ -206,5 +212,10 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 				}
 			}
 		});
+	}
+
+	@Override
+	public @NonNull String getDescription() {
+		return "Mailbox strategy";
 	}
 }

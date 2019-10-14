@@ -21,7 +21,6 @@ import org.roach.intelligentagents.model.TaskToDo;
  * @author L. Stephen Roach
  * @version 1.0
  */
-@Strategy
 public class SearchStrategy extends AgentStrategy {
 
 	enum Directions {
@@ -33,6 +32,14 @@ public class SearchStrategy extends AgentStrategy {
 	public final State SEARCH = new State(Color.black, null, this.agent);
 	
     private boolean starting = true;
+
+    /**
+	 * No-arg constructor used only by the resource loader
+	 */
+	public SearchStrategy() {
+		
+	}
+	
     /**
 	 * @param agent 
 	 * 
@@ -49,7 +56,7 @@ public class SearchStrategy extends AgentStrategy {
 
 	@Override
 	public void setOptions(AgentAppOpts options) {
-		
+		// Nothing to do
 	}
 
 	/**
@@ -107,5 +114,10 @@ public class SearchStrategy extends AgentStrategy {
 	        }
 			
 		});
+	}
+
+	@Override
+	public @NonNull String getDescription() {
+		return "Search Strategy";
 	}
 }

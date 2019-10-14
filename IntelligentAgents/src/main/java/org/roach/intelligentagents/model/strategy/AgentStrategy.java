@@ -19,6 +19,11 @@ public abstract class AgentStrategy {
 	protected final SimulationGrid simGrid;
 	/** The current state of the agent. */
 	protected State state = null;
+	
+	public AgentStrategy() {
+		this.simGrid = null;
+	}
+	
 	/**
 	 * @param agent 
 	 * 
@@ -100,4 +105,6 @@ public abstract class AgentStrategy {
 		this.agent = agent;
 		initStates();
 	}
+	
+	@NonNull public abstract String getDescription();
 }

@@ -1,6 +1,5 @@
 package org.roach.intelligentagents;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.roach.intelligentagents.model.strategy.AgentStrategy;
 
@@ -43,7 +42,7 @@ public class AgentAppOpts {
 	 * The strategy to use
 	 */
 	@Parameter(names = { "--strategy" }, converter=ClassConverter.class, description="The strategy to use")
-	@NonNull public Class<? extends AgentStrategy> strategy = AgentStrategy.class;
+	@Nullable public Class<? extends AgentStrategy> strategy = null;
 
 	/**
 	 * Whether to run in batch mode or not
@@ -80,6 +79,13 @@ public class AgentAppOpts {
 	 */
 	@Parameter(names= {"--cellSize"}, description="Size of a cell in pixels")
 	public int cellSize = 6;
+
+	@Override
+	public String toString() {
+		return "AgentAppOpts [roomsize=" + roomsize + ", agents=" + agents + ", tasks=" + tasks + ", stopat=" + stopat
+				+ ", strategy=" + strategy + ", batch=" + batch + ", commDist=" + commDist + ", commTime=" + commTime
+				+ ", showHelper=" + showHelper + ", showGraphics=" + showGraphics + ", cellSize=" + cellSize + "]";
+	}
 }
 
 class ClassConverter implements IStringConverter<Class<? extends AgentStrategy>> {

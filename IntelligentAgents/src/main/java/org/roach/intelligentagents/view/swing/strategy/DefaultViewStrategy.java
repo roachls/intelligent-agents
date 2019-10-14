@@ -37,6 +37,6 @@ public class DefaultViewStrategy implements ViewStrategy {
 
 	@Override
 	public void drawHelperGraphics(final Agent agent, final Graphics g, final int squareSize) {
-		
+		// Nothing to do
 	}
 }

@@ -2,7 +2,6 @@ package org.roach.intelligentagents.model;
 
 import java.awt.Color;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 
@@ -15,8 +14,7 @@ public class State {
     /** The algorithm that is performed in the State */
     private StateAlgorithm algorithm;
     /** The Color of the state, used by the Agent.draw method */
-    @SuppressWarnings("null")
-	@NonNull private Color color = Color.BLACK;
+	@Nullable private Color color = Color.BLACK;
     
     public State() {
 	}
@@ -26,7 +24,7 @@ public class State {
      * @param alg The algorithm called by this state.
      * @param agent 
      */
-    public State(@NonNull final Color c, StateAlgorithm alg, Agent agent) {
+    public State(@Nullable final Color c, StateAlgorithm alg, Agent agent) {
         this.color = c;
         this.algorithm = alg;
         this.agent = agent;
@@ -43,7 +41,7 @@ public class State {
      * Get the color for this state.
      * @return color
      */
-    @NonNull
+    @Nullable
     public Color getColor() {
         return color;
     }

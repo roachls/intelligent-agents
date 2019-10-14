@@ -69,6 +69,10 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	/** Flag to indicate whether a broadcast has been received. */
 	protected boolean broadcastReceived;
 
+	public CommunicatingAgentStrategy() {
+		super();
+	}
+	
 	/**
 	 * @param agent
 	 */

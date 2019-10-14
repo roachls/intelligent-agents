@@ -25,10 +25,16 @@ import org.roach.intelligentagents.model.TaskToDo;
  * be virtually ignored.
  * @author L. Stephen Roach
  */
-@Strategy
 public class PrioritizingStrategy extends CommunicatingAgentStrategy {
 	protected final PriorityQueue<TaskToDo> taskQueue = new PriorityQueue<>();
 	protected TaskToDo taskToDo;
+	
+	/**
+	 * No-arg constructor used only by the resource loader
+	 */
+	public PrioritizingStrategy() {
+		
+	}
 	
 	/**
 	 * @param agent
@@ -79,4 +85,9 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
 	public void executeTask() {
         taskQueue.poll(); // remove top TaskToDo from queue
     }
+
+	@Override
+	public @NonNull String getDescription() {
+		return "Prioritizing Strategy";
+	}
 }

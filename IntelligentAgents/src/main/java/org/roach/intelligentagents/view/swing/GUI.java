@@ -305,6 +305,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 */
 	@Override
 	public void windowActivated(final WindowEvent e) {
+		// Nothing to do
 	}
 
 	/**
@@ -314,6 +315,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 */
 	@Override
 	public void windowDeactivated(final WindowEvent e) {
+		// Nothing to do
 	}
 
 	/**
@@ -354,6 +356,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 */
 	@Override
 	public void windowClosed(final WindowEvent e) {
+		// Nothing to do
 	}
 
 	/**
@@ -364,6 +367,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 */
 	@Override
 	public void windowOpened(final WindowEvent e) {
+		// Nothing to do
 	}
 
 	/**
