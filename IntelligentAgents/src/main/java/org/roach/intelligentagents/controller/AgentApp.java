@@ -34,7 +34,7 @@ public final class AgentApp {
 	 * @param args Command-line arguments (if any)
 	 * @throws ClassNotFoundException
 	 */
-	public static void main(final String[] args) throws ClassNotFoundException {
+	public static void main(final String[] args) {
 		AgentAppOpts options = new AgentAppOpts();
 		JCommander jCommander = JCommander.newBuilder().addObject(options).build();
 		try {
@@ -79,11 +79,14 @@ public final class AgentApp {
 	private SimulationGrid simgrid;
 
 	/** Determines agent type. */
-	private final String strategyType;
+	private String strategyType;
 
 	private AgentApp(AgentAppOpts opts) {
 		percentFinished = opts.stopat;
-		strategyType = opts.strategy.getSimpleName();
+		if (opts.strategy != null)
+			strategyType = opts.strategy.getSimpleName();
+		else
+			strategyType = "";
 		simgrid = SimulationGrid.getInstance(opts);
 	}
 
