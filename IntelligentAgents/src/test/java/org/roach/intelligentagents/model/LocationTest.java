@@ -20,11 +20,11 @@ public class LocationTest {
 		Location l1 = new Location(1, 1);
 		Location l2 = new Location(1, 1);
 		Location l3 = new Location(0, 0);
-		assertTrue(l1.equals(l2));
-		assertTrue(l2.equals(l1));
-		assertFalse(l1.equals(l3));
-		assertTrue(l1.equals(l1));
-		assertFalse(l3.equals(l1));
+		assertEquals(l1, l2);
+		assertEquals(l2, l1);
+		assertNotEquals(l1, l3);
+		assertEquals(l1, l1);
+		assertNotEquals(l3, l1);
 	}
 	
 	/**
@@ -37,8 +37,8 @@ public class LocationTest {
 		Dimension d2 = new Dimension(3, 2);
 		Dimension d3 = new Dimension(-2, -3);
 		assertEquals(l1.toDimension(), d1);
-		assertFalse(l1.toDimension() == d2);
-		assertFalse(l1.toDimension() == d3);
+		assertSame(l1.toDimension(), d2);
+		assertSame(l1.toDimension(), d3);
 	}
 
 	/**
@@ -103,16 +103,6 @@ public class LocationTest {
 	public void testGetY() {
 		Location l1 = new Location(4, 5);
 		assertEquals(l1.getY(), 5);
-	}
-	
-	/**
-	 * 
-	 */
-	@Test
-	public void testClone() {
-		Location l1 = new Location(4, 5);
-		Location l2 = l1.clone();
-		assertEquals(l1, l2);
 	}
 	
 	/**

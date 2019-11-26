@@ -19,14 +19,14 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 	/** The shared mailbox associated with all Mailbox agents. */
 	static Mailbox mailbox = new Mailbox();
 	private TaskToDo taskToDo;
-	
+
 	/**
 	 * No-arg constructor used only by the resource loader
 	 */
 	public MailboxStrategy() {
-		
+
 	}
-	
+
 	/**
 	 * @param agent
 	 * 
@@ -50,7 +50,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 		if (agent.foundNewTask()) {
 			agent.executeTask();
 			if (!simGrid.isTaskComplete(agent.getLoc())) {
-				Location locold = agent.getLoc().clone();
+				Location locold = agent.getLoc();
 				mailbox.postMessage(locold);
 			}
 		}
@@ -60,8 +60,7 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 	 * Determine if this agent is subjectively "near" (within communication distance
 	 * of) the location of other
 	 * 
-	 * @param other
-	 *            The taskToDo to check
+	 * @param other The taskToDo to check
 	 * @return True if within communication distance
 	 */
 	private boolean near(Location other) {
@@ -82,13 +81,14 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 		/**
 		 * Add a message to the deque
 		 * 
-		 * @param loc
-		 *            Location to include in message
+		 * @param loc Location to include in message
 		 */
-		public synchronized void postMessage(Location loc) {
+		public void postMessage(@NonNull Location loc) {
 			MailMessage m = new MailMessage(loc);
-			if (!messages.contains(m)) {
-				messages.addLast(m);
+			synchronized (messages) {
+				if (!messages.contains(m)) {
+					messages.addLast(m);
+				}
 			}
 		}
 
@@ -97,8 +97,10 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 		 * 
 		 * @return Next message
 		 */
-		public synchronized MailMessage getMessage() {
-			return messages.removeFirst();
+		public MailMessage getMessage() {
+			synchronized (messages) {
+				return messages.removeFirst();
+			}
 		}
 
 		/**
@@ -116,15 +118,14 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 		class MailMessage {
 
 			/** Location associated with this message */
-			Location loc;
+			@NonNull Location loc;
 
 			/**
 			 * Create a new MailMessage
 			 * 
-			 * @param loc
-			 *            Location to be stored in the message
+			 * @param loc Location to be stored in the message
 			 */
-			MailMessage(Location loc) {
+			MailMessage(@NonNull Location loc) {
 				this.loc = loc;
 			}
 
@@ -133,15 +134,14 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 			 * 
 			 * @return Location of message
 			 */
-			public Location location() {
-				return loc.clone();
+			@NonNull public Location location() {
+				return loc;
 			}
 
 			/**
 			 * Overloaded equals operator
 			 * 
-			 * @param o
-			 *            Object to compare
+			 * @param o Object to compare
 			 * @return True if the locations of the messages are equal
 			 */
 			@Override
@@ -175,13 +175,13 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 		RANDOM.setAlgorithm(a -> {
 			if (mailbox.messagesExist()) {
 				Mailbox.MailMessage msg = mailbox.getMessage();
-				Location l = msg.location().clone();
+				@NonNull Location l = msg.location();
 				if (a.hasDoneAlready(simGrid.getTask(l))) {
 					mailbox.postMessage(l);
 					search();
 				} else {
 					if (near(msg.location())) {
-						taskToDo = new TaskToDo(msg.location().clone());
+						taskToDo = new TaskToDo(msg.location());
 						state = GOTO;
 					} else {
 						mailbox.postMessage(l);
@@ -201,14 +201,13 @@ public class MailboxStrategy extends CommunicatingAgentStrategy {
 				a.executeTask();
 				Task t = simGrid.getTask(a.getLoc());
 				if (t != null && !t.isComplete()) {
-					mailbox.postMessage(a.getLoc().clone());
+					mailbox.postMessage(a.getLoc());
 				}
-				taskToDo = null;
 				state = RANDOM;
 			} else if (a.foundNewTask()) {
 				a.executeTask();
 				if (!simGrid.isTaskComplete(a.getLoc())) {
-					mailbox.postMessage(a.getLoc().clone());
+					mailbox.postMessage(a.getLoc());
 				}
 			}
 		});

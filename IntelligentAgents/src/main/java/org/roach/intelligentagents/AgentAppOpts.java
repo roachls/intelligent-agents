@@ -42,13 +42,13 @@ public class AgentAppOpts {
 	 * The strategy to use
 	 */
 	@Parameter(names = { "--strategy" }, converter=ClassConverter.class, description="The strategy to use")
-	@Nullable public Class<? extends AgentStrategy> strategy = null;
+	@Nullable public Class<? extends AgentStrategy> strategy;
 
 	/**
 	 * Whether to run in batch mode or not
 	 */
 	@Parameter(names = {"--batch"}, description="Enable batch mode")
-	public boolean batch = false;
+	public boolean batch;
 	
 	/**
 	 * communications distance
@@ -95,7 +95,7 @@ class ClassConverter implements IStringConverter<Class<? extends AgentStrategy>>
 		try {
 			return (Class<? extends AgentStrategy>) Class.forName(value);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // NOPMD by Family on 11/26/19, 2:59 PM
 			return AgentStrategy.class;
 		}
 	}

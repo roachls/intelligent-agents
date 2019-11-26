@@ -7,6 +7,7 @@
 
 package org.roach.intelligentagents.model;
 import java.awt.Dimension;
+import java.security.SecureRandom;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -16,7 +17,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * for measuring distance and moving.
  * @author L. Stephen Roach
  */
-public final class Location implements Cloneable {
+public final class Location {
     /**
      * The x-coordinate of the Location.
      */
@@ -25,6 +26,9 @@ public final class Location implements Cloneable {
      * The y-coordinate of the Location.
      */
     private final int y;
+    
+	private final static SecureRandom RAND = new SecureRandom();
+
     
     /**
      * Creates a new instance of Location.
@@ -130,15 +134,6 @@ public final class Location implements Cloneable {
     public int getY() {
         return y;
     }
-    /**
-     * Returns a clone of this location.
-     * @return A new copy of this Location
-     */
-    @Override
-    @NonNull
-    public Location clone() {
-        return new Location(x, y);
-    }
 
     /**
      * Gets a hash code for this Location.
@@ -158,5 +153,11 @@ public final class Location implements Cloneable {
     @Override
     public String toString() {
         return "(" + x + "," + y + ")";
+    }
+    
+    @NonNull public static Location randomLocation(final int size) {
+		int x = RAND.nextInt(size); // pick a random x
+		int y = RAND.nextInt(size); // pick a random y
+		return new Location(x, y);
     }
 }

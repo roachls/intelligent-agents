@@ -6,11 +6,11 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -31,11 +31,11 @@ public class SimulationGrid implements PropertyChangeListener {
 	private Task[][] taskGrid = new Task[0][0];
 	/** List of all tasks */
 	@NonNull
-	private ArrayList<Task> taskList = new ArrayList<>();
+	private List<Task> taskList = new ArrayList<>();
 	/** Number of tasks */
 	private final int numTasks;
 	/** Number of "complete" tasks */
-	private volatile int numTasksComplete = 0;
+	private volatile int numTasksComplete; // NOPMD by Family on 11/26/19, 2:28 PM
 	private PropertyChangeSupport mPcs = new PropertyChangeSupport(this);
 	/** The list of all agents */
 	@NonNull
@@ -55,7 +55,7 @@ public class SimulationGrid implements PropertyChangeListener {
 	@SuppressWarnings("null")
 	@NonNull
 	public static SimulationGrid getInstance(@NonNull final AgentAppOpts options) {
-		if (instance == null) {
+		if (instance == null) { // NOPMD by Family on 11/26/19, 2:30 PM
 			instance = new SimulationGrid(options);
 		}
 		return instance;
@@ -67,28 +67,21 @@ public class SimulationGrid implements PropertyChangeListener {
 	private SimulationGrid(@NonNull final AgentAppOpts options) {
 		this.gridSize = options.roomsize;
 		this.numTasks = options.tasks;
-		grid = new ArrayList<>(gridSize);
-		for (int x = 0; x < gridSize; x++) {
-			List<Set<Agent>> row = new ArrayList<>(gridSize);
-			for (int y = 0; y < gridSize; y++) {
-				row.add(new HashSet<Agent>());
-			}
-			grid.add(row);
-		}
+		grid = Collections.nCopies(gridSize, Collections.nCopies(gridSize, new HashSet<Agent>()));
 		xRef = new HashMap<>();
 		initTaskGrid(options);
 		initAgents(options);
 	}
 
 	@Override
-	public void propertyChange(@Nullable PropertyChangeEvent evt) {
+	public void propertyChange(@Nullable final PropertyChangeEvent evt) {
 		if (evt == null)
 			return;
-		String message = evt.getPropertyName();
-		Agent sender = (Agent) evt.getSource();
+		final String message = evt.getPropertyName(); // NOPMD by Family on 11/26/19, 2:44 PM
+		final Agent sender = (Agent) evt.getSource();
 		if (sender == null)
 			return;
-		Location newLocation = (Location) evt.getNewValue();
+		final Location newLocation = (Location) evt.getNewValue();
 		if (newLocation == null)
 			return;
 		if (message.equals(PropertyConstants.NEW_AGENT)) {
@@ -108,7 +101,7 @@ public class SimulationGrid implements PropertyChangeListener {
 			addAgentToCell(sender);
 			addAgentToXref(sender);
 		} else {
-			System.err.println("Unsupported message type: " + evt.getPropertyName());
+			System.err.println("Unsupported message type: " + evt.getPropertyName()); // NOPMD by Family on 11/26/19, 2:19 PM
 		}
 	}
 
@@ -179,7 +172,7 @@ public class SimulationGrid implements PropertyChangeListener {
 				for (Integer Y : xRef.get(X)) {
 					// For each Y-coordinate on the row
 					@SuppressWarnings("null")
-					Location checkLoc = new Location(X, Y);
+					Location checkLoc = new Location(X, Y); // NOPMD by Family on 11/26/19, 2:24 PM
 					if (!loc.equals(checkLoc)) {
 						// Make sure loc != checkLoc (i.e., agent doesn't
 						// communicate with itself)
@@ -217,17 +210,14 @@ public class SimulationGrid implements PropertyChangeListener {
 		}
 		for (int whichTask = 0; whichTask < options.tasks; whichTask++) {
 			boolean taskPlaced = false;
-			Random rand = new Random();
 			while (!taskPlaced) { // Keep picking random locations until an unused
 				// square is found.
-				int x = rand.nextInt(options.roomsize); // pick a random x
-				int y = rand.nextInt(options.roomsize); // pick a random y
-				Location tempLoc = new Location(x, y);
+				Location tempLoc = Location.randomLocation(options.roomsize);
 				if (!isTask(tempLoc)) { // If no task exists there
 					taskPlaced = true; // Set to exit the while-loop
-					Task newTask = new Task(tempLoc);
+					Task newTask = new Task(tempLoc); // NOPMD by Family on 11/26/19, 2:43 PM
 					taskList.add(newTask);
-					taskGrid[x][y] = newTask;
+					taskGrid[tempLoc.getX()][tempLoc.getY()] = newTask;
 				}
 			}
 		}
@@ -242,6 +232,7 @@ public class SimulationGrid implements PropertyChangeListener {
 	 * @param simGrid
 	 * @param options
 	 */
+	@SuppressWarnings({"PMD.DoNotCallSystemExit", "PMD.SystemPrintln", "PMD.AvoidPrintStackTrace"})
 	private void initAgents(@NonNull final AgentAppOpts options) {
 		agents = new ArrayList<>();
 
@@ -255,7 +246,7 @@ public class SimulationGrid implements PropertyChangeListener {
 					strategy = strategyConst.newInstance((Agent) null, this);
 				}
 				if (strategy != null) {
-					Agent a = new Agent(strategy, this);
+					Agent a = new Agent(strategy, this); // NOPMD by Family on 11/26/19, 2:28 PM
 					agents.add(a);
 					strategy.setAgent(a);
 					strategy.setOptions(options);
@@ -341,7 +332,7 @@ public class SimulationGrid implements PropertyChangeListener {
 	 * @return task list
 	 */
 	@NonNull
-	public ArrayList<Task> getTaskList() {
+	public List<Task> getTaskList() {
 		return taskList;
 	}
 

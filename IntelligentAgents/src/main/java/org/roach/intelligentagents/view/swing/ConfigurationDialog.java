@@ -90,10 +90,10 @@ public class ConfigurationDialog extends JDialog {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e.printStackTrace(); // NOPMD by Family on 11/26/19, 2:55 PM
 			}
 		}
-		System.out.println(options);
+		System.out.println(options); // NOPMD by Family on 11/26/19, 2:54 PM
 	}
 	
 	private static List<AgentStrategy> findAllStrategies() {

@@ -2,7 +2,8 @@ package org.roach.intelligentagents;
 
 import org.eclipse.jdt.annotation.NonNull;
 
-public abstract class PropertyConstants {
+public class PropertyConstants {
+	private PropertyConstants() {}
 	@NonNull public static final String NEW_AGENT = "new_agent";
 	@NonNull public static final String SEND_MESSAGE = "send_message";
 	@NonNull public static final String PREPARE_TO_ACT = "prepare_to_act";

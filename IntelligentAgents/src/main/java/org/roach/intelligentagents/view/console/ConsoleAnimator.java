@@ -34,7 +34,7 @@ public class ConsoleAnimator extends AAnimator implements PropertyChangeListener
 			Integer numTasksComplete = (Integer) evt.getNewValue();
 			if (numTasksComplete >= agentApp.getSimgrid().getNumTasks() * (float) agentApp.getPercentFinished()
 					/ 100.0f) {
-				System.out.println(agentApp.getSimgrid().getGridSize() + " " + agentApp.getSimgrid().getNumTasks() + " "
+				System.out.println(agentApp.getSimgrid().getGridSize() + " " + agentApp.getSimgrid().getNumTasks() + " " // NOPMD by Family on 11/26/19, 2:39 PM
 						+ agentApp.getSimgrid().getNumAgents() + " " + agentApp.getStrategyType() + " "
 						+ AAnimator.getTime());
 				endProgram();

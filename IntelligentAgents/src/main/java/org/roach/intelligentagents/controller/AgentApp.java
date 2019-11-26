@@ -34,6 +34,7 @@ public final class AgentApp {
 	 * @param args Command-line arguments (if any)
 	 * @throws ClassNotFoundException
 	 */
+	@SuppressWarnings({"PMD.SystemPrintln", "PMD.DoNotCallSystemExit", "PMD.AvoidPrintStackTrace"})
 	public static void main(final String[] args) {
 		AgentAppOpts options = new AgentAppOpts();
 		JCommander jCommander = JCommander.newBuilder().addObject(options).build();

@@ -31,7 +31,7 @@ public final class SwingAnimator extends AAnimator {
     /** The JPanel to display everything on */
     private JPanel panel;
     /** Determines whether the simulation is paused. */
-    private volatile boolean isPaused = true;
+    private volatile boolean isPaused = true; // NOPMD by Family on 11/26/19, 2:57 PM
     /**
      * Determines whether the sim is rendered to the screen. This may speed up
      * progress because it reduces the overhead of the graphics.
@@ -47,7 +47,7 @@ public final class SwingAnimator extends AAnimator {
     /** The double-buffered graphics context in which to render frames. */
     @Nullable private Graphics dbg;
     /** The buffer image in which to render each new frame. */
-    @Nullable private Image dbImage = null;
+    @Nullable private Image dbImage;
     
     /**
      * Creates a new instance of SwingAnimator.

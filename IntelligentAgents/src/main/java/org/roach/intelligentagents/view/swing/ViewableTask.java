@@ -27,7 +27,7 @@ public class ViewableTask extends JComponent implements PropertyChangeListener {
     /** The amount of green to add to each task as it gets more complete. */
     private static final int COLOR_STEP = MAX_COLOR / Task.getTaskComplete();
     /** The size to draw the graphical square. */
-    private static volatile int squareSize = INITIAL_ZOOM_FACTOR;
+    private static volatile int squareSize = INITIAL_ZOOM_FACTOR; // NOPMD by Family on 11/26/19, 2:57 PM
     /** The task this object draws */
     private Task task;
     private Color color = new Color(0, 0, 0);
@@ -41,7 +41,7 @@ public class ViewableTask extends JComponent implements PropertyChangeListener {
     }
     
     public static void decSquareSize() {
-    	if (squareSize > 2)
+    	if (squareSize > 2) // NOPMD by Family on 11/26/19, 2:57 PM
     		squareSize--;
     }
     
@@ -70,10 +70,8 @@ public class ViewableTask extends JComponent implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(PropertyConstants.TASK_EXECUTE)) {
-			color = null;
 			color = new Color(0, (Integer)evt.getNewValue() * COLOR_STEP, 0);
 		} else if (evt.getPropertyName().equals("taskcomplete")) {
-			color = null;
 			color = Color.GREEN;
 		}
 	}

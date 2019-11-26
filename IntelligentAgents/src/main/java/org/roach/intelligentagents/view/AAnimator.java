@@ -11,16 +11,16 @@ import org.roach.intelligentagents.model.Agent;
 public abstract class AAnimator implements IAnimator {
 	/** The animation thread. */
 	@Nullable
-	protected Thread animatorThread;
+	protected Thread animatorThread; // NOPMD by Family on 11/26/19, 2:58 PM
 	/**
 	 * Determines whether the simulation is running or not. When this is false, the
 	 * application terminates.
 	 */
-	protected volatile boolean isRunning = true;
+	protected volatile boolean isRunning = true; // NOPMD by Family on 11/26/19, 2:58 PM
 	/** Determines whether the simulation is complete. */
-	private volatile boolean simOver = false;
+	private volatile boolean simOver = false; // NOPMD by Family on 11/26/19, 2:58 PM
 	/** The current master time. */
-	private volatile static int time;
+	private volatile static int time; // NOPMD by Family on 11/26/19, 2:58 PM
 	@NonNull
 	protected final AgentApp agentApp;
 	protected final PropertyChangeSupport pcs;
@@ -33,7 +33,6 @@ public abstract class AAnimator implements IAnimator {
 	public AAnimator(@NonNull final AgentApp agentApp) {
 		this.agentApp = agentApp;
 		// Initialize simulation components
-		time = 0;
 		pcs = new PropertyChangeSupport(this);
 	}
 
@@ -44,7 +43,7 @@ public abstract class AAnimator implements IAnimator {
 	public void startSim() {
 		// If the thread doesn't exist, create it and start it
 		if (animatorThread == null || !isRunning) {
-			animatorThread = new Thread(this, "AnimationThread");
+			animatorThread = new Thread(this, "AnimationThread"); // NOPMD by Family on 11/26/19, 2:58 PM
 			animatorThread.start();
 		}
 	}
@@ -64,8 +63,7 @@ public abstract class AAnimator implements IAnimator {
 	@Override
 	public void endProgram() {
 		isRunning = false;
-		animatorThread = null;
-		System.exit(0);
+		System.exit(0); // NOPMD by Family on 11/26/19, 2:58 PM
 	}
 
 	/**

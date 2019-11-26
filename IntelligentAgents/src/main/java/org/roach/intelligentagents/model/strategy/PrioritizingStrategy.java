@@ -42,7 +42,6 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
 	public PrioritizingStrategy(@NonNull final Agent agent, @NonNull final SimulationGrid simGrid) {
 		super(agent, simGrid);
 		state = RANDOM;
-		taskToDo = null;
 	}
 
     /**

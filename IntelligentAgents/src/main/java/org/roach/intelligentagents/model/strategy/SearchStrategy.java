@@ -110,6 +110,7 @@ public class SearchStrategy extends AgentStrategy {
 	                    break;
 	                default:
 	                    assert(false) : "Impossible direction";
+	                    break;
 	            }
 	        }
 			

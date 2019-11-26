@@ -69,15 +69,15 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 	/** Flag to indicate whether a broadcast has been received. */
 	protected boolean broadcastReceived;
 
-	public CommunicatingAgentStrategy() {
-		super();
-	}
-	
 	/**
 	 * @param agent
 	 */
 	public CommunicatingAgentStrategy(@NonNull final Agent agent, @NonNull final SimulationGrid simGrid) {
 		super(agent, simGrid);
+	}
+
+	public CommunicatingAgentStrategy() {
+		super();
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
 		if (task != null && !task.isComplete()) { // if task isn'task compete
 			// Important - since loc will be changed later, commTaskLoc must
 			// be a clone of loc, not a reference to it
-			commTaskLoc = agent.getLoc().clone();
+			commTaskLoc = agent.getLoc();
 		}
 	}
 

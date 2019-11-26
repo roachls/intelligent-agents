@@ -44,6 +44,7 @@ import org.roach.intelligentagents.view.swing.strategy.DefaultViewStrategy;
  *
  */
 public class GUI extends JFrame implements WindowListener, PropertyChangeListener {
+	private static final String START_PAUSE_ICON = "start/pause icon";
 	/** The size of a cell in pixels */
 	private int cellSize;
 	/** The size of the playing field in pixels */
@@ -199,8 +200,8 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 
 		rewindBtn = new JButton();
 		rewindBtn.setIcon(
-				new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Rewind24.gif"),
-						"start/pause icon"));
+				new ImageIcon(Thread.currentThread().getContextClassLoader().getResource("toolbarButtonGraphics/media/Rewind24.gif"),
+						START_PAUSE_ICON));
 		rewindBtn.setEnabled(false);
 		rewindBtn.addActionListener(e -> {
 			// TODO
@@ -208,7 +209,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 
 		startPauseBtn = new JButton();
 		startPauseBtn.setIcon(new ImageIcon(
-				getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Play24.gif"), "start/pause icon"));
+				Thread.currentThread().getContextClassLoader().getResource("toolbarButtonGraphics/media/Play24.gif"), START_PAUSE_ICON));
 		startPauseBtn.addActionListener(e -> {
 			if (animator.isStarted()) {
 				if (startPauseBtn.isEnabled()) {
@@ -216,27 +217,27 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 						stepBtn.setEnabled(false);
 						animator.unpause();
 						startPauseBtn.setIcon(new ImageIcon(
-								getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Pause24.gif"),
-								"start/pause icon"));
+								Thread.currentThread().getContextClassLoader().getResource("toolbarButtonGraphics/media/Pause24.gif"),
+								START_PAUSE_ICON));
 					} else {
 						stepBtn.setEnabled(true);
 						animator.pause();
 						startPauseBtn.setIcon(new ImageIcon(
-								getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Play24.gif"),
-								"start/pause icon"));
+								Thread.currentThread().getContextClassLoader().getResource("toolbarButtonGraphics/media/Play24.gif"),
+								START_PAUSE_ICON));
 					}
 				}
 			} else {
 				animator.startSim();
 				startPauseBtn.setIcon(new ImageIcon(
-						getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Pause24.gif"),
-						"start/pause icon"));
+						Thread.currentThread().getContextClassLoader().getResource("toolbarButtonGraphics/media/Pause24.gif"),
+						START_PAUSE_ICON));
 				stopBtn.setEnabled(true);
 			}
 		});
 
 		stopBtn = new JButton();
-		stopBtn.setIcon(new ImageIcon(getClass().getClassLoader().getResource("toolbarButtonGraphics/media/Stop24.gif"),
+		stopBtn.setIcon(new ImageIcon(Thread.currentThread().getContextClassLoader().getResource("toolbarButtonGraphics/media/Stop24.gif"),
 				"stop icon"));
 		stopBtn.setEnabled(false);
 		stopBtn.addActionListener(e -> {
@@ -250,7 +251,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 
 		stepBtn = new JButton();
 		stepBtn.setIcon(new ImageIcon(
-				getClass().getClassLoader().getResource("toolbarButtonGraphics/media/StepForward24.gif"), "step icon"));
+				Thread.currentThread().getContextClassLoader().getResource("toolbarButtonGraphics/media/StepForward24.gif"), "step icon"));
 		stepBtn.setEnabled(false);
 		stepBtn.addActionListener(e -> {
 			animator.step();
@@ -274,7 +275,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		scrollpane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		c.add(scrollpane, "Center");
 		for (Task t : agentapp.getSimgrid().getTaskList()) {
-			ViewableTask vt = new ViewableTask(t);
+			ViewableTask vt = new ViewableTask(t); // NOPMD by Family on 11/26/19, 2:56 PM
 			t.addPropertyChangeListener(vt);
 			mainPanel.add(vt);
 		}
@@ -289,7 +290,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	 */
 	private void initAgents(boolean isCommunicating) {
 		for (Agent a : agentapp.getSimgrid().getAgents()) {
-			mainPanel.add(new ViewableAgent(a));
+			mainPanel.add(new ViewableAgent(a)); // NOPMD by Family on 11/26/19, 2:57 PM
 		}
 		if (isCommunicating)
 			ViewableAgent.setViewStrategy(new CommunicatingViewStrategy());

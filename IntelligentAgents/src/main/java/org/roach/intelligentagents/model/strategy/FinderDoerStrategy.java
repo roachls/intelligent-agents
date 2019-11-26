@@ -16,8 +16,8 @@ import org.roach.intelligentagents.model.TaskToDo;
 public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 
 	protected boolean isFinder;
-	protected int timeSinceLastBroadcast = 0;
-	protected int timeSinceLastFound = 0;
+	protected int timeSinceLastBroadcast;
+	protected int timeSinceLastFound;
 	
 	/**
 	 * This constructor is only used by the resource loader
@@ -59,7 +59,7 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 					state = RANDOMCOMMS;
 				} else {
 					timeSinceLastFound++;
-					if (timeSinceLastFound > 20) {
+					if (timeSinceLastFound > 20) { // NOPMD by Family on 11/26/19, 2:49 PM
 						this.isFinder = false;
 						this.timeSinceLastBroadcast = 0;
 					}
@@ -74,7 +74,7 @@ public class FinderDoerStrategy extends CommunicatingAgentStrategy {
 					state = GOTO;
 				} else {
 					timeSinceLastBroadcast++;
-					if (timeSinceLastBroadcast > 10) {
+					if (timeSinceLastBroadcast > 10) { // NOPMD by Family on 11/26/19, 2:49 PM
 						isFinder = true;
 						timeSinceLastFound = 0;
 					}

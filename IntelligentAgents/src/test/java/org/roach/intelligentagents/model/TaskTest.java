@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
  *
  */
 public class TaskTest {
-	
+
 	/**
 	 * 
 	 */
@@ -56,10 +56,10 @@ public class TaskTest {
 		Task t1 = new Task(new Location(0, 0));
 		Task t2 = new Task(new Location(0, 1));
 		Task t3 = new Task(new Location(0, 0));
-		assertFalse(t1.equals(t2));
-		assertTrue(t1.equals(t1));
-		assertTrue(t1.equals(t3));
-		assertTrue(t3.equals(t1));
+		assertNotEquals(t1, t2);
+		assertEquals(t1, t1);
+		assertEquals(t1, t3);
+		assertEquals(t3, t1);
 	}
 
 	/**

@@ -24,7 +24,7 @@ import org.roach.intelligentagents.model.strategy.AgentStrategy;
  * @version %I%, %G%
  */
 public class Agent implements ISimItem {
-	private static int id_root = 0;
+	private static int id_root;
 
 	/**
 	 * A set of locations of tasks that the agent has already executed; used to
@@ -282,6 +282,8 @@ public class Agent implements ISimItem {
 			break;
 		case 7:
 			moveSouthEast();
+			break;
+		default:
 			break;
 		}
 	}

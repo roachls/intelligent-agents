@@ -16,13 +16,9 @@ import org.roach.intelligentagents.model.TaskToDo;
  */
 public abstract class AgentStrategy {
 	protected Agent agent;
-	protected final SimulationGrid simGrid;
+	protected SimulationGrid simGrid;
 	/** The current state of the agent. */
-	protected State state = null;
-	
-	public AgentStrategy() {
-		this.simGrid = null;
-	}
+	protected State state;
 	
 	/**
 	 * @param agent 
@@ -31,6 +27,9 @@ public abstract class AgentStrategy {
 	public AgentStrategy(@NonNull final Agent agent, @NonNull final SimulationGrid simGrid) {
 		this.agent = agent;
 		this.simGrid = simGrid;
+	}
+
+	public AgentStrategy() {
 	}
 
 	protected abstract void initStates();
