@@ -19,10 +19,13 @@ import org.roach.intelligentagents.controller.AgentApp;
 import org.roach.intelligentagents.view.AAnimator;
 
 /**
- * <p>The SwingAnimator class is the Thread that animates and runs the simulation.
- * <p>NOTE: The overall concepts of the graphics programming for this simulation
- * is derived from the book <i>Killer Game Programming in Java</i>, by Andrew
- * Davison.</p>
+ * <p>
+ * The SwingAnimator class is the Thread that animates and runs the simulation.
+ * <p>
+ * NOTE: The overall concepts of the graphics programming for this simulation is
+ * derived from the book <i>Killer Game Programming in Java</i>, by Andrew
+ * Davison.
+ * </p>
  *
  * @author L. Stephen Roach
  */
@@ -45,37 +48,41 @@ public final class SwingAnimator extends AAnimator {
     /** Determines whether agents are displayed. */
     private boolean showAgents = true;
     /** The double-buffered graphics context in which to render frames. */
-    @Nullable private Graphics dbg;
+    @Nullable
+    private Graphics dbg;
     /** The buffer image in which to render each new frame. */
-    @Nullable private Image dbImage;
-    
+    @Nullable
+    private Image dbImage;
+
     /**
      * Creates a new instance of SwingAnimator.
+     * 
      * @param p The JPanel to display everything on
      */
     public SwingAnimator(@NonNull final JPanel p, @NonNull final AgentApp agentApp) {
-    	super(agentApp);
-        this.panel = p;
-        // Initialize simulation components
-        isPaused = true;
+	super(agentApp);
+	this.panel = p;
+	// Initialize simulation components
+	isPaused = true;
     }
 
     /**
      * Initialize and start the simulation thread.
      */
     @Override
-	public void startSim() {
-        // If the thread doesn't exist, create it and start it
-    	super.startSim();
-        isPaused = false;
+    public void startSim() {
+	// If the thread doesn't exist, create it and start it
+	super.startSim();
+	isPaused = false;
     }
 
     /**
      * Determine if the animation has been started
+     * 
      * @return True if the animatorThread thread exists and is running
      */
     public boolean isStarted() {
-        return (animatorThread != null && isRunning);
+	return (animatorThread != null && isRunning);
     }
 
     /**
@@ -83,122 +90,128 @@ public final class SwingAnimator extends AAnimator {
      */
     @Override
     public void run() {
-        isRunning = true;
-        while (isRunning) {
-            if (!isPaused) {
-            	step();
-            }
-        }
+	isRunning = true;
+	while (isRunning) {
+	    if (!isPaused) {
+		step();
+	    }
+	}
     }
-    
+
     @Override
-	public void step() {
-        simUpdate();    // update sim state
-        simRender();    // render to a graphics buffer
-        paintScreen();  // draw buffer to screen
+    public void step() {
+	simUpdate(); // update sim state
+	simRender(); // render to a graphics buffer
+	paintScreen(); // draw buffer to screen
     }
 
     /**
      * Sets active rendering on or off; does not affect display of statistics.
+     * 
      * @param render Set to true to turn rendering on
      */
     public void setRender(boolean render) {
-        this.render = render;
+	this.render = render;
     }
 
     /**
      * Renders the current frame to the buffer and flips the double-buffer page.
      */
     private void simRender() {
-        if (render) { // If rendering is turned on
-            // Get the image buffer to draw to
-            int windowWidth = panel.getWidth();
-            int windowHeight = panel.getHeight();
-            if (dbImage == null) {
-                dbImage = panel.createImage(windowWidth, windowHeight);
-                if (dbImage != null)
-                	dbg = dbImage.getGraphics();
-                else
-                	return;
-            }
-            // clear the background
-            if (dbg != null) {
-            	dbg.clearRect(0, 0, windowWidth, windowHeight);
+	if (render) { // If rendering is turned on
+	    // Get the image buffer to draw to
+	    int windowWidth = panel.getWidth();
+	    int windowHeight = panel.getHeight();
+	    if (dbImage == null) {
+		dbImage = panel.createImage(windowWidth, windowHeight);
+		if (dbImage != null)
+		    dbg = dbImage.getGraphics();
+		else
+		    return;
+	    }
+	    // clear the background
+	    if (dbg != null) {
+		dbg.clearRect(0, 0, windowWidth, windowHeight);
 
-	            for (Component c : panel.getComponents()) {
-	            	if (c instanceof ViewableTask) {
-	            		ViewableTask t = (ViewableTask)c;
-	            		t.draw(dbg);
-	            	}
-	            }
-	            // Now display the agents
-	            if (showAgents) {
-	                for (Component c : panel.getComponents()) {
-	                	if (c instanceof ViewableAgent) {
-	                		ViewableAgent a = (ViewableAgent)c;
-	                		a.draw(dbg);
-	                		if (showHelperGraphics) { // Display helper graphics if selected
-	                			a.drawHelperGraphics(dbg);
-	                		}
-	                	}
-	                }
-	            }
-            }
-        }
+		for (Component c : panel.getComponents()) {
+		    if (c instanceof ViewableTask) {
+			ViewableTask t = (ViewableTask) c;
+			t.draw(dbg);
+		    }
+		}
+		// Now display the agents
+		if (showAgents) {
+		    for (Component c : panel.getComponents()) {
+			if (c instanceof ViewableAgent) {
+			    ViewableAgent a = (ViewableAgent) c;
+			    a.draw(dbg);
+			    if (showHelperGraphics) { // Display helper graphics if selected
+				a.drawHelperGraphics(dbg);
+			    }
+			}
+		    }
+		}
+	    }
+	}
     }
 
     /**
      * Actively renders the buffer image to the screen.
      */
     private void paintScreen() {
-        if (render) {
-            Graphics g; // Create a new graphics context
-            try {
-                g = panel.getGraphics(); // get the panel's graphic context
-                if ((g != null) && (dbImage != null)) {
-                    g.drawImage(dbImage, 0, 0, null); // draw image to buffer
-                    g.dispose(); // Switch buffers
-                }
-            } catch (Exception e) {
-                javax.swing.JOptionPane.showMessageDialog(panel, "Graphics context error: " + e.toString(), "Graphics error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+	if (render) {
+	    Graphics g; // Create a new graphics context
+	    try {
+		g = panel.getGraphics(); // get the panel's graphic context
+		if ((g != null) && (dbImage != null)) {
+		    g.drawImage(dbImage, 0, 0, null); // draw image to buffer
+		    g.dispose(); // Switch buffers
+		}
+	    } catch (Exception e) {
+		javax.swing.JOptionPane.showMessageDialog(panel, "Graphics context error: " + e.toString(),
+			"Graphics error", JOptionPane.ERROR_MESSAGE);
+	    }
+	}
     }
 
     /**
      * Sets whether the simulation is paused.
+     * 
      * @param paused Set to true to pause the simulation
      */
     public void pause() {
-        // called when the JFrame is activated / deiconified
-        isPaused = true;
+	// called when the JFrame is activated / deiconified
+	isPaused = true;
     }
-    
+
     public void unpause() {
-    	isPaused = false;
+	isPaused = false;
     }
 
     /**
      * Sets showHelperGraphics on or off.
+     * 
      * @param show Set to true to show helper graphics
      */
     public void setHelperGraphics(boolean show) {
-        showHelperGraphics = show;
+	showHelperGraphics = show;
     }
 
     /**
      * Tells whether the simulation is currently paused.
+     * 
      * @return true if simulation is paused
      */
     public boolean isPaused() {
-        return isPaused;
+	return isPaused;
     }
 
     /**
      * Sets whether agents are displayed graphically or not.
+     * 
      * @param show true displays agents, false does not
      */
     public void setShowAgents(boolean show) {
-        showAgents = show;
+	showAgents = show;
     }
 }
