@@ -36,7 +36,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
     protected int commTime = 3;
 
     /**
-     * Getter for
+     * Getter for communications distance
      * 
      * @return the commDist
      */

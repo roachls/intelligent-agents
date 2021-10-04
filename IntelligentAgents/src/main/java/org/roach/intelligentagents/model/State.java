@@ -12,6 +12,8 @@ public class State {
     private Agent agent;
     /** The algorithm that is performed in the State */
     private StateAlgorithm algorithm;
+    
+    // TODO move color from model to view
     /** The Color of the state, used by the Agent.draw method */
     @Nullable
     private Color color = Color.BLACK;

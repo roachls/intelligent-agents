@@ -20,10 +20,10 @@ public class CommunicatingViewStrategy extends DefaultViewStrategy {
 	    if (agent.getStrategy() instanceof CommunicatingAgentStrategy) {
 		int commDist = ((CommunicatingAgentStrategy) agent.getStrategy()).getCommDist();
 		g.drawOval(toGraphicLoc(agent.getLoc()
-					     .getX()
+					     .x()
 			- commDist, squareSize), toGraphicLoc(
 				agent.getLoc()
-				     .getY() - commDist,
+				     .y() - commDist,
 				squareSize),
 			toGraphicSize(commDist * 2, squareSize), toGraphicSize(commDist * 2, squareSize));
 	    }
@@ -38,13 +38,13 @@ public class CommunicatingViewStrategy extends DefaultViewStrategy {
 		     g.setColor(Color.red);
 		     int midPoint = squareSize / 2;
 		     g.drawLine(toGraphicLoc(agent.getLoc()
-						  .getX(),
+						  .x(),
 			     squareSize) + midPoint,
 			     toGraphicLoc(agent.getLoc()
-					       .getY(),
+					       .y(),
 				     squareSize) + midPoint,
-			     toGraphicLoc(l.getX(), squareSize) + midPoint,
-			     toGraphicLoc(l.getY(), squareSize) + midPoint);
+			     toGraphicLoc(l.x(), squareSize) + midPoint,
+			     toGraphicLoc(l.y(), squareSize) + midPoint);
 		 });
 	}
     }

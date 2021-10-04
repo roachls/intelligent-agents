@@ -11,7 +11,6 @@ import java.awt.Dimension;
 import java.security.SecureRandom;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * The Location class encapsulates an (x, y) coordinate along with tools for
@@ -19,39 +18,8 @@ import org.eclipse.jdt.annotation.Nullable;
  * 
  * @author L. Stephen Roach
  */
-public final class Location {
-    /**
-     * The x-coordinate of the Location.
-     */
-    private final int x;
-    /**
-     * The y-coordinate of the Location.
-     */
-    private final int y;
-
+public record Location(int x, int y) {
     private final static SecureRandom RAND = new SecureRandom();
-
-    /**
-     * Creates a new instance of Location.
-     * 
-     * @param inputx x-coordinate
-     * @param inputy y-coordinate
-     */
-    public Location(final int inputx, final int inputy) {
-	x = inputx;
-	y = inputy;
-    }
-
-    /**
-     * Creates a new instance of Location.
-     * 
-     * @param inputX x-coordinate
-     * @param inputY y-coordinate
-     */
-    public Location(@NonNull final Integer inputX, @NonNull final Integer inputY) {
-	x = inputX;
-	y = inputY;
-    }
 
     /**
      * Converts a Location to a java.awt.Dimension.
@@ -84,10 +52,11 @@ public final class Location {
      *         radius, false otherwise
      */
     public boolean isInCircle(@NonNull final Location rhs, final int radius) {
-	// We can avoid floating-point math by using the circular formula
-	// (rhs.x - x)^2 + (rhs.y - y)^2 = radius^2,
-	// and so any for any point within the circle it will be true that
-	// (rhs.y - y)^2 <= radius^2 - (rhs.x - x)^2
+	/*
+	 * We can avoid floating-point math by using the circular formula (rhs.x - x)^2
+	 * + (rhs.y - y)^2 = radius^2, and so any for any point within the circle it
+	 * will be true that (rhs.y - y)^2 <= radius^2 - (rhs.x - x)^2
+	 */
 	return ((rhs.y - y) * (rhs.y - y) <= radius * radius - (rhs.x - x) * (rhs.x - x));
     }
 
@@ -98,10 +67,12 @@ public final class Location {
      * @return An int representing the distance
      */
     public int getXDistance(@NonNull final Location rhs) {
-	// Note: we don't take the absolute value because this distance will
-	// be used by an agent to determine which direction to go. A negative
-	// distance indicates that this Location is north of rhs; positive
-	// indicates that this is south of rhs.
+	/*
+	 * Note: we don't take the absolute value because this distance will be used by
+	 * an agent to determine which direction to go. A negative distance indicates
+	 * that this Location is north of rhs; positive indicates that this is south of
+	 * rhs.
+	 */
 	return x - rhs.x;
     }
 
@@ -112,59 +83,13 @@ public final class Location {
      * @return An int representing the distance
      */
     public int getYDistance(@NonNull final Location rhs) {
-	// Note: we don't take the absolute value because this distance will
-	// be used by an agent to determine which direction to go. A negative
-	// distance indicates that this Location is east of rhs; positive
-	// indicates that this is west of rhs.
+	/*
+	 * Note: we don't take the absolute value because this distance will be used by
+	 * an agent to determine which direction to go. A negative distance indicates
+	 * that this Location is east of rhs; positive indicates that this is west of
+	 * rhs.
+	 */
 	return y - rhs.y;
-    }
-
-    /**
-     * Determines if this Location is equal to the Location o.
-     * 
-     * @param o The Location object to be compared
-     * @return True if both x and y coordinates are the same in each object
-     */
-    @Override
-    public boolean equals(final @Nullable Object o) {
-	if (!(o instanceof Location)) {
-	    return false;
-	}
-	if ((Location) o == this) {
-	    return true;
-	}
-	return x == ((Location) o).x && y == ((Location) o).y;
-    }
-
-    /**
-     * Gets the x-coordinate of this Location.
-     * 
-     * @return x
-     */
-    public int getX() {
-	return x;
-    }
-
-    /**
-     * Gets the y-coordinate of this Location.
-     * 
-     * @return y
-     */
-    public int getY() {
-	return y;
-    }
-
-    /**
-     * Gets a hash code for this Location.
-     * 
-     * @return hash code
-     */
-    @Override
-    public int hashCode() {
-	int result = 17;
-	result = 37 * result + x;
-	result = 37 * result + y;
-	return result;
     }
 
     /**

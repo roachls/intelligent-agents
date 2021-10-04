@@ -13,7 +13,7 @@ public final class TaskToDo implements Comparable<TaskToDo> {
     @NonNull
     private final Location taskLoc;
     /** The time the task was found */
-    private int timeWhenFound;
+    private final int timeWhenFound;
 
     /**
      * Creates a new instance of a TaskToDo.

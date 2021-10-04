@@ -70,12 +70,12 @@ public class SearchStrategy extends AgentStrategy {
 	    if (starting) {
 		starting = false;
 		if (a.getLoc()
-		     .getY() == 0)
+		     .y() == 0)
 		    dir = (a.getLoc()
-			    .getX() == 0) ? Directions.SOUTHEAST : Directions.SOUTHWEST;
+			    .x() == 0) ? Directions.SOUTHEAST : Directions.SOUTHWEST;
 		else
 		    dir = (a.getLoc()
-			    .getX() == 0) ? Directions.NORTHEAST : Directions.NORTHWEST;
+			    .x() == 0) ? Directions.NORTHEAST : Directions.NORTHWEST;
 	    } else {
 		if (a.foundNewTask()) {
 		    simGrid.executeTaskAt(a.getLoc());
@@ -83,7 +83,7 @@ public class SearchStrategy extends AgentStrategy {
 		switch (dir) {
 		case NORTHEAST:
 		    if (a.getLoc()
-			 .getY() > 0)
+			 .y() > 0)
 			a.moveNorth();
 		    else {
 			a.moveEast();
@@ -94,7 +94,7 @@ public class SearchStrategy extends AgentStrategy {
 		    break;
 		case SOUTHEAST:
 		    if (a.getLoc()
-			 .getY() < simGrid.getGridSize() - 1)
+			 .y() < simGrid.getGridSize() - 1)
 			a.moveSouth();
 		    else {
 			a.moveEast();
@@ -105,7 +105,7 @@ public class SearchStrategy extends AgentStrategy {
 		    break;
 		case NORTHWEST:
 		    if (a.getLoc()
-			 .getY() > 0)
+			 .y() > 0)
 			a.moveNorth();
 		    else {
 			a.moveWest();
@@ -116,7 +116,7 @@ public class SearchStrategy extends AgentStrategy {
 		    break;
 		case SOUTHWEST:
 		    if (a.getLoc()
-			 .getY() < simGrid.getGridSize() - 1)
+			 .y() < simGrid.getGridSize() - 1)
 			a.moveSouth();
 		    else {
 			a.moveWest();

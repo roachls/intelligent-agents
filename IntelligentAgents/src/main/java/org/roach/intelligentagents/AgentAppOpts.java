@@ -14,11 +14,11 @@ import com.beust.jcommander.Parameters;
 @Parameters
 public class AgentAppOpts {
 
-//	/**
-//	 * communications distance
-//	 */
-//	@Parameter(names = {"--commDist"}, description="Communications distance")
-//	public int commDist = 12;
+    /**
+     * communications distance
+     */
+    @Parameter(names = { "--commDist" }, description = "Communications distance")
+    public int commDist = 12;
 
     /**
      * communications time

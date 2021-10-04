@@ -60,10 +60,10 @@ public class ViewableTask extends JComponent implements PropertyChangeListener {
 	g.setColor(color);
 	// Draw the square
 	g.fillRect(task.getLocation()
-		       .getX()
+		       .x()
 		* squareSize + 1,
 		task.getLocation()
-		    .getY() * squareSize + 1,
+		    .y() * squareSize + 1,
 		squareSize - 1, squareSize - 1);
     }
 

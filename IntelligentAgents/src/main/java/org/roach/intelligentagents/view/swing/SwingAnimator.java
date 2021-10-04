@@ -160,9 +160,8 @@ public final class SwingAnimator extends AAnimator {
      */
     private void paintScreen() {
 	if (render) {
-	    Graphics g; // Create a new graphics context
 	    try {
-		g = panel.getGraphics(); // get the panel's graphic context
+		Graphics g = panel.getGraphics(); // get the panel's graphic context
 		if ((g != null) && (dbImage != null)) {
 		    g.drawImage(dbImage, 0, 0, null); // draw image to buffer
 		    g.dispose(); // Switch buffers

@@ -47,24 +47,16 @@ public class Agent implements ISimItem {
     @NonNull
     private SimulationGrid simGrid;
 
-    public void setSimGrid(SimulationGrid simGrid) {
+    public void setSimGrid(final SimulationGrid simGrid) {
 	this.simGrid = simGrid;
 	addPropertyChangeListener(simGrid);
-	this.loc = makeRandomLocation();
+	this.loc = Location.randomLocation(simGrid.getGridSize());
     }
 
     public Agent(final AgentStrategy strategy) {
 	this.strategy = strategy;
 	id = id_root++;
 	executedTasks = new HashSet<>();
-    }
-
-    private @NonNull Location makeRandomLocation() {
-	// Randomly pick a position on the grid for the agent to start at
-	Random rand = new Random();
-	int x = (rand.nextInt(100) < 50) ? 0 : simGrid.getGridSize() - 1;
-	int y = (rand.nextInt(100) < 50) ? 0 : simGrid.getGridSize() - 1;
-	return new Location(x, y);
     }
 
     /**
@@ -209,43 +201,43 @@ public class Agent implements ISimItem {
     }
 
     public void moveNorth() {
-	if (this.loc.getY() > 0)
-	    this.loc = new Location(this.loc.getX(), this.loc.getY() - 1);
+	if (this.loc.y() > 0)
+	    this.loc = new Location(this.loc.x(), this.loc.y() - 1);
     }
 
     public void moveSouth() {
-	if (this.loc.getY() < simGrid.getGridSize() - 1)
-	    this.loc = new Location(this.loc.getX(), this.loc.getY() + 1);
+	if (this.loc.y() < simGrid.getGridSize() - 1)
+	    this.loc = new Location(this.loc.x(), this.loc.y() + 1);
     }
 
     public void moveWest() {
-	if (this.loc.getX() > 0)
-	    this.loc = new Location(this.loc.getX() - 1, this.loc.getY());
+	if (this.loc.x() > 0)
+	    this.loc = new Location(this.loc.x() - 1, this.loc.y());
     }
 
     public void moveEast() {
-	if (this.loc.getX() < simGrid.getGridSize() - 1)
-	    this.loc = new Location(this.loc.getX() + 1, this.loc.getY());
+	if (this.loc.x() < simGrid.getGridSize() - 1)
+	    this.loc = new Location(this.loc.x() + 1, this.loc.y());
     }
 
     public void moveNorthEast() {
-	if (loc.getX() < simGrid.getGridSize() - 1 && loc.getY() > 0)
-	    this.loc = new Location(this.loc.getX() + 1, this.loc.getY() - 1);
+	if (loc.x() < simGrid.getGridSize() - 1 && loc.y() > 0)
+	    this.loc = new Location(this.loc.x() + 1, this.loc.y() - 1);
     }
 
     public void moveSouthEast() {
-	if (loc.getX() < simGrid.getGridSize() - 1 && loc.getY() < simGrid.getGridSize() - 1)
-	    this.loc = new Location(this.loc.getX() + 1, this.loc.getY() + 1);
+	if (loc.x() < simGrid.getGridSize() - 1 && loc.y() < simGrid.getGridSize() - 1)
+	    this.loc = new Location(this.loc.x() + 1, this.loc.y() + 1);
     }
 
     public void moveNorthWest() {
-	if (loc.getX() > 0 && loc.getY() > 0)
-	    this.loc = new Location(this.loc.getX() - 1, this.loc.getY() - 1);
+	if (loc.x() > 0 && loc.y() > 0)
+	    this.loc = new Location(this.loc.x() - 1, this.loc.y() - 1);
     }
 
     public void moveSouthWest() {
-	if (loc.getX() > 0 && loc.getY() < simGrid.getGridSize() - 1)
-	    this.loc = new Location(this.loc.getX() - 1, this.loc.getY() + 1);
+	if (loc.x() > 0 && loc.y() < simGrid.getGridSize() - 1)
+	    this.loc = new Location(this.loc.x() - 1, this.loc.y() + 1);
     }
 
     /**

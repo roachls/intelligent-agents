@@ -94,7 +94,7 @@ public class SimulationGrid implements PropertyChangeListener {
      */
     private void addAgentToXref(@NonNull final Agent a) {
 	Integer X = a.getLoc()
-		     .getX();
+		     .x();
 	// If the HashSet entry doesn't exist, create it
 	if (!xRef.containsKey(X)) {
 	    xRef.put(X, new HashSet<Integer>());
@@ -102,7 +102,7 @@ public class SimulationGrid implements PropertyChangeListener {
 	// Add the y-coordinate to the set
 	xRef.get(X)
 	    .add(a.getLoc()
-		  .getY());
+		  .y());
     }
 
     /**
@@ -114,9 +114,9 @@ public class SimulationGrid implements PropertyChangeListener {
     private void removeAgentFromXref(@NonNull final Agent a) {
 	// Remove value from set
 	xRef.get(a.getLoc()
-		  .getX())
+		  .x())
 	    .remove(a.getLoc()
-		     .getY());
+		     .y());
     }
 
     /**
@@ -124,9 +124,9 @@ public class SimulationGrid implements PropertyChangeListener {
      */
     private void addAgentToCell(@NonNull final Agent a) {
 	grid.get(a.getLoc()
-		  .getX())
+		  .x())
 	    .get(a.getLoc()
-		  .getY())
+		  .y())
 	    .add(a);
     }
 
@@ -138,9 +138,9 @@ public class SimulationGrid implements PropertyChangeListener {
      */
     private void removeAgentFromCell(@NonNull final Agent a) {
 	grid.get(a.getLoc()
-		  .getX())
+		  .x())
 	    .get(a.getLoc()
-		  .getY())
+		  .y())
 	    .remove(a);
     }
 
@@ -157,8 +157,8 @@ public class SimulationGrid implements PropertyChangeListener {
 	// Initialize the list to return
 	Set<Agent> list = new HashSet<>();
 	// Calculate the rows to check
-	Integer startCheckX = (loc.getX() > distance) ? (loc.getX() - distance) : 0;
-	Integer endCheckX = ((loc.getX() + distance) < (gridSize - 1)) ? (loc.getX() + distance) : (gridSize - 1);
+	Integer startCheckX = (loc.x() > distance) ? (loc.x() - distance) : 0;
+	Integer endCheckX = ((loc.x() + distance) < (gridSize - 1)) ? (loc.x() + distance) : (gridSize - 1);
 
 	// Go through each X value within the boundaries
 	for (Integer X = startCheckX; X <= endCheckX; X++) {
@@ -172,8 +172,8 @@ public class SimulationGrid implements PropertyChangeListener {
 			// communicate with itself)
 			if (loc.isInCircle(checkLoc, commDistSq)) // If the location is within broadcast range, add
 			    // all agents in that location to the list
-			    list.addAll(grid.get(checkLoc.getX())
-					    .get(checkLoc.getY()));
+			    list.addAll(grid.get(checkLoc.x())
+					    .get(checkLoc.y()));
 		    }
 		}
 	    }
@@ -205,7 +205,7 @@ public class SimulationGrid implements PropertyChangeListener {
 		    taskPlaced = true; // Set to exit the while-loop
 		    Task newTask = new Task(tempLoc); // NOPMD by Family on 11/26/19, 2:43 PM
 		    taskList.add(newTask);
-		    taskGrid[tempLoc.getX()][tempLoc.getY()] = newTask;
+		    taskGrid[tempLoc.x()][tempLoc.y()] = newTask;
 		}
 	    }
 	}
@@ -223,7 +223,7 @@ public class SimulationGrid implements PropertyChangeListener {
      */
     public void executeTaskAt(@NonNull final Location loc) {
 	if (isTask(loc)) {
-	    Task task = taskGrid[loc.getX()][loc.getY()];
+	    Task task = taskGrid[loc.x()][loc.y()];
 	    task.execute();
 	    if (task.isComplete()) { // If task is now complete, let listeners know
 		numTasksComplete++;
@@ -240,7 +240,7 @@ public class SimulationGrid implements PropertyChangeListener {
      * @return True if a task exists at loc
      */
     public boolean isTask(@NonNull final Location loc) {
-	return (taskGrid[loc.getX()][loc.getY()] != null);
+	return (taskGrid[loc.x()][loc.y()] != null);
     }
 
     /**
@@ -251,7 +251,7 @@ public class SimulationGrid implements PropertyChangeListener {
      */
     @Nullable
     public Task getTask(@NonNull final Location loc) {
-	return taskGrid[loc.getX()][loc.getY()];
+	return taskGrid[loc.x()][loc.y()];
     }
 
     /**

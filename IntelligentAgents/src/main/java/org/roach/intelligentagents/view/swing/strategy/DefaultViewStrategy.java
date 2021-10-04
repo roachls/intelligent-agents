@@ -6,16 +6,17 @@ import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.view.swing.ViewStrategy;
 
 public class DefaultViewStrategy implements ViewStrategy {
+    
     @Override
     public void draw(final Agent agent, final Graphics g, int squareSize) {
 	g.setColor(agent.getStrategy()
 			.getState()
 			.getColor());
 	g.drawRect(toGraphicLoc(agent.getLoc()
-				     .getX(),
+				     .x(),
 		squareSize),
 		toGraphicLoc(agent.getLoc()
-				  .getY(),
+				  .y(),
 			squareSize),
 		squareSize, squareSize);
     }

@@ -127,9 +127,9 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 		} else if (scrollAmount > 0 && cellSize > 2) {
 		    this.cellSize--;
 		}
-		ViewableTask.setSquareSize(cellSize);
-		ViewableAgent.setSquareSize(cellSize);
-		mainPanelSize = cellSize * gridSize + 2;
+		ViewableTask.setSquareSize(this.cellSize);
+		ViewableAgent.setSquareSize(this.cellSize);
+		mainPanelSize = this.cellSize * gridSize + 2;
 		Dimension newSize = new Dimension(mainPanelSize, mainPanelSize);
 		mainPanel.setPreferredSize(newSize);
 		mainPanel.setMinimumSize(newSize);
@@ -179,7 +179,7 @@ public class GUI extends JFrame implements WindowListener, PropertyChangeListene
 	toggleHelper = new JCheckBox("Show Helper Graphics", true);
 	toggleHelper.setSelected(showHelperGraphics);
 	toggleHelper.setMnemonic(KeyEvent.VK_H);
-	toggleHelper.setToolTipText("Choose whether to display communication-" + "range circles and goto lines.");
+	toggleHelper.setToolTipText("Choose whether to display communication-range circles and goto lines.");
 	toggleHelper.addItemListener(e -> animator.setHelperGraphics(e.getStateChange() == ItemEvent.SELECTED));
 
 	toggleRender = new JCheckBox("Render", true);

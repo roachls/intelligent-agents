@@ -6,15 +6,8 @@ import java.awt.Dimension;
 
 import org.junit.jupiter.api.Test;
 
-/**
- * @author Larry S. Roach
- *
- */
 public class LocationTest {
 
-    /**
-     * 
-     */
     @Test
     public void testEquals() {
 	Location l1 = new Location(1, 1);
@@ -27,9 +20,6 @@ public class LocationTest {
 	assertNotEquals(l3, l1);
     }
 
-    /**
-     * 
-     */
     @Test
     public void testToDimension() {
 	Location l1 = new Location(2, 3);
@@ -41,9 +31,6 @@ public class LocationTest {
 	assertSame(l1.toDimension(), d3);
     }
 
-    /**
-     * 
-     */
     @Test
     public void testGetManDist() {
 	Location l1 = new Location(2, 3);
@@ -52,9 +39,6 @@ public class LocationTest {
 	assertEquals(l2.getManDist(l1), 7);
     }
 
-    /**
-     * 
-     */
     @Test
     public void testIsInCircle() {
 	Location l1 = new Location(0, 0);
@@ -65,9 +49,6 @@ public class LocationTest {
 	assertFalse(l2.isInCircle(l1, 5));
     }
 
-    /**
-     * 
-     */
     @Test
     public void testGetXDistance() {
 	Location l1 = new Location(0, 0);
@@ -76,41 +57,11 @@ public class LocationTest {
 	assertEquals(l2.getXDistance(l1), 5);
     }
 
-    /**
-     * 
-     */
     @Test
     public void testGetYDistance() {
 	Location l1 = new Location(0, 0);
 	Location l2 = new Location(5, 5);
 	assertEquals(l1.getYDistance(l2), -5);
 	assertEquals(l2.getYDistance(l1), 5);
-    }
-
-    /**
-     * 
-     */
-    @Test
-    public void testGetX() {
-	Location l1 = new Location(4, 5);
-	assertEquals(l1.getX(), 4);
-    }
-
-    /**
-     * 
-     */
-    @Test
-    public void testGetY() {
-	Location l1 = new Location(4, 5);
-	assertEquals(l1.getY(), 5);
-    }
-
-    /**
-     * 
-     */
-    @Test
-    public void testToString() {
-	Location l1 = new Location(4, 5);
-	assertEquals(l1.toString(), "(4,5)");
     }
 }
