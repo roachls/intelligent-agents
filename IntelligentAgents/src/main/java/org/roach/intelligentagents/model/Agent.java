@@ -48,33 +48,33 @@ public class Agent implements ISimItem {
     private SimulationGrid simGrid;
 
     public void setSimGrid(final SimulationGrid simGrid) {
-	this.simGrid = simGrid;
-	addPropertyChangeListener(simGrid);
-	this.loc = Location.randomLocation(simGrid.getGridSize());
+        this.simGrid = simGrid;
+        addPropertyChangeListener(simGrid);
+        this.loc = Location.randomLocation(simGrid.getGridSize());
     }
 
     public Agent(final AgentStrategy strategy) {
-	this.strategy = strategy;
-	id = id_root++;
-	executedTasks = new HashSet<>();
+        this.strategy = strategy;
+        id = id_root++;
+        executedTasks = new HashSet<>();
     }
 
     /**
      * @param listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-	mPcs.addPropertyChangeListener(listener);
+        mPcs.addPropertyChangeListener(listener);
     }
 
     /**
      * @param listener
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-	mPcs.removePropertyChangeListener(listener);
+        mPcs.removePropertyChangeListener(listener);
     }
 
     public void firePropertyChange(@NonNull final String propertyName, final Object oldValue, final Object newValue) {
-	mPcs.firePropertyChange(propertyName, oldValue, newValue);
+        mPcs.firePropertyChange(propertyName, oldValue, newValue);
     }
 
     /**
@@ -85,20 +85,20 @@ public class Agent implements ISimItem {
      */
     @Override
     public boolean equals(final @Nullable Object o) {
-	if (!(o instanceof Agent)) {
-	    return false;
-	}
-	return (id == ((Agent) o).id);
+        if (!(o instanceof Agent)) {
+            return false;
+        }
+        return (id == ((Agent) o).id);
     }
 
     /**
      * Executes the task at the current location.
      */
     public void executeTask() {
-	simGrid.executeTaskAt(loc);
-	Task gotTask = simGrid.getTask(loc);
-	if (gotTask != null)
-	    executedTasks.add(gotTask);
+        simGrid.executeTaskAt(loc);
+        Task gotTask = simGrid.getTask(loc);
+        if (gotTask != null)
+            executedTasks.add(gotTask);
     }
 
     /**
@@ -109,7 +109,7 @@ public class Agent implements ISimItem {
      * @return True if new task found
      */
     public boolean foundNewTask() {
-	return (simGrid.isTask(loc) && !simGrid.isTaskComplete(loc)) && !hasDoneAlready(simGrid.getTask(loc));
+        return (simGrid.isTask(loc) && !simGrid.isTaskComplete(loc)) && !hasDoneAlready(simGrid.getTask(loc));
     }
 
     /**
@@ -117,18 +117,14 @@ public class Agent implements ISimItem {
      * 
      * @return the executedTasks
      */
-    public Set<Task> getExecutedTasks() {
-	return executedTasks;
-    }
+    public Set<Task> getExecutedTasks() { return executedTasks; }
 
     /**
      * Getter for
      * 
      * @return the id
      */
-    public int getId() {
-	return id;
-    }
+    public int getId() { return id; }
 
     /**
      * Get the location of the agent within the sim-space.
@@ -136,9 +132,7 @@ public class Agent implements ISimItem {
      * @return loc
      */
     @NonNull
-    public Location getLoc() {
-	return loc;
-    }
+    public Location getLoc() { return loc; }
 
     /**
      * Getter for
@@ -147,7 +141,7 @@ public class Agent implements ISimItem {
      */
     @NonNull
     public PropertyChangeSupport getmPcs() {
-	return mPcs;
+        return mPcs;
     }
 
     /**
@@ -155,9 +149,7 @@ public class Agent implements ISimItem {
      * 
      * @return the strategy
      */
-    public AgentStrategy getStrategy() {
-	return strategy;
-    }
+    public AgentStrategy getStrategy() { return strategy; }
 
     /**
      * Checks if the agent has already executed a task.
@@ -166,7 +158,7 @@ public class Agent implements ISimItem {
      * @return True if already-executed list contains the task, False otherwise
      */
     public boolean hasDoneAlready(@Nullable final Task t) {
-	return executedTasks.contains(t);
+        return executedTasks.contains(t);
     }
 
     /**
@@ -176,7 +168,7 @@ public class Agent implements ISimItem {
      */
     @Override
     public int hashCode() {
-	return id % 7;
+        return id % 7;
     }
 
     /**
@@ -186,9 +178,7 @@ public class Agent implements ISimItem {
      */
     @Override
     public String toString() {
-	return this.getClass()
-		   .toString()
-		+ ", location: " + loc;
+        return this.getClass().toString() + ", location: " + loc;
     }
 
     /**
@@ -196,48 +186,46 @@ public class Agent implements ISimItem {
      * 
      * @param loc the loc to set
      */
-    public void setLoc(@NonNull final Location loc) {
-	this.loc = loc;
-    }
+    public void setLoc(@NonNull final Location loc) { this.loc = loc; }
 
     public void moveNorth() {
-	if (this.loc.y() > 0)
-	    this.loc = new Location(this.loc.x(), this.loc.y() - 1);
+        if (this.loc.y() > 0)
+            this.loc = new Location(this.loc.x(), this.loc.y() - 1);
     }
 
     public void moveSouth() {
-	if (this.loc.y() < simGrid.getGridSize() - 1)
-	    this.loc = new Location(this.loc.x(), this.loc.y() + 1);
+        if (this.loc.y() < simGrid.getGridSize() - 1)
+            this.loc = new Location(this.loc.x(), this.loc.y() + 1);
     }
 
     public void moveWest() {
-	if (this.loc.x() > 0)
-	    this.loc = new Location(this.loc.x() - 1, this.loc.y());
+        if (this.loc.x() > 0)
+            this.loc = new Location(this.loc.x() - 1, this.loc.y());
     }
 
     public void moveEast() {
-	if (this.loc.x() < simGrid.getGridSize() - 1)
-	    this.loc = new Location(this.loc.x() + 1, this.loc.y());
+        if (this.loc.x() < simGrid.getGridSize() - 1)
+            this.loc = new Location(this.loc.x() + 1, this.loc.y());
     }
 
     public void moveNorthEast() {
-	if (loc.x() < simGrid.getGridSize() - 1 && loc.y() > 0)
-	    this.loc = new Location(this.loc.x() + 1, this.loc.y() - 1);
+        if (loc.x() < simGrid.getGridSize() - 1 && loc.y() > 0)
+            this.loc = new Location(this.loc.x() + 1, this.loc.y() - 1);
     }
 
     public void moveSouthEast() {
-	if (loc.x() < simGrid.getGridSize() - 1 && loc.y() < simGrid.getGridSize() - 1)
-	    this.loc = new Location(this.loc.x() + 1, this.loc.y() + 1);
+        if (loc.x() < simGrid.getGridSize() - 1 && loc.y() < simGrid.getGridSize() - 1)
+            this.loc = new Location(this.loc.x() + 1, this.loc.y() + 1);
     }
 
     public void moveNorthWest() {
-	if (loc.x() > 0 && loc.y() > 0)
-	    this.loc = new Location(this.loc.x() - 1, this.loc.y() - 1);
+        if (loc.x() > 0 && loc.y() > 0)
+            this.loc = new Location(this.loc.x() - 1, this.loc.y() - 1);
     }
 
     public void moveSouthWest() {
-	if (loc.x() > 0 && loc.y() < simGrid.getGridSize() - 1)
-	    this.loc = new Location(this.loc.x() - 1, this.loc.y() + 1);
+        if (loc.x() > 0 && loc.y() < simGrid.getGridSize() - 1)
+            this.loc = new Location(this.loc.x() - 1, this.loc.y() + 1);
     }
 
     /**
@@ -245,41 +233,41 @@ public class Agent implements ISimItem {
      * and moves the agent.
      */
     public void randomMove() {
-	Random rand = new Random();
-	// Get a random number between 1 and 8
-	int dir = rand.nextInt(8);
-	switch (dir) { // Move the selected direction
-	case 0:
-	    // move north
-	    moveNorth();
-	    break;
-	case 1:
-	    // move east
-	    moveEast();
-	    break;
-	case 2:
-	    // move south
-	    moveSouth();
-	    break;
-	case 3:
-	    // move west
-	    moveWest();
-	    break;
-	case 4:
-	    moveNorthWest();
-	    break;
-	case 5:
-	    moveSouthWest();
-	    break;
-	case 6:
-	    moveNorthEast();
-	    break;
-	case 7:
-	    moveSouthEast();
-	    break;
-	default:
-	    break;
-	}
+        Random rand = new Random();
+        // Get a random number between 1 and 8
+        int dir = rand.nextInt(8);
+        switch (dir) { // Move the selected direction
+        case 0:
+            // move north
+            moveNorth();
+            break;
+        case 1:
+            // move east
+            moveEast();
+            break;
+        case 2:
+            // move south
+            moveSouth();
+            break;
+        case 3:
+            // move west
+            moveWest();
+            break;
+        case 4:
+            moveNorthWest();
+            break;
+        case 5:
+            moveSouthWest();
+            break;
+        case 6:
+            moveNorthEast();
+            break;
+        case 7:
+            moveSouthEast();
+            break;
+        default:
+            break;
+        }
     }
 
     /**
@@ -289,32 +277,32 @@ public class Agent implements ISimItem {
      * @param other Location to move towards
      */
     public void moveTowards(@NonNull final Location other) {
-	// Calculate how far the agent is from the task along the X and Y axes
-	int diffx = loc.getXDistance(other);
-	int diffy = loc.getYDistance(other);
+        // Calculate how far the agent is from the task along the X and Y axes
+        int diffx = loc.getXDistance(other);
+        int diffy = loc.getYDistance(other);
 
-	// Move one step along whichever axis the agent is further from the task
-	if (diffx > 0) {
-	    if (diffy > 0)
-		moveNorthWest();
-	    else if (diffy < 0)
-		moveSouthWest();
-	    else
-		moveWest();
-	} else if (diffx < 0) {
-	    if (diffy > 0)
-		moveNorthEast();
-	    else if (diffy < 0)
-		moveSouthEast();
-	    else
-		moveEast();
-	} else {
-	    // diffx == 0
-	    if (diffy > 0)
-		moveNorth();
-	    else if (diffy < 0)
-		moveSouth();
-	}
+        // Move one step along whichever axis the agent is further from the task
+        if (diffx > 0) {
+            if (diffy > 0)
+                moveNorthWest();
+            else if (diffy < 0)
+                moveSouthWest();
+            else
+                moveWest();
+        } else if (diffx < 0) {
+            if (diffy > 0)
+                moveNorthEast();
+            else if (diffy < 0)
+                moveSouthEast();
+            else
+                moveEast();
+        } else {
+            // diffx == 0
+            if (diffy > 0)
+                moveNorth();
+            else if (diffy < 0)
+                moveSouth();
+        }
     }
 
 }

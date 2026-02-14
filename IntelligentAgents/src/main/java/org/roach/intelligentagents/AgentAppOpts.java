@@ -24,7 +24,7 @@ public class AgentAppOpts {
      * communications time
      */
     @Parameter(names = {
-	    "--commTime" }, description = "Number of ticks an agent broadcasts before turning the receiver off")
+            "--commTime" }, description = "Number of ticks an agent broadcasts before turning the receiver off")
     public int commTime = 3;
 
     /**
@@ -47,8 +47,8 @@ public class AgentAppOpts {
 
     @Override
     public String toString() {
-	return "AgentAppOpts [commTime=" + commTime + ", showHelper=" + showHelper + ", showGraphics=" + showGraphics
-		+ ", cellSize=" + cellSize + "]";
+        return "AgentAppOpts [commTime=" + commTime + ", showHelper=" + showHelper + ", showGraphics=" + showGraphics
+                + ", cellSize=" + cellSize + "]";
     }
 }
 
@@ -56,11 +56,11 @@ class ClassConverter implements IStringConverter<Class<? extends AgentStrategy>>
     @SuppressWarnings({ "unchecked" })
     @Override
     public Class<? extends AgentStrategy> convert(@Nullable String value) {
-	try {
-	    return (Class<? extends AgentStrategy>) Class.forName(value);
-	} catch (ClassNotFoundException e) {
-	    e.printStackTrace(); // NOPMD by Family on 11/26/19, 2:59 PM
-	    return AgentStrategy.class;
-	}
+        try {
+            return (Class<? extends AgentStrategy>) Class.forName(value);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace(); // NOPMD by Family on 11/26/19, 2:59 PM
+            return AgentStrategy.class;
+        }
     }
 }

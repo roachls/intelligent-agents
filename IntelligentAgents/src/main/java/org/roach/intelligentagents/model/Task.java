@@ -43,21 +43,21 @@ public final class Task implements ISimItem {
      * @param listener
      */
     public void addPropertyChangeListener(@NonNull final PropertyChangeListener listener) {
-	mPcs.addPropertyChangeListener(listener);
+        mPcs.addPropertyChangeListener(listener);
     }
 
     /**
      * @param listener
      */
     public void removePropertyChangeListener(@NonNull final PropertyChangeListener listener) {
-	mPcs.removePropertyChangeListener(listener);
+        mPcs.removePropertyChangeListener(listener);
     }
 
     /**
      * @param inputLoc The location to place the task
      */
     public Task(@NonNull final Location inputLoc) {
-	location = inputLoc;
+        location = inputLoc;
     }
 
     /**
@@ -65,23 +65,21 @@ public final class Task implements ISimItem {
      * 
      * @return prio
      */
-    public int getPrio() {
-	return prio;
-    }
+    public int getPrio() { return prio; }
 
     /**
      * Executes the task. Has a 90% chance of incrementing the task priority.
      */
     public void execute() {
-	if (!isComplete()) { // If task not already complete
-	    Random rand = new Random();
-	    float pUp = rand.nextFloat(); // Pick a random float
-	    if (pUp < TASK_COMPLETE_PROBABILITY) {
-		prio++;
-		mPcs.firePropertyChange(PropertyConstants.TASK_EXECUTE, prio - 1, prio);
-	    }
-	} else // if task is already complete
-	    return;
+        if (!isComplete()) { // If task not already complete
+            Random rand = new Random();
+            float pUp = rand.nextFloat(); // Pick a random float
+            if (pUp < TASK_COMPLETE_PROBABILITY) {
+                prio++;
+                mPcs.firePropertyChange(PropertyConstants.TASK_EXECUTE, prio - 1, prio);
+            }
+        } else // if task is already complete
+            return;
     }
 
     /**
@@ -90,9 +88,9 @@ public final class Task implements ISimItem {
      * @return True if task is complete, False otherwise
      */
     public boolean isComplete() {
-	synchronized (this) {
-	    return prio == getTaskComplete();
-	}
+        synchronized (this) {
+            return prio == getTaskComplete();
+        }
     }
 
     /**
@@ -102,7 +100,7 @@ public final class Task implements ISimItem {
      */
     @Override
     public int hashCode() {
-	return location.hashCode();
+        return location.hashCode();
     }
 
     /**
@@ -115,13 +113,13 @@ public final class Task implements ISimItem {
      */
     @Override
     public boolean equals(final @Nullable Object o) {
-	if (!(o instanceof Task)) {
-	    return false;
-	}
-	if (o == this) {
-	    return true;
-	}
-	return ((Task) o).location.equals(location);
+        if (!(o instanceof Task)) {
+            return false;
+        }
+        if (o == this) {
+            return true;
+        }
+        return ((Task) o).location.equals(location);
     }
 
     /**
@@ -131,21 +129,17 @@ public final class Task implements ISimItem {
      */
     @Override
     public String toString() {
-	return "Task: " + location + ", prio: " + prio;
+        return "Task: " + location + ", prio: " + prio;
     }
 
     /**
      * @return task complete status
      */
-    public static int getTaskComplete() {
-	return TASK_COMPLETE;
-    }
+    public static int getTaskComplete() { return TASK_COMPLETE; }
 
     /**
      * @return location of this task
      */
     @NonNull
-    public Location getLocation() {
-	return location;
-    }
+    public Location getLocation() { return location; }
 }

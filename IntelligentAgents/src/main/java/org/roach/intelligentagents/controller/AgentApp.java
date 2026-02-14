@@ -22,9 +22,7 @@ public final class AgentApp {
     /** The percentage of tasks that must be complete for the simulation to stop. */
     private int percentFinished;
 
-    public void setPercentFinished(int percentFinished) {
-	this.percentFinished = percentFinished;
-    }
+    public void setPercentFinished(int percentFinished) { this.percentFinished = percentFinished; }
 
     /** The simulation grid */
     @NonNull
@@ -33,35 +31,25 @@ public final class AgentApp {
     /** Determines agent type. */
     private Class<? extends AgentStrategy> strategyType;
 
-    public void setStrategyType(Class<? extends AgentStrategy> strategyType) {
-	this.strategyType = strategyType;
-    }
+    public void setStrategyType(Class<? extends AgentStrategy> strategyType) { this.strategyType = strategyType; }
 
-    public void setSimgrid(SimulationGrid simgrid) {
-	this.simgrid = simgrid;
-    }
+    public void setSimgrid(SimulationGrid simgrid) { this.simgrid = simgrid; }
 
     /**
      * @return % finished
      */
-    public int getPercentFinished() {
-	return percentFinished;
-    }
+    public int getPercentFinished() { return percentFinished; }
 
     /**
      * @return type of agent
      */
-    public String getStrategyType() {
-	return strategyType.getName();
-    }
+    public String getStrategyType() { return strategyType.getName(); }
 
     /**
      * Getter for
      * 
      * @return the simgrid
      */
-    public SimulationGrid getSimgrid() {
-	return simgrid;
-    }
+    public SimulationGrid getSimgrid() { return simgrid; }
 
 }

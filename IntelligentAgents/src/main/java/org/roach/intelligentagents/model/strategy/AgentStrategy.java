@@ -25,8 +25,8 @@ public abstract class AgentStrategy {
      * 
      */
     public AgentStrategy(@NonNull final Agent agent, @NonNull final SimulationGrid simGrid) {
-	this.agent = agent;
-	this.simGrid = simGrid;
+        this.agent = agent;
+        this.simGrid = simGrid;
     }
 
     public AgentStrategy() {
@@ -44,37 +44,29 @@ public abstract class AgentStrategy {
      * 
      * @param state the state to set
      */
-    public void setState(State state) {
-	this.state = state;
-    }
+    public void setState(State state) { this.state = state; }
 
     /**
      * @return the state
      */
-    public State getState() {
-	return state;
-    }
+    public State getState() { return state; }
 
     /**
      * Getter for
      * 
      * @return the agent
      */
-    public Agent getAgent() {
-	return agent;
-    }
+    public Agent getAgent() { return agent; }
 
     /**
      * Performs the action(s) of the agent based on the current state. Actions are
      * delegated back to the state.
      */
     public void doAction() {
-	assert (agent != null);
-	agent.getmPcs()
-	     .firePropertyChange(PropertyConstants.PREPARE_TO_ACT, null, null);
-	state.doAction();
-	agent.getmPcs()
-	     .firePropertyChange(PropertyConstants.UPDATE_GRID, null, null);
+        assert (agent != null);
+        agent.getmPcs().firePropertyChange(PropertyConstants.PREPARE_TO_ACT, null, null);
+        state.doAction();
+        agent.getmPcs().firePropertyChange(PropertyConstants.UPDATE_GRID, null, null);
     }
 
     /**
@@ -90,13 +82,11 @@ public abstract class AgentStrategy {
      * @return True if task has been reached, false if not
      */
     public boolean reachedTask() {
-	Optional<TaskToDo> t = getTaskToDo();
-	if (t.isPresent()) {
-	    return agent.getLoc()
-			.equals(t.get()
-				 .getLocation());
-	}
-	return false;
+        Optional<TaskToDo> t = getTaskToDo();
+        if (t.isPresent()) {
+            return agent.getLoc().equals(t.get().getLocation());
+        }
+        return false;
     }
 
     /**
@@ -105,8 +95,8 @@ public abstract class AgentStrategy {
      * @param agent the agent to set
      */
     public void setAgent(@NonNull final Agent agent) {
-	this.agent = agent;
-	initStates();
+        this.agent = agent;
+        initStates();
     }
 
     @NonNull

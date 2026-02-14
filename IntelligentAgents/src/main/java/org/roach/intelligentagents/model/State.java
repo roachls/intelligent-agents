@@ -12,7 +12,7 @@ public class State {
     private Agent agent;
     /** The algorithm that is performed in the State */
     private StateAlgorithm algorithm;
-    
+
     // TODO move color from model to view
     /** The Color of the state, used by the Agent.draw method */
     @Nullable
@@ -27,16 +27,16 @@ public class State {
      * @param agent
      */
     public State(@Nullable final Color c, StateAlgorithm alg, Agent agent) {
-	this.color = c;
-	this.algorithm = alg;
-	this.agent = agent;
+        this.color = c;
+        this.algorithm = alg;
+        this.agent = agent;
     }
 
     /**
      * Calls the Agent's public method.
      */
     public void doAction() {
-	algorithm.go(agent);
+        algorithm.go(agent);
     }
 
     /**
@@ -45,27 +45,21 @@ public class State {
      * @return color
      */
     @Nullable
-    public Color getColor() {
-	return color;
-    }
+    public Color getColor() { return color; }
 
     /**
      * Setter for
      * 
      * @param agent the agent to set
      */
-    public void setAgent(Agent agent) {
-	this.agent = agent;
-    }
+    public void setAgent(Agent agent) { this.agent = agent; }
 
     /**
      * Setter for
      * 
      * @param algorithm the algorithm to set
      */
-    public void setAlgorithm(StateAlgorithm algorithm) {
-	this.algorithm = algorithm;
-    }
+    public void setAlgorithm(StateAlgorithm algorithm) { this.algorithm = algorithm; }
 
     /**
      * Setter for
@@ -73,7 +67,7 @@ public class State {
      * @param color the color to set
      */
     public void setColor(@Nullable final Color color) {
-	if (color != null)
-	    this.color = color;
+        if (color != null)
+            this.color = color;
     }
 }

@@ -24,7 +24,7 @@ public class ViewableAgent extends JComponent {
      * @param a
      */
     public ViewableAgent(Agent a) {
-	agent = a;
+        agent = a;
     }
 
     /**
@@ -32,9 +32,7 @@ public class ViewableAgent extends JComponent {
      * 
      * @param aSquareSize Number of pixels for a square
      */
-    public static void setSquareSize(int aSquareSize) {
-	squareSize = aSquareSize;
-    }
+    public static void setSquareSize(int aSquareSize) { squareSize = aSquareSize; }
 
     /**
      * Draws the agent to the screen as a square of the color specified by the
@@ -43,17 +41,17 @@ public class ViewableAgent extends JComponent {
      * @param g The graphics context in which to draw
      */
     public void draw(Graphics g) {
-	if (viewStrategy != null) {
-	    viewStrategy.draw(agent, g, squareSize);
-	}
+        if (viewStrategy != null) {
+            viewStrategy.draw(agent, g, squareSize);
+        }
     }
 
     /**
      * @param g
      */
     public void drawHelperGraphics(Graphics g) {
-	if (viewStrategy != null)
-	    viewStrategy.drawHelperGraphics(agent, g, squareSize);
+        if (viewStrategy != null)
+            viewStrategy.drawHelperGraphics(agent, g, squareSize);
     }
 
     /**
@@ -61,7 +59,5 @@ public class ViewableAgent extends JComponent {
      * 
      * @param viewStrategy the viewStrategy to set
      */
-    public static void setViewStrategy(ViewStrategy viewStrategy) {
-	ViewableAgent.viewStrategy = viewStrategy;
-    }
+    public static void setViewStrategy(ViewStrategy viewStrategy) { ViewableAgent.viewStrategy = viewStrategy; }
 }

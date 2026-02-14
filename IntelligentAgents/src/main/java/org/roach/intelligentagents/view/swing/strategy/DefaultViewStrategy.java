@@ -5,20 +5,16 @@ import java.awt.Graphics;
 import org.roach.intelligentagents.model.Agent;
 import org.roach.intelligentagents.view.swing.ViewStrategy;
 
+/**
+ * View strategy used for all agents
+ */
 public class DefaultViewStrategy implements ViewStrategy {
-    
+
     @Override
     public void draw(final Agent agent, final Graphics g, int squareSize) {
-	g.setColor(agent.getStrategy()
-			.getState()
-			.getColor());
-	g.drawRect(toGraphicLoc(agent.getLoc()
-				     .x(),
-		squareSize),
-		toGraphicLoc(agent.getLoc()
-				  .y(),
-			squareSize),
-		squareSize, squareSize);
+        g.setColor(agent.getStrategy().getState().getColor());
+        g.drawRect(toGraphicLoc(agent.getLoc().x(), squareSize), toGraphicLoc(agent.getLoc().y(), squareSize),
+                squareSize, squareSize);
     }
 
     /**
@@ -28,7 +24,7 @@ public class DefaultViewStrategy implements ViewStrategy {
      * @return The converted coordinate
      */
     protected static int toGraphicLoc(int coord, final int squareSize) {
-	return coord * squareSize;
+        return coord * squareSize;
     }
 
     /**
@@ -38,11 +34,11 @@ public class DefaultViewStrategy implements ViewStrategy {
      * @return Width in pixels
      */
     protected static int toGraphicSize(final int width, final int squareSize) {
-	return width * squareSize + squareSize - 1;
+        return width * squareSize + squareSize - 1;
     }
 
     @Override
     public void drawHelperGraphics(final Agent agent, final Graphics g, final int squareSize) {
-	// Nothing to do
+        // Nothing to do
     }
 }

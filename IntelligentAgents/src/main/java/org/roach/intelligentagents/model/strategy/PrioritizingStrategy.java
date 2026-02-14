@@ -41,8 +41,8 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
      * @param agent
      */
     public PrioritizingStrategy(@NonNull final Agent agent, @NonNull final SimulationGrid simGrid) {
-	super(agent, simGrid);
-	state = RANDOM;
+        super(agent, simGrid);
+        state = RANDOM;
     }
 
     /**
@@ -54,21 +54,21 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
      */
     @Override
     public void receiveMessage(@NonNull final Location receivedLoc) {
-	Task t = simGrid.getTask(receivedLoc);
-	if (!agent.hasDoneAlready(t)) {
-	    setBroadcastReceived(true);
-	    // Add the state to the priority queue (not necessarily on top)
-	    taskQueue.add(new TaskToDo(receivedLoc));
-	    boolean hasDoneAlready = true;
-	    while (!taskQueue.isEmpty() && hasDoneAlready) {
-		this.taskToDo = taskQueue.peek();
-		if (agent.hasDoneAlready(simGrid.getTask((taskToDo).getLocation()))) {
-		    taskQueue.poll();
-		} else {
-		    hasDoneAlready = false;
-		}
-	    }
-	}
+        Task t = simGrid.getTask(receivedLoc);
+        if (!agent.hasDoneAlready(t)) {
+            setBroadcastReceived(true);
+            // Add the state to the priority queue (not necessarily on top)
+            taskQueue.add(new TaskToDo(receivedLoc));
+            boolean hasDoneAlready = true;
+            while (!taskQueue.isEmpty() && hasDoneAlready) {
+                this.taskToDo = taskQueue.peek();
+                if (agent.hasDoneAlready(simGrid.getTask((taskToDo).getLocation()))) {
+                    taskQueue.poll();
+                } else {
+                    hasDoneAlready = false;
+                }
+            }
+        }
     }
 
     /**
@@ -77,19 +77,15 @@ public class PrioritizingStrategy extends CommunicatingAgentStrategy {
      * @return A TaskToDo, if any, null otherwise.
      */
     @Override
-    public Optional<TaskToDo> getTaskToDo() {
-	return taskToDo == null ? Optional.empty() : Optional.of(taskToDo);
-    }
+    public Optional<TaskToDo> getTaskToDo() { return taskToDo == null ? Optional.empty() : Optional.of(taskToDo); }
 
     /**
      * Executes the task at the current location.
      */
     public void executeTask() {
-	taskQueue.poll(); // remove top TaskToDo from queue
+        taskQueue.poll(); // remove top TaskToDo from queue
     }
 
     @Override
-    public @NonNull String getDescription() {
-	return "Prioritizing Strategy";
-    }
+    public @NonNull String getDescription() { return "Prioritizing Strategy"; }
 }

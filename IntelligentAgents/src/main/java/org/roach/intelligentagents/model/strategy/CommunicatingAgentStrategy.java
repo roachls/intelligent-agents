@@ -40,9 +40,7 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
      * 
      * @return the commDist
      */
-    public int getCommDist() {
-	return commDist;
-    }
+    public int getCommDist() { return commDist; }
 
     @NonNull
     protected Location locToGoto = new Location(0, 0);
@@ -53,17 +51,13 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
      */
     @Override
     public void setOptions(AgentAppOpts options) {
-	this.commDist = options.commDist;
-	this.commTime = options.commTime;
+        this.commDist = options.commDist;
+        this.commTime = options.commTime;
     }
 
-    public void setCommDist(int commDist) {
-	this.commDist = commDist;
-    }
+    public void setCommDist(int commDist) { this.commDist = commDist; }
 
-    public void setCommTime(int commTime) {
-	this.commTime = commTime;
-    }
+    public void setCommTime(int commTime) { this.commTime = commTime; }
 
     /**
      * The location of the task, if any, that the agent is broadcasting in COMMS
@@ -83,11 +77,11 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
      * @param agent
      */
     public CommunicatingAgentStrategy(@NonNull final Agent agent, @NonNull final SimulationGrid simGrid) {
-	super(agent, simGrid);
+        super(agent, simGrid);
     }
 
     public CommunicatingAgentStrategy() {
-	super();
+        super();
     }
 
     @Override
@@ -100,42 +94,39 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
      * @param actionIfNotPossible
      */
     public void sendMessageIfPossible(Runnable actionIfNotPossible) {
-	if (commTime > 0) {
-	    agent.getmPcs()
-		 .firePropertyChange(PropertyConstants.SEND_MESSAGE, null, commTaskLoc);
-	    commTime--;
-	} else {
-	    actionIfNotPossible.run();
-	}
+        if (commTime > 0) {
+            agent.getmPcs().firePropertyChange(PropertyConstants.SEND_MESSAGE, null, commTaskLoc);
+            commTime--;
+        } else {
+            actionIfNotPossible.run();
+        }
     }
 
     /**
      * @param receivedLoc
      */
     public void receiveMessage(@NonNull final Location receivedLoc) {
-	Task t = simGrid.getTask(receivedLoc);
-	if (t != null && t.isComplete()) {
-	    agent.getExecutedTasks()
-		 .add(t);
-	}
+        Task t = simGrid.getTask(receivedLoc);
+        if (t != null && t.isComplete()) {
+            agent.getExecutedTasks().add(t);
+        }
 
-	if (!agent.getExecutedTasks()
-		  .contains(t)) {
-	    this.locToGoto = receivedLoc;
-	    setBroadcastReceived(true);
-	}
+        if (!agent.getExecutedTasks().contains(t)) {
+            this.locToGoto = receivedLoc;
+            setBroadcastReceived(true);
+        }
     }
 
     /**
      * Initialize communications
      */
     public void initComms() {
-	Task task = simGrid.getTask(agent.getLoc());
-	if (task != null && !task.isComplete()) { // if task isn'task compete
-	    // Important - since loc will be changed later, commTaskLoc must
-	    // be a clone of loc, not a reference to it
-	    commTaskLoc = agent.getLoc();
-	}
+        Task task = simGrid.getTask(agent.getLoc());
+        if (task != null && !task.isComplete()) { // if task isn'task compete
+            // Important - since loc will be changed later, commTaskLoc must
+            // be a clone of loc, not a reference to it
+            commTaskLoc = agent.getLoc();
+        }
     }
 
     /**
@@ -143,18 +134,14 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
      * 
      * @param broadcastReceived value to set the flag to
      */
-    public void setBroadcastReceived(boolean broadcastReceived) {
-	this.broadcastReceived = broadcastReceived;
-    }
+    public void setBroadcastReceived(boolean broadcastReceived) { this.broadcastReceived = broadcastReceived; }
 
     /**
      * Checks if a broadcast has been received from another agent.
      * 
      * @return true if a broadcast has been received, false otherwise
      */
-    public boolean isBroadcastReceived() {
-	return broadcastReceived;
-    }
+    public boolean isBroadcastReceived() { return broadcastReceived; }
 
     /**
      * 
@@ -162,54 +149,49 @@ public abstract class CommunicatingAgentStrategy extends AgentStrategy {
      */
     @Override
     protected void initStates() {
-	RANDOM.setAlgorithm(a -> {
-	    a.randomMove();
-	    if (a.foundNewTask()) {
-		a.executeTask();
-		initComms();
-		setState(RANDOMCOMMS);
-	    } else if (isBroadcastReceived()) {
-		setBroadcastReceived(false); // reset broadcast flag
-	    }
-	});
-	RANDOM.setAgent(this.agent);
+        RANDOM.setAlgorithm(a -> {
+            a.randomMove();
+            if (a.foundNewTask()) {
+                a.executeTask();
+                initComms();
+                setState(RANDOMCOMMS);
+            } else if (isBroadcastReceived()) {
+                setBroadcastReceived(false); // reset broadcast flag
+            }
+        });
+        RANDOM.setAgent(this.agent);
 
-	/** The Goto state. */
-	GOTO.setAlgorithm(a -> {
-	    a.getStrategy()
-	     .getTaskToDo()
-	     .ifPresentOrElse((t) -> {
-		 if (isBroadcastReceived()) {
-		     setBroadcastReceived(false);
-		 }
-	     }, () -> getTaskToDo().ifPresent(task -> a.moveTowards(task.getLocation())));
-	    if (a.getStrategy()
-		 .reachedTask()) {
-		if (!a.hasDoneAlready(simGrid.getTask(a.getLoc())))
-		    a.executeTask(); // execute it and switch back to Random
-		setState(RANDOM);
-	    }
-	});
-	GOTO.setAgent(this.agent);
-	GOTO.setColor(Color.red);
+        /** The Goto state. */
+        GOTO.setAlgorithm(a -> {
+            a.getStrategy().getTaskToDo().ifPresentOrElse((t) -> {
+                if (isBroadcastReceived()) {
+                    setBroadcastReceived(false);
+                }
+            }, () -> getTaskToDo().ifPresent(task -> a.moveTowards(task.getLocation())));
+            if (a.getStrategy().reachedTask()) {
+                if (!a.hasDoneAlready(simGrid.getTask(a.getLoc())))
+                    a.executeTask(); // execute it and switch back to Random
+                setState(RANDOM);
+            }
+        });
+        GOTO.setAgent(this.agent);
+        GOTO.setColor(Color.red);
 
-	// /** The random-comms state */
-	RANDOMCOMMS.setColor(Color.blue);
-	RANDOMCOMMS.setAlgorithm(a -> {
-	    sendMessageIfPossible(() -> state = RANDOM);
-	    a.randomMove();
-	    if (a.foundNewTask()) {
-		a.executeTask();
-		initComms();
-		a.getStrategy()
-		 .setState(RANDOMCOMMS);
-	    } else if (isBroadcastReceived()) {
-		setBroadcastReceived(false);
-		a.getStrategy()
-		 .setState(GOTO);
-	    }
-	});
-	RANDOMCOMMS.setAgent(this.agent);
+        // /** The random-comms state */
+        RANDOMCOMMS.setColor(Color.blue);
+        RANDOMCOMMS.setAlgorithm(a -> {
+            sendMessageIfPossible(() -> state = RANDOM);
+            a.randomMove();
+            if (a.foundNewTask()) {
+                a.executeTask();
+                initComms();
+                a.getStrategy().setState(RANDOMCOMMS);
+            } else if (isBroadcastReceived()) {
+                setBroadcastReceived(false);
+                a.getStrategy().setState(GOTO);
+            }
+        });
+        RANDOMCOMMS.setAgent(this.agent);
     }
 
 }

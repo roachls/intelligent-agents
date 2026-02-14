@@ -8,46 +8,51 @@ import org.roach.intelligentagents.PropertyConstants;
 import org.roach.intelligentagents.controller.AgentApp;
 import org.roach.intelligentagents.view.AAnimator;
 
+/**
+ * animator that updates the console
+ */
+@SuppressWarnings("java:S106")
 public class ConsoleAnimator extends AAnimator implements PropertyChangeListener {
 
+    /**
+     * @param agentApp application
+     */
     public ConsoleAnimator(@NonNull final AgentApp agentApp) {
-	super(agentApp);
-	agentApp.getSimgrid()
-		.addPropertyChangeListener(this);
+        super(agentApp);
+        agentApp.getSimgrid().addPropertyChangeListener(this);
     }
 
     @Override
     public void run() {
-	isRunning = true;
-	while (isRunning) {
-	    step();
-	}
+        isRunning = true;
+        while (isRunning) {
+            step();
+        }
     }
 
     @Override
     public void step() {
-	simUpdate(); // update sim state
+        simUpdate(); // update sim state
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-	if (evt.getPropertyName()
-	       .equals(PropertyConstants.TASK_COMPLETE)) {
-	    Integer numTasksComplete = (Integer) evt.getNewValue();
-	    if (numTasksComplete >= agentApp.getSimgrid()
-					    .getNumTasks()
-		    * (float) agentApp.getPercentFinished() / 100.0f) {
-		System.out.println(agentApp.getSimgrid()
-					   .getGridSize()
-			+ " " + agentApp.getSimgrid()
-					.getNumTasks()
-			+ " " // NOPMD by Family on 11/26/19, 2:39 PM
-			+ agentApp.getSimgrid()
-				  .getNumAgents()
-			+ " " + agentApp.getStrategyType() + " " + AAnimator.getTime());
-		endProgram();
-	    }
-	}
+        if (evt.getPropertyName().equals(PropertyConstants.TASK_COMPLETE)) {
+            Integer numTasksComplete = (Integer) evt.getNewValue();
+            if (numTasksComplete >= agentApp.getSimgrid().getNumTasks() * (float) agentApp.getPercentFinished()
+                    / 100.0f) {
+                System.out.println(agentApp.getSimgrid().getGridSize() + " " + agentApp.getSimgrid().getNumTasks() + " " // NOPMD
+                                                                                                                         // by
+                                                                                                                         // Family
+                                                                                                                         // on
+                                                                                                                         // 11/26/19,
+                                                                                                                         // 2:39
+                                                                                                                         // PM
+                        + agentApp.getSimgrid().getNumAgents() + " " + agentApp.getStrategyType() + " "
+                        + AAnimator.getTime());
+                endProgram();
+            }
+        }
     }
 
 }

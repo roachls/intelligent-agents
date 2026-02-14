@@ -28,7 +28,7 @@ public record Location(int x, int y) {
      */
     @NonNull
     public Dimension toDimension() {
-	return new Dimension(x, y);
+        return new Dimension(x, y);
     }
 
     /**
@@ -38,8 +38,8 @@ public record Location(int x, int y) {
      * @return Manhattan distance (x-distance plus y-distance)
      */
     public int getManDist(final Location rhs) {
-	// Return |x - rhs.x| + |y - rhs.y|
-	return Math.abs(x - rhs.x) + Math.abs(y - rhs.y);
+        // Return |x - rhs.x| + |y - rhs.y|
+        return Math.abs(x - rhs.x) + Math.abs(y - rhs.y);
     }
 
     /**
@@ -52,12 +52,12 @@ public record Location(int x, int y) {
      *         radius, false otherwise
      */
     public boolean isInCircle(@NonNull final Location rhs, final int radius) {
-	/*
-	 * We can avoid floating-point math by using the circular formula (rhs.x - x)^2
-	 * + (rhs.y - y)^2 = radius^2, and so any for any point within the circle it
-	 * will be true that (rhs.y - y)^2 <= radius^2 - (rhs.x - x)^2
-	 */
-	return ((rhs.y - y) * (rhs.y - y) <= radius * radius - (rhs.x - x) * (rhs.x - x));
+        /*
+         * We can avoid floating-point math by using the circular formula (rhs.x - x)^2
+         * + (rhs.y - y)^2 = radius^2, and so any for any point within the circle it
+         * will be true that (rhs.y - y)^2 <= radius^2 - (rhs.x - x)^2
+         */
+        return ((rhs.y - y) * (rhs.y - y) <= radius * radius - (rhs.x - x) * (rhs.x - x));
     }
 
     /**
@@ -67,13 +67,13 @@ public record Location(int x, int y) {
      * @return An int representing the distance
      */
     public int getXDistance(@NonNull final Location rhs) {
-	/*
-	 * Note: we don't take the absolute value because this distance will be used by
-	 * an agent to determine which direction to go. A negative distance indicates
-	 * that this Location is north of rhs; positive indicates that this is south of
-	 * rhs.
-	 */
-	return x - rhs.x;
+        /*
+         * Note: we don't take the absolute value because this distance will be used by
+         * an agent to determine which direction to go. A negative distance indicates
+         * that this Location is north of rhs; positive indicates that this is south of
+         * rhs.
+         */
+        return x - rhs.x;
     }
 
     /**
@@ -83,13 +83,13 @@ public record Location(int x, int y) {
      * @return An int representing the distance
      */
     public int getYDistance(@NonNull final Location rhs) {
-	/*
-	 * Note: we don't take the absolute value because this distance will be used by
-	 * an agent to determine which direction to go. A negative distance indicates
-	 * that this Location is east of rhs; positive indicates that this is west of
-	 * rhs.
-	 */
-	return y - rhs.y;
+        /*
+         * Note: we don't take the absolute value because this distance will be used by
+         * an agent to determine which direction to go. A negative distance indicates
+         * that this Location is east of rhs; positive indicates that this is west of
+         * rhs.
+         */
+        return y - rhs.y;
     }
 
     /**
@@ -99,13 +99,13 @@ public record Location(int x, int y) {
      */
     @Override
     public String toString() {
-	return "(" + x + "," + y + ")";
+        return "(" + x + "," + y + ")";
     }
 
     @NonNull
     public static Location randomLocation(final int size) {
-	int x = RAND.nextInt(size); // pick a random x
-	int y = RAND.nextInt(size); // pick a random y
-	return new Location(x, y);
+        int x = RAND.nextInt(size); // pick a random x
+        int y = RAND.nextInt(size); // pick a random y
+        return new Location(x, y);
     }
 }

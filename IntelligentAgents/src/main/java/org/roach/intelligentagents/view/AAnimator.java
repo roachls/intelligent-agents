@@ -31,9 +31,9 @@ public abstract class AAnimator implements IAnimator {
      * @param p The JPanel to display everything on
      */
     public AAnimator(@NonNull final AgentApp agentApp) {
-	this.agentApp = agentApp;
-	// Initialize simulation components
-	pcs = new PropertyChangeSupport(this);
+        this.agentApp = agentApp;
+        // Initialize simulation components
+        pcs = new PropertyChangeSupport(this);
     }
 
     /**
@@ -41,11 +41,11 @@ public abstract class AAnimator implements IAnimator {
      */
     @Override
     public void startSim() {
-	// If the thread doesn't exist, create it and start it
-	if (animatorThread == null || !isRunning) {
-	    animatorThread = new Thread(this, "AnimationThread"); // NOPMD by Family on 11/26/19, 2:58 PM
-	    animatorThread.start();
-	}
+        // If the thread doesn't exist, create it and start it
+        if (animatorThread == null || !isRunning) {
+            animatorThread = new Thread(this, "AnimationThread"); // NOPMD by Family on 11/26/19, 2:58 PM
+            animatorThread.start();
+        }
     }
 
     /**
@@ -54,7 +54,7 @@ public abstract class AAnimator implements IAnimator {
      */
     @Override
     public void stopSim() {
-	simOver = true;
+        simOver = true;
     }
 
     /**
@@ -62,26 +62,24 @@ public abstract class AAnimator implements IAnimator {
      */
     @Override
     public void endProgram() {
-	isRunning = false;
-	System.exit(0); // NOPMD by Family on 11/26/19, 2:58 PM
+        isRunning = false;
+        System.exit(0); // NOPMD by Family on 11/26/19, 2:58 PM
     }
 
     /**
      * Updates the status of all agents (calls the doAction() method of each agent).
      */
     protected void simUpdate() {
-	if (!simOver) { // If the sim isn't paused or complete
-	    // Update all agents
-	    for (Agent a : agentApp.getSimgrid()
-				   .getAgents()) {
-		if (a != null)
-		    a.getStrategy()
-		     .doAction();
-	    }
-	    // Display the new time
-	    time++;
-	    pcs.firePropertyChange(PropertyConstants.TIME_TICK, time, time - 1);
-	}
+        if (!simOver) { // If the sim isn't paused or complete
+            // Update all agents
+            for (Agent a : agentApp.getSimgrid().getAgents()) {
+                if (a != null)
+                    a.getStrategy().doAction();
+            }
+            // Display the new time
+            time++;
+            pcs.firePropertyChange(PropertyConstants.TIME_TICK, time, time - 1);
+        }
     }
 
     /**
@@ -89,9 +87,7 @@ public abstract class AAnimator implements IAnimator {
      * 
      * @return time
      */
-    public static int getTime() {
-	return time;
-    }
+    public static int getTime() { return time; }
 
     abstract public void step();
 }

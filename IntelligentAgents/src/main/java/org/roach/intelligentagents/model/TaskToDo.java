@@ -21,8 +21,8 @@ public final class TaskToDo implements Comparable<TaskToDo> {
      * @param inputTaskLoc Location of the new task
      */
     public TaskToDo(@NonNull final Location inputTaskLoc) {
-	taskLoc = inputTaskLoc;
-	this.timeWhenFound = AAnimator.getTime();
+        taskLoc = inputTaskLoc;
+        this.timeWhenFound = AAnimator.getTime();
     }
 
     /**
@@ -31,9 +31,7 @@ public final class TaskToDo implements Comparable<TaskToDo> {
      * @return A location
      */
     @NonNull
-    public Location getLocation() {
-	return taskLoc;
-    }
+    public Location getLocation() { return taskLoc; }
 
     /**
      * Compares two TaskToDo objects by time when they were found; required by the
@@ -44,7 +42,7 @@ public final class TaskToDo implements Comparable<TaskToDo> {
      */
     @Override
     public int compareTo(final TaskToDo rhs) {
-	return rhs.timeWhenFound - timeWhenFound;
+        return rhs.timeWhenFound - timeWhenFound;
     }
 
     /**
@@ -54,6 +52,6 @@ public final class TaskToDo implements Comparable<TaskToDo> {
      */
     @Override
     public String toString() {
-	return "TaskToDo: " + taskLoc + ", time: " + timeWhenFound;
+        return "TaskToDo: " + taskLoc + ", time: " + timeWhenFound;
     }
 }

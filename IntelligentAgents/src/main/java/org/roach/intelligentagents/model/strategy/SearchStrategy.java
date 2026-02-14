@@ -24,7 +24,7 @@ import org.roach.intelligentagents.model.TaskToDo;
 public class SearchStrategy extends AgentStrategy {
 
     enum Directions {
-	NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST, EMPTY
+        NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST, EMPTY
     }
 
     private Directions dir = Directions.EMPTY;
@@ -45,18 +45,16 @@ public class SearchStrategy extends AgentStrategy {
      * 
      */
     public SearchStrategy(@NonNull final Agent agent, @NonNull final SimulationGrid simGrid) {
-	super(agent, simGrid);
-	state = SEARCH;
+        super(agent, simGrid);
+        state = SEARCH;
     }
 
     @Override
-    public Optional<TaskToDo> getTaskToDo() {
-	return Optional.empty();
-    }
+    public Optional<TaskToDo> getTaskToDo() { return Optional.empty(); }
 
     @Override
     public void setOptions(AgentAppOpts options) {
-	// Nothing to do
+        // Nothing to do
     }
 
     /**
@@ -65,77 +63,68 @@ public class SearchStrategy extends AgentStrategy {
      */
     @Override
     protected void initStates() {
-	SEARCH.setAgent(this.agent);
-	SEARCH.setAlgorithm(a -> {
-	    if (starting) {
-		starting = false;
-		if (a.getLoc()
-		     .y() == 0)
-		    dir = (a.getLoc()
-			    .x() == 0) ? Directions.SOUTHEAST : Directions.SOUTHWEST;
-		else
-		    dir = (a.getLoc()
-			    .x() == 0) ? Directions.NORTHEAST : Directions.NORTHWEST;
-	    } else {
-		if (a.foundNewTask()) {
-		    simGrid.executeTaskAt(a.getLoc());
-		}
-		switch (dir) {
-		case NORTHEAST:
-		    if (a.getLoc()
-			 .y() > 0)
-			a.moveNorth();
-		    else {
-			a.moveEast();
-			if (a.foundNewTask())
-			    simGrid.executeTaskAt(a.getLoc());
-			dir = Directions.SOUTHEAST;
-		    }
-		    break;
-		case SOUTHEAST:
-		    if (a.getLoc()
-			 .y() < simGrid.getGridSize() - 1)
-			a.moveSouth();
-		    else {
-			a.moveEast();
-			if (a.foundNewTask())
-			    simGrid.executeTaskAt(a.getLoc());
-			dir = Directions.NORTHEAST;
-		    }
-		    break;
-		case NORTHWEST:
-		    if (a.getLoc()
-			 .y() > 0)
-			a.moveNorth();
-		    else {
-			a.moveWest();
-			if (a.foundNewTask())
-			    simGrid.executeTaskAt(a.getLoc());
-			dir = Directions.SOUTHWEST;
-		    }
-		    break;
-		case SOUTHWEST:
-		    if (a.getLoc()
-			 .y() < simGrid.getGridSize() - 1)
-			a.moveSouth();
-		    else {
-			a.moveWest();
-			if (a.foundNewTask())
-			    simGrid.executeTaskAt(a.getLoc());
-			dir = Directions.NORTHWEST;
-		    }
-		    break;
-		default:
-		    assert (false) : "Impossible direction";
-		    break;
-		}
-	    }
+        SEARCH.setAgent(this.agent);
+        SEARCH.setAlgorithm(a -> {
+            if (starting) {
+                starting = false;
+                if (a.getLoc().y() == 0)
+                    dir = (a.getLoc().x() == 0) ? Directions.SOUTHEAST : Directions.SOUTHWEST;
+                else
+                    dir = (a.getLoc().x() == 0) ? Directions.NORTHEAST : Directions.NORTHWEST;
+            } else {
+                if (a.foundNewTask()) {
+                    simGrid.executeTaskAt(a.getLoc());
+                }
+                switch (dir) {
+                case NORTHEAST:
+                    if (a.getLoc().y() > 0)
+                        a.moveNorth();
+                    else {
+                        a.moveEast();
+                        if (a.foundNewTask())
+                            simGrid.executeTaskAt(a.getLoc());
+                        dir = Directions.SOUTHEAST;
+                    }
+                    break;
+                case SOUTHEAST:
+                    if (a.getLoc().y() < simGrid.getGridSize() - 1)
+                        a.moveSouth();
+                    else {
+                        a.moveEast();
+                        if (a.foundNewTask())
+                            simGrid.executeTaskAt(a.getLoc());
+                        dir = Directions.NORTHEAST;
+                    }
+                    break;
+                case NORTHWEST:
+                    if (a.getLoc().y() > 0)
+                        a.moveNorth();
+                    else {
+                        a.moveWest();
+                        if (a.foundNewTask())
+                            simGrid.executeTaskAt(a.getLoc());
+                        dir = Directions.SOUTHWEST;
+                    }
+                    break;
+                case SOUTHWEST:
+                    if (a.getLoc().y() < simGrid.getGridSize() - 1)
+                        a.moveSouth();
+                    else {
+                        a.moveWest();
+                        if (a.foundNewTask())
+                            simGrid.executeTaskAt(a.getLoc());
+                        dir = Directions.NORTHWEST;
+                    }
+                    break;
+                default:
+                    assert (false) : "Impossible direction";
+                    break;
+                }
+            }
 
-	});
+        });
     }
 
     @Override
-    public @NonNull String getDescription() {
-	return "Search Strategy";
-    }
+    public @NonNull String getDescription() { return "Search Strategy"; }
 }
